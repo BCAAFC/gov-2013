@@ -1,15 +1,8 @@
 extends layout
 
 block content
-	h1= title
-	p Welcome to #{title}
-	a(href="/account/signup") Signup
-	br
-	a(href="/account/login") Login
-	br
-	if user
-		form(action="/api/logout", method='post')
-			h6 Logged in as #{user.email}. 
-			input(type="submit", value="Logout?")
-	else
-		| Not logged in!
+	.row-fluid
+		.span8
+			h1= title
+			p Welcome to the B.C. Association of Aboriginal Friendship Centres' Social Innovation Conference Volunteer Sign-up center.
+			h2 Current Volunteer Schedule

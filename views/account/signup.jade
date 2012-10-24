@@ -1,10 +1,26 @@
 extends ../layout
 
 block content
-	h1= title
-	p Welcome to Signup
-	form(action="/api/signup", method='post')
-		input(type="text", name="email", placeholder="email")
-		input(type="password", name="pass", placeholder="Pass")
-		input(type="password", name="passConfirm", placeholder="Pass Confirmation")
-		input(type="submit")
+	.row-fluid
+		h1= title
+		form(action="/api/signup", method='post')
+			h4 Login Information
+			p (You should remember this!)
+			.well
+				.control-group
+					label.control-label Email
+					input(type="text", name="email", placeholder="email")
+					label.control-label Password
+					input(type="password", name="pass", placeholder="Pass")
+					label.control-label Confirm
+				input(type="password", name="passConfirm", placeholder="Pass Confirmation")
+		
+			h4 User Information
+			.well
+				.control-group
+					label.control-label Name
+					input(type="text", name="name", placeholder="Name")
+					label.control-label Phone #
+					input(type="text", name="phone", placeholder="Phone")
+			br
+			input.btn.btn-primary(type="submit")

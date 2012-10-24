@@ -1,0 +1,44 @@
+extends layout
+
+block content
+	.row-fluid
+		h1= title
+		.span3.pull-right
+			h2 Add a Timeslot
+			form.well(action="/api/newTimeslot", method='post')
+				h4 Time
+				input(type="text", name="start", placeholder="Start Time")
+				br
+				input(type="text", name="end", placeholder="End Time")
+				br
+				input(type="text", name="day", placeholder="Day")
+		
+				h4 Details
+				input(type="text", name="title", placeholder="Job Title")
+				input(type="text", name="notes", placeholder="Job Notes")
+				br
+				input(type="submit")
+		.span7
+			if timeslots
+				.row
+					each timeslot in timeslots
+						.span6
+							h2 #{ timeslot.title }
+							.well
+								h3 Volunteer: 
+								if timeslot.user
+									p Name: #{ timeslot.user.name }
+									p Phone: #{ timeslot.user.phone }
+									p Email: #{ timeslot.user.email }
+								else
+									p Name: N/A
+									p Phone: N/A
+									p Email: N/A
+									
+								h3 Details
+								p Start: #{ timeslot.start }
+								p End: #{ timeslot.end }
+								p Day: #{ timeslot.day }
+								h3 Notes:
+								p #{ timeslot.notes }
+								a(href="/api/unclaimTimeslot/#{timeslot._id}") Free this spot.
