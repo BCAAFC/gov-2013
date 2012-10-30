@@ -3,24 +3,63 @@ extends ../layout
 block content
 	.row-fluid
 		h1= title
-		form(action="/api/signup", method='post')
-			h4 Login Information
-			p (You should remember this!)
-			.well
-				.control-group
-					label.control-label Email
-					input(type="text", name="email", placeholder="email")
-					label.control-label Password
-					input(type="password", name="pass", placeholder="Pass")
-					label.control-label Confirm
-				input(type="password", name="passConfirm", placeholder="Pass Confirmation")
-		
-			h4 User Information
-			.well
-				.control-group
-					label.control-label Name
-					input(type="text", name="name", placeholder="Name")
-					label.control-label Phone #
-					input(type="text", name="phone", placeholder="Phone")
+		form.form-horizontal(action="/api/signup", method='post')
+			fieldset
+				legend Login Information
+				p (You should really remember this!)
+				.well
+					.control-group
+						label.control-label Email
+						.controls
+							input(type="text", name="email", placeholder="email")
+					.control-group
+						label.control-label Password
+						.controls
+							input(type="password", name="pass", placeholder="Pass")
+					.control-group
+						label.control-label Password (again!)
+						.controls
+							input(type="password", name="passConfirm", placeholder="Pass Confirmation")
+
+			fieldset
+				legend Contact Information
+				.well
+					.control-group
+						label.control-label Name
+						.controls
+							input(type="text", name="name", placeholder="Name")
+					.control-group
+						label.control-label Phone #
+						.controls
+							input(type="text", name="phone", placeholder="Phone")
+
+			fieldset
+				legend Group Information
+				.well
+					.control-group
+						label.control-label Affiliation
+						.controls
+							input(type="text", name="affiliation", placeholder="Affiliation")
+					.control-group
+						label.control-label Address
+						.controls
+							input(type="text", name="address", placeholder="Address")
+					.control-group
+						label.control-label City
+						.controls
+							input(type="text", name="city", placeholder="City")
+					.control-group
+						label.control-label Province
+						.controls
+							input(type="text", name="province", placeholder="Province")
+					.control-group
+						label.control-label Postal Code
+						.controls
+							input(type="text", name="postalCode", placeholder="Postal Code")
+					.control-group
+						label.control-label Fax
+						.controls
+							input(type="text", name="fax", placeholder="Fax")
+
 			br
-			input.btn.btn-primary(type="submit")
+			input.btn.btn-block.btn-large.btn-primary(type="submit")

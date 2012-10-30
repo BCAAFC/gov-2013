@@ -1,21 +1,32 @@
-if group
-	.container-fluid
-		h4 Your Information
-		p Email: #{group.email}
-		p Name: #{group.name}
-		p Phone: #{group.phone}
-		p Unique ID: #{group._id}
-		form(action="/api/logout", method='post')
-			input.btn.btn-inverse(type="submit", value="Logout?")
-else
-	.container-fluid
-		form(action="/api/login", method='post')
-			.control-group
-				label.control-label Primary Contact Email
-				input(type="text", name="email", placeholder="example@gmail.com")
-			.control-group
-				label.control-label Password
-				input(type="password", name="pass", placeholder="•••••••••••")
-			.control-group
-				input.btn.btn-primary.btn-block(type="submit")
-				a.control-label(href="/account/signup") Need to Signup?
+.dropdown.pull-right
+	if group
+		a#login.dropdown-toggle(data-toggle="dropdown", data-target="#")
+			button.btn.btn-primary.btn-small Account Info
+		.dropdown-menu(role="menu", aria-labelledby="login")
+			.container-fluid
+				.span4
+					h4 Your Information
+					p Email: #{group.primaryContact.email}
+					p Name: #{group.primaryContact.name}
+					p Phone: #{group.primaryContact.phone}
+					p Unique ID: #{group._id}
+					a.btn.btn-success(href="/account") Account Details
+					form(action="/api/logout", method='post')
+						input.btn.btn-inverse(type="submit", value="Logout?")
+
+	else
+		a#login.dropdown-toggle(data-toggle="dropdown", data-target="#")
+			button.btn.btn-primary.btn-small Log In or Register
+		.dropdown-menu(role="menu", aria-labelledby="login")
+			.container-fluid
+				.span4
+					form(action="/api/login", method='post')
+						.control-group
+							label.control-label Primary Contact Email
+							input(type="text", name="email", placeholder="example@gmail.com")
+						.control-group
+							label.control-label Password
+							input(type="password", name="pass", placeholder="•••••••••••")
+						.control-group
+							input.btn.btn-primary.btn-block(type="submit")
+							a.control-label(href="/account/signup") Need to Signup?

@@ -33,7 +33,7 @@ db = mongoose.createConnection mongourl
 Schema = mongoose.Schema
 db.on 'error', console.error.bind(console, 'Connection error:')
 db.once 'open', () -> 
-	console.log "Database Ready:"
+	console.log "You'll see '1' if the databases are ready."
 	console.log "Login DB Response: #{Login.db.readyState}"
 	console.log "Group DB Response: #{Login.db.readyState}"
 
@@ -94,11 +94,17 @@ app.get '/', (req, res) ->
 	res.render 'index',
 		title: "Home"
 		group: req.session.group || null
+
+app.get '/privacy', (req, res) ->
+	res.render 'privacy',
+		title: "Privacy Policy"
+		group: req.session.group || null
 		
 app.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
 		title: "Signup"
 		group: req.session.group || null
+
 		
 # Error Pages
 app.get '/404', (req, res) ->
@@ -116,15 +122,10 @@ app.post '/api/login', (req, res) ->
 			if err or not login
 				res.send "You're not signed up."
 			else
-				console.log login
 				pwd.hash req.body.pass, login.salt, (err, hash) ->
-					console.log login._group
 					if login.hash is hash
-						Group.findOne
-							_id: login._group
-							(err, group) ->
+						Group.findById login._group, (err, group) ->
 								req.session.group = group
-								console.log group
 								res.redirect '/'
 					else
 						res.send "Wrong password. <a href='/'>Go back</a>"
@@ -138,11 +139,18 @@ app.post '/api/signup', (req, res) ->
 			else
 				pwd.hash req.body.pass, (err, salt, hash) ->
 					group = new Group
-						email: req.body.email
-						name: req.body.name
-						phone: req.body.phone
+						primaryContact:
+							email: req.body.email
+							name: req.body.name
+							phone: req.body.phone
+						groupInformation:
+							affiliation: req.body.affiliation
+							address: req.body.address
+							city: req.body.city
+							province: req.body.province
+							postalCode: req.body.postalCode
+							fax: req.body.fax
 					group.save (err, group) -> 
-							console.log "Got group"
 							if err
 								res.send "There was an error saving your information."
 							else
@@ -168,3 +176,4 @@ app.post '/api/logout', (req, res) ->
 Start listening.
 ###
 app.listen process.env.VCAP_APP_PORT or 8080
+console.log "Now listening..."

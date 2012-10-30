@@ -45,18 +45,14 @@ html
 									i.icon-home.icon-white
 									| Home
 							li
-								a(href='/')
+								a(href='/account/signup')
 									i.icon-edit.icon-white
-									| Register
+									| Sign up
 							li
 								a(href="/")
 									i.icon-eye-open.icon-white
 									| Privacy Policy
-						.dropdown.pull-right
-							a#login.dropdown-toggle(data-toggle="dropdown", data-target="#")
-								button.btn.btn-primary.btn-small Group Login
-							.dropdown-menu(role="menu", aria-labelledby="login")
-									include account/login
+						include account/login
 		.container-fluid
 			block content
 
