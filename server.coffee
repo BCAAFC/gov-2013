@@ -105,7 +105,14 @@ app.get '/account/signup', (req, res) ->
 		title: "Signup"
 		group: req.session.group || null
 
-		
+app.get '/account/', (req, res) ->
+	if req.session.group is null
+		res.redirect '/'
+	else
+		res.render 'account/index',
+			title: "Account Management"
+			group: req.session.group
+
 # Error Pages
 app.get '/404', (req, res) ->
 	res.render 'index',
