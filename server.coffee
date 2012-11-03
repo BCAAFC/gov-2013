@@ -99,10 +99,20 @@ app.get '/privacy', (req, res) ->
 	res.render 'privacy',
 		title: "Privacy Policy"
 		group: req.session.group || null
-		
+
+app.get '/account', (req, res) ->
+	res.render 'account/index',
+		title: "Account Management"
+		group: req.session.group || null
+
 app.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
 		title: "Signup"
+		group: req.session.group || null
+
+app.get '/account/login', (req, res) ->
+	res.render 'account/login',
+		title: "Login"
 		group: req.session.group || null
 
 app.get '/account/', (req, res) ->

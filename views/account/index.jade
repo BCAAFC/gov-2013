@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+	ul.nav.nav-tabs
+		li.active
+			a(href="#groupinfo", data-toggle="tab") General Info
+		li
+			a(href="#members", data-toggle="tab") Members
+		li
+			a(href="#billing", data-toggle="tab") Billing
+		li
+			a(href="#activity", data-toggle="tab") Activity Log
+	.tab-content
+		.tab-pane.fade.active.in#groupinfo
+			p Test Group Info.
+		.tab-pane.fade#members
+			p Test Members.
+		.tab-pane.fade#billing
+			p Test Billing.
+		.tab-pane.fade#activity
+			p Test Activity.

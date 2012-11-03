@@ -1,7 +1,7 @@
 doctype 5
 html
 	head
-		title= title
+		title Gathering Our Voices 2013 - #{title}
 		meta(charset="utf-8")
 		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
@@ -18,6 +18,7 @@ html
 
 		// CSS Stuff
 		!= css('bootstrap')
+		!= css('custom')
 
 
 		// Google Analytics Tracker
@@ -37,24 +38,59 @@ html
 		.navbar.navbar-inverse.navbar-fixed-top
 			.navbar-inner
 				.container-fluid
-					a.brand(style="font-family: Rancho") Gathering Our Voices
+					a.brand(style="font-family: Rancho", href="/") Gathering Our Voices
 					.nav-collapse
 						ul.nav
 							li
 								a(href='/')
 									i.icon-home.icon-white
 									| Home
+							if group
+								li.dropdown
+									a.dropdown-toggle#accountDrop(href='#', data-toggle="dropdown")
+										i.icon-edit.icon-white
+										| Account
+										b.caret
+									ul.dropdown-menu(aria-labelledby="accountDrop")
+										li
+											a(href="/account") Management
+										li
+											a(href="/account/add") Add a member
+										li
+											a(href="/account/billing") Payment Details
+							else
+								li
+									a(href='/account/signup')
+										i.icon-edit.icon-white
+										| Sign up
 							li
-								a(href='/account/signup')
-									i.icon-edit.icon-white
-									| Sign up
+								a(href="/workshops")
+									i.icon-list-alt.icon-white
+									| Workshops
 							li
 								a(href="/")
 									i.icon-eye-open.icon-white
 									| Privacy Policy
-						include account/login
+						include elements/login
 		.container-fluid
+			.row-fluid
+				.span1.offset3
+					img(src="/img/art/salmonflip.gif", style="height: 300px")
+				.span4(style="text-align: center;")
+					img(src="/img/logos/gov.png")
+				.span1
+					img(src="/img/art/salmon.gif", style="height: 300px")
 			block content
+			.row-fluid
+				.span4.offset4
+					h4 Proudly supported by the following Organizations:
+			.row-fluid
+				.span2.offset4
+					a(href="http://www.bcaafc.com")
+						img(src="/img/logos/bcaafc.png")
+				.span2
+					a(href="http://www.friendshipcentre.ca/")
+						img(src="/img/logos/ooknakane.png")
 
 		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js")
 		!= js("bootstrap.min")
