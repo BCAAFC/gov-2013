@@ -46,6 +46,20 @@ loginSchema = new Schema
 	hash: String
 	_group: Schema.Types.ObjectId
 Login = db.model 'Login', loginSchema
+memberSchema = new Schema
+	name: String
+	type: String
+	gender: String
+	birthDate: String
+	phone: String
+	email: String
+	emergencyInfo:
+		name: String
+		relation: String
+		phone: String
+		medicalNum: String
+		allergies: [String]
+		conditions: [String]
 groupSchema = new Schema
 	primaryContact:
 		name: String
@@ -58,9 +72,9 @@ groupSchema = new Schema
 		province: String
 		postalCode: String
 		fax: String
-	youth: [Schema.Types.ObjectId]
-	chaperones: [Schema.Types.ObjectId]
-	youngAdults: [Schema.Types.ObjectId]
+	youth: [memberSchema]
+	chaperones: [memberSchema]
+	youngAdults: [memberSchema]
 Group = db.model 'Group', groupSchema
 
 ###
@@ -188,6 +202,11 @@ app.post '/api/logout', (req, res) ->
 		if err
 			console.log err
 		res.redirect "/"
+
+app.post '/api/addMember', (req, res) ->
+	if req.body.type is 'youth'
+		Group.findByIdAndUpdate req.session.group._id, $push: youth: req.body, (err, group) ->
+			req.session.group = group
 
 ###
 Start listening.

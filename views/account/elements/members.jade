@@ -1,0 +1,122 @@
+.container-fluid
+	.row-fluid
+		// Group Member Listing
+		.span4
+			h2 Members
+			ul.nav.nav-tabs
+				li.active
+					a(href="#youth", data-toggle="tab") Youth
+				li
+					a(href="#youngAdults", data-toggle="tab") Young Adults
+				li
+					a(href="#chaperones", data-toggle="tab") Chaperones
+			.tab-content
+				.tab-pane.fade.active.in#youth
+					ul.nav.nav-list
+						for member in group.youth
+							li
+								a(href="##{member._id}")= member.name
+				.tab-pane.fade#youngAdults
+					ul.nav.nav-list
+						for member in group.youngAdults
+							li
+								a(href="##{member._id}")= member.name
+				.tab-pane.fade#chaperones
+					ul.nav.nav-list
+						for member in group.chaperones
+							li
+								a(href="##{member._id}")= member.name
+			hr
+			a(href='#add', data-toggle="modal") Add New...
+		// Info on Selected Member
+		.span8
+			.row-fluid
+				.span6
+					h2 General Information
+					
+				.span6
+					h2 Emergency Information
+					p More Text.
+			.row-fluid
+				h2 Attending
+
+// The 'Add' modal.
+.modal.hide.fade#add(tabindex='-1', role='dialog', aria-labelledby='addLabel', aria-hidden='true')
+	form.form-horizontal(action="/api/addMember", method='post')
+		.modal-header
+			.close(data-dismiss='modal', aria-hidden='true')
+				| x
+			h3#addLabel Add a New Member
+		.modal-body
+			p One fine body.
+
+			// Member Info
+			fieldset
+				legend Member Info
+				p And some text, which is fantastic.
+				.control-group
+					label.control-label Name
+					.controls
+						input(type='text', name='name')
+				.control-group
+					label.control-label Type
+					.controls
+						select(name='type')
+							option(value="youth") Youth (14-17 Yrs)
+							option(value="youngAdult") Young Adult (18-24 yrs)
+							option(value="chaperone") Chaperone (21+ yrs)
+				.control-group
+					label.control-label Gender
+					.controls
+						select(name='gender')
+							option(value="male") Male
+							option(value="female") Female
+							option(value="other") Other
+				.control-group
+					label.control-label Birth Date
+					.controls
+						input(type='date', name='birthDate')
+				.control-group
+					label.control-label Phone
+					.controls
+						input(type='text', name='phone')
+				.control-group
+					label.control-label Email
+					.controls
+						input(type='text', name='email')
+
+			// Emergency Info
+			fieldset
+				legend Emergency Info
+				.control-group
+					label.control-label Medical Number
+					.controls
+						input(type='text', name='emergencyInfo.medicalNum')
+				.control-group
+					label.control-label Allergies
+					.controls
+						input(type='text', name='emergencyInfo.allergies')
+				.control-group
+					label.control-label Conditions
+					.controls
+						input(type='text', name='emergencyInfo.conditions')
+			
+			// Emergency Contact
+			fieldset
+				legend Emergency Contact
+				.control-group
+					label.control-label Name
+					.controls
+						input(type='text', name='emergencyInfo.name')
+				.control-group
+					label.control-label Relation
+					.controls
+						input(type='text', name='emergencyInfo.relation')
+				.control-group
+					label.control-label Phone
+					.controls
+						input(type='text', name='emergencyInfo.phone')
+
+		.modal-footer
+			button.btn(data-dismiss='modal', aria-hidden='true') Cancel
+			input.btn.btn-primary(type='submit', value='Add!')
