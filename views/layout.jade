@@ -20,7 +20,9 @@ html
 		!= css('bootstrap')
 		!= css('custom')
 
-
+		// Jquery
+		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js")
+		
 		// Google Analytics Tracker
 		script(type="text/javascript")
 				var _gaq = _gaq || [];
@@ -55,14 +57,19 @@ html
 										li
 											a(href="/account") Management
 										li
-											a(href="/account/add") Add a member
+											a(href="#add", data-toggle="modal") Add a member
 										li
-											a(href="/account/billing") Payment Details
+											a(href="/account#billing") Payment Details
 							else
+								li
+									a(href="#login", data-toggle='modal')
+										i.icon-ok-circle.icon-white
+										| Login
 								li
 									a(href='/account/signup')
 										i.icon-edit.icon-white
 										| Sign up
+
 							li
 								a(href="/workshops")
 									i.icon-list-alt.icon-white
@@ -71,7 +78,6 @@ html
 								a(href="/")
 									i.icon-eye-open.icon-white
 									| Privacy Policy
-						include elements/login
 		.container-fluid
 			.row-fluid
 				.span1.offset3
@@ -82,7 +88,7 @@ html
 					img(src="/img/art/salmon.gif", style="height: 300px")
 			block content
 			.row-fluid
-				.span4.offset4
+				.span6.offset4
 					h4 Proudly supported by the following Organizations:
 			.row-fluid
 				.span2.offset4
@@ -91,6 +97,10 @@ html
 				.span2
 					a(href="http://www.friendshipcentre.ca/")
 						img(src="/img/logos/ooknakane.png")
-
-		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js")
+		include elements/addMember.jade
+		include elements/login
 		!= js("bootstrap.min")
+		script
+			$(document).ready(function(){
+				$('a[href="' + window.location.hash + '"]').click()
+			});

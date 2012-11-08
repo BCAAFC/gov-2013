@@ -207,6 +207,15 @@ app.post '/api/addMember', (req, res) ->
 	if req.body.type is 'youth'
 		Group.findByIdAndUpdate req.session.group._id, $push: youth: req.body, (err, group) ->
 			req.session.group = group
+			res.redirect '/account#members'
+	if req.body.type is 'youngAdult'
+		Group.findByIdAndUpdate req.session.group._id, $push: youngAdults: req.body, (err, group) ->
+			req.session.group = group
+			res.redirect '/account#members'
+	if req.body.type is 'chaperone'
+		Group.findByIdAndUpdate req.session.group._id, $push: chaperones: req.body, (err, group) ->
+			req.session.group = group
+			res.redirect '/account#members'
 
 ###
 Start listening.
