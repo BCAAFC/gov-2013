@@ -46,6 +46,8 @@ loginSchema = new Schema
 	hash: String
 	_group: Schema.Types.ObjectId
 Login = db.model 'Login', loginSchema
+
+
 memberSchema = new Schema
 	name: String
 	type: String
@@ -60,6 +62,13 @@ memberSchema = new Schema
 		medicalNum: String
 		allergies: [String]
 		conditions: [String]
+
+logSchema = new Schema
+	date:
+		type: Date
+		default: Date.now
+	event: String
+
 groupSchema = new Schema
 	primaryContact:
 		name: String
@@ -75,6 +84,7 @@ groupSchema = new Schema
 	youth: [memberSchema]
 	chaperones: [memberSchema]
 	youngAdults: [memberSchema]
+	log: [logSchema]
 Group = db.model 'Group', groupSchema
 
 ###
@@ -124,11 +134,6 @@ app.get '/account/signup', (req, res) ->
 		title: "Signup"
 		group: req.session.group || null
 
-app.get '/account/login', (req, res) ->
-	res.render 'account/login',
-		title: "Login"
-		group: req.session.group || null
-
 app.get '/account/', (req, res) ->
 	if req.session.group is null
 		res.redirect '/'
@@ -155,7 +160,9 @@ app.post '/api/login', (req, res) ->
 			else
 				pwd.hash req.body.pass, login.salt, (err, hash) ->
 					if login.hash is hash
-						Group.findById login._group, (err, group) ->
+						Group.findByIdAndUpdate login._group,
+							$push: log: event: "This account was logged in with #{req.ip}"
+							(err, group) ->
 								req.session.group = group
 								res.redirect '/'
 					else
@@ -181,6 +188,10 @@ app.post '/api/signup', (req, res) ->
 							province: req.body.province
 							postalCode: req.body.postalCode
 							fax: req.body.fax
+							log: [
+								date: Date.now
+								event: 'This group account was created.'
+							]
 					group.save (err, group) -> 
 							if err
 								res.send "There was an error saving your information."
@@ -198,24 +209,49 @@ app.post '/api/signup', (req, res) ->
 										res.redirect '/'
 
 app.post '/api/logout', (req, res) ->
+	Group.findByIdAndUpdate req.session.group._id,
+		$push: log: event: "The account logged out from #{req.ip}"
+		(err, group) ->
 	req.session.destroy (err) ->
 		if err
-			console.log err
-		res.redirect "/"
+			res.send err
+		else
+			res.redirect "/"
 
 app.post '/api/addMember', (req, res) ->
-	if req.body.type is 'youth'
-		Group.findByIdAndUpdate req.session.group._id, $push: youth: req.body, (err, group) ->
-			req.session.group = group
-			res.redirect '/account#members'
-	if req.body.type is 'youngAdult'
-		Group.findByIdAndUpdate req.session.group._id, $push: youngAdults: req.body, (err, group) ->
-			req.session.group = group
-			res.redirect '/account#members'
-	if req.body.type is 'chaperone'
-		Group.findByIdAndUpdate req.session.group._id, $push: chaperones: req.body, (err, group) ->
-			req.session.group = group
-			res.redirect '/account#members'
+	if req.body.type is 'Youth'
+		Group.findByIdAndUpdate req.session.group._id,
+			$push:
+				youth: req.body
+				log: event: "The member #{req.body.name} was added to youth."
+			(err, group) ->
+				if err
+					res.send "There was an error, could you try again?"
+				else
+					req.session.group = group
+					res.redirect '/account#members'
+	if req.body.type is 'Young Adult'
+		Group.findByIdAndUpdate req.session.group._id,
+			$push:
+				youngAdults: req.body
+				log: event: "The member #{req.body.name} was added to Young Adults."
+			(err, group) ->
+				if err
+					res.send "There was an error, could you try again?"
+				else
+					req.session.group = group
+					res.redirect '/account#members'
+	if req.body.type is 'Chaperone'
+		Group.findByIdAndUpdate req.session.group._id,
+			$push:
+				chaperones: req.body
+				log: event: "The member #{req.body.name} was added to Chaperones."
+			(err, group) ->
+				if err
+					res.send "There was an error, could you try again?"
+				else
+					req.session.group = group
+					res.redirect '/account#members'
 			
 app.post '/api/getMember', (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->

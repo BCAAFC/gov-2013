@@ -1,14 +1,44 @@
-p= member.name
-p= member.type
-p= member.gender
-p= member.birthDate
-p= member.phone
-p= member.email
-h3 Emergency Info
-p= member.emergencyInfo.medicalNum
-p= member.emergencyInfo.allergies
-p= member.emergencyInfo.conditions
-h3 Emergency Contact
-p= member.emergencyInfo.name
-p= member.emergencyInfo.relation
-p= member.emergencyInfo.phone
+.row-fluid
+	.span6
+		h3 General Info
+		b Name: 
+		| #{member.name}
+		br
+		b Type: 
+		| #{member.type}
+		br
+		b Gender: 
+		| #{member.gender}
+		br
+		b Birth Date: 
+		| #{member.birthDate}
+		br
+		b Phone: 
+		| #{member.phone}
+		br
+		b Email: 
+		| #{member.email}
+
+		h3 Workshops Attending
+		p <To be done>
+
+	.span6
+		h3 Emergency Info
+		b Medical Number: 
+		| #{member.emergencyInfo.medicalNum}
+		br
+		b Allergies: 
+		| #{member.emergencyInfo.allergies}
+		br
+		b Conditions: 
+		| #{member.emergencyInfo.conditions}
+
+		h3 Emergency Contact
+		b Name: 
+		| #{member.emergencyInfo.name}
+		br
+		b Relation: 
+		| #{member.emergencyInfo.relation}
+		br
+		b Phone: 
+		| #{member.emergencyInfo.phone}
