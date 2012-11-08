@@ -216,6 +216,15 @@ app.post '/api/addMember', (req, res) ->
 		Group.findByIdAndUpdate req.session.group._id, $push: chaperones: req.body, (err, group) ->
 			req.session.group = group
 			res.redirect '/account#members'
+			
+app.post '/api/getMember', (req, res) ->
+	Group.findById req.session.group._id, (err, group) ->
+		if err
+			req.session.destroy
+			res.redirect '/'
+		req.session.group = group # Update the group, in case of changes.
+		member = group[req.body.type].id(req.body.id)
+		res.render 'account/elements/memberInfo', member: member
 
 ###
 Start listening.

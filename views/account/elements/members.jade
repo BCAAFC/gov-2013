@@ -15,26 +15,22 @@
 					ul.nav.nav-list
 						for member in group.youth
 							li
-								a(href="##{member._id}")= member.name
+								a.member(data-id="#{member._id}", data-type="youth")= member.name
 				.tab-pane.fade#youngAdults
 					ul.nav.nav-list
 						for member in group.youngAdults
 							li
-								a(href="##{member._id}")= member.name
+								a.member(data-id="#{member._id}", data-type="youngAdults")= member.name
 				.tab-pane.fade#chaperones
 					ul.nav.nav-list
 						for member in group.chaperones
 							li
-								a(href="##{member._id}")= member.name
+								a.member(data-id="#{member._id}", data-type="chaperones")= member.name
 			hr
 			a(href='#add', data-toggle="modal") Add New...
 		// Info on Selected Member
-		.span8
+		.span8#memberInfo
 			div(style="text-align:center; padding-top: 100px;")
 				p.muted Please select a member from the list.
 
-// The 'Add' modal.
-include ../../elements/addMember.jade
-
-script
-	console.log($('body'));
+	!= js('account/memberInfo')
