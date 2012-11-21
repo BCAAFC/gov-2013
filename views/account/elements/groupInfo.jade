@@ -1,1 +1,44 @@
-p Test group info
+.row-fluid
+	.span6
+		h3 Group Information
+		b Affiliation: 
+		| #{group.affiliation}
+		br
+		b Address: 
+		| #{group.address}
+		br
+		b City: 
+		| #{group.city}
+		br
+		b Province: 
+		| #{group.province}
+		br
+		b Postal Code: 
+		| #{group.postalCode}
+		br
+		b Fax:
+		| #{group.fax}
+
+	.span6
+		h3 Primary Contact Information
+		b Name: 
+		| #{group.primaryContact.name}
+		br
+		b Email: 
+		| #{group.primaryContact.email}
+		br
+		b Phone: 
+		| #{group.primaryContact.phone}
+
+.row-fluid
+	.span6
+		h3 Group Status
+		b Youth Attending: 
+		| #{group.youth.length}
+		br
+		b Young Adults Attending: 
+		| #{group.youngAdults.length}
+		br
+		b Chaperones Attending: 
+		| #{group.chaperones.length}
+		br
