@@ -5,5 +5,6 @@ $('.member').click ->
 		(data) ->
 			$('#memberInfo').html(data)
 			
-$('.nav li a').click ->
+$('#accountTabs li a').click ->
 	window.location.hash = $(this).attr('href')
+	
