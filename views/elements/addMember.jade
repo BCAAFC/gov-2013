@@ -5,42 +5,44 @@
 				| x
 			h3#addLabel Add a New Member
 		.modal-body
-			p One fine body.
 
 			// Member Info
 			fieldset
 				legend Member Info
-				p And some text, which is fantastic.
 				.control-group
 					label.control-label Name
 					.controls
-						input(type='text', name='name')
+						input(type='text', name='name', required)
 				.control-group
 					label.control-label Type
 					.controls
-						select(name='type')
+						select(name='type', required)
+							option(value="") Please Select...
 							option(value="Youth") Youth (14-17 Yrs)
 							option(value="Young Adult") Young Adult (18-24 yrs)
 							option(value="Chaperone") Chaperone (21+ yrs)
 				.control-group
+					label.control-label Birth Date
+					.controls
+						input(type='date', name='birthDate', required)
+						br
+						small Please use yyyy-mm-dd.
+				.control-group
 					label.control-label Gender
 					.controls
-						select(name='gender')
+						select(name='gender', required)
+							option(value="") Please Select...
 							option(value="Male") Male
 							option(value="Female") Female
 							option(value="Other") Other
 				.control-group
-					label.control-label Birth Date
-					.controls
-						input(type='date', name='birthDate')
-				.control-group
 					label.control-label Phone
 					.controls
-						input(type='text', name='phone')
+						input(type='text', name='phone', required)
 				.control-group
 					label.control-label Email
 					.controls
-						input(type='text', name='email')
+						input(type='text', name='email', required)
 
 			// Emergency Info
 			fieldset
@@ -48,7 +50,7 @@
 				.control-group
 					label.control-label Medical Number
 					.controls
-						input(type='text', name='emergencyInfo.medicalNum')
+						input(type='text', name='emergencyInfo.medicalNum', required)
 				.control-group
 					label.control-label Allergies
 					.controls
@@ -64,15 +66,15 @@
 				.control-group
 					label.control-label Name
 					.controls
-						input(type='text', name='emergencyInfo.name')
+						input(type='text', name='emergencyInfo.name', required)
 				.control-group
 					label.control-label Relation
 					.controls
-						input(type='text', name='emergencyInfo.relation')
+						input(type='text', name='emergencyInfo.relation', required)
 				.control-group
 					label.control-label Phone
 					.controls
-						input(type='text', name='emergencyInfo.phone')
+						input(type='text', name='emergencyInfo.phone', required)
 
 		.modal-footer
 			button.btn(data-dismiss='modal', aria-hidden='true') Cancel

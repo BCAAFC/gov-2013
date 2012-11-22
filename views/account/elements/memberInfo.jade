@@ -7,11 +7,11 @@
 		b Type: 
 		| #{member.type}
 		br
-		b Gender: 
-		| #{member.gender}
-		br
 		b Birth Date: 
 		| #{member.birthDate}
+		br
+		b Gender: 
+		| #{member.gender}
 		br
 		b Phone: 
 		| #{member.phone}
@@ -42,3 +42,9 @@
 		br
 		b Phone: 
 		| #{member.emergencyInfo.phone}
+.row-fluid
+	hr
+	.span5
+		a.btn.btn-danger#removeUser(href="/api/removeMember/#{member.type}/#{member.name}/#{member._id}") Permanently Remove #{member.name}
+		br
+		small There is no undo! Be careful!

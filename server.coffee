@@ -188,25 +188,24 @@ app.post '/api/signup', (req, res) ->
 							province: req.body.province
 							postalCode: req.body.postalCode
 							fax: req.body.fax
-							log: [
-								date: Date.now
-								event: 'This group account was created.'
-							]
 					group.save (err, group) -> 
 							if err
 								res.send "There was an error saving your information."
 							else
-								login = new Login
-									email: req.body.email
-									salt: salt
-									hash: hash
-									_group: group._id
-								login.save (err) ->
-									if err
-										res.send "There was an error saving your login."
-									else
-										req.session.group = group
-										res.redirect '/'
+								Group.findByIdAndUpdate group._id,
+									$push: log: event: 'This group account was created.',
+									(err, group) ->
+										login = new Login
+											email: req.body.email
+											salt: salt
+											hash: hash
+											_group: group._id
+										login.save (err) ->
+											if err
+												res.send "There was an error saving your login."
+											else
+												req.session.group = group
+												res.redirect '/'
 
 app.post '/api/logout', (req, res) ->
 	Group.findByIdAndUpdate req.session.group._id,
@@ -252,7 +251,46 @@ app.post '/api/addMember', (req, res) ->
 				else
 					req.session.group = group
 					res.redirect '/account#members'
-			
+
+app.get '/api/removeMember/:type/:name/:id', (req, res) ->
+	if req.params.type is 'Youth'
+		Group.findByIdAndUpdate req.session.group._id,
+			$pull:
+				youth: _id: req.params.id
+			$push:
+				log: event: "The member #{req.params.name} was removed to youth."
+			(err, group) ->
+				if err
+					res.send "There was an error, could you try again?"
+				else
+					req.session.group = group
+					res.redirect '/account#members'
+	if req.params.type is 'Young Adult'
+		Group.findByIdAndUpdate req.session.group._id,
+			$pull:
+				youngAdults: _id: req.params.id
+			$push:
+				log: event: "The member #{req.params.name} was removed to youth."
+			(err, group) ->
+				if err
+					res.send "There was an error, could you try again?"
+				else
+					req.session.group = group
+					res.redirect '/account#members'
+	if req.params.type is 'Chaperone'
+		Group.findByIdAndUpdate req.session.group._id,
+			$pull:
+				chaperones: _id: req.params.id
+			$push:
+				log: event: "The member #{req.params.name} was removed to youth."
+			(err, group) ->
+				if err
+					res.send "There was an error, could you try again?"
+				else
+					req.session.group = group
+					res.redirect '/account#members'
+
+
 app.post '/api/getMember', (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		if err

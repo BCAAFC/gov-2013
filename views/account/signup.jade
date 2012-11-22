@@ -6,35 +6,39 @@ block content
 		form.form-horizontal(action="/api/signup", method='post')
 			fieldset
 				legend Login Information
-				p (You should really remember this!)
+				p Please keep this information in a safe place. We have not yet implemented password recovery, so if you loose your password manual intervention will be required.
 				.well
 					.control-group
 						label.control-label Email
 						.controls
-							input(type="text", name="email", placeholder="email")
+							input(type="text", name="email", placeholder="Email", required)
 					.control-group
 						label.control-label Password
 						.controls
-							input(type="password", name="pass", placeholder="Pass")
+							input(type="password", name="pass", placeholder="Pass", required)
 					.control-group
 						label.control-label Password (again!)
 						.controls
-							input(type="password", name="passConfirm", placeholder="Pass Confirmation")
+							input(type="password", name="passConfirm", placeholder="Pass Confirmation", required)
 
 			fieldset
-				legend Contact Information
+				legend Primary Contact Information
+				p Each Group requires a primary contact. They will be the primary point of contact for information, payment, and announcements important for all delegates to receive.
+				p It is <b>not</b> assumed that this person will be attending. If you are the group contact, and plan on attending, please add yourself to the relevant group after registration.
 				.well
 					.control-group
 						label.control-label Name
 						.controls
-							input(type="text", name="name", placeholder="Name")
+							input(type="text", name="name", placeholder="Name", required)
 					.control-group
 						label.control-label Phone #
 						.controls
-							input(type="text", name="phone", placeholder="Phone")
+							input(type="text", name="phone", placeholder="Phone", required)
 
 			fieldset
 				legend Group Information
+				p If you are representing an organization, please fill out the following for your organization.
+				p Are you an individual? Please fill out your personal information here, feel free to make up your own name for 'Affiliation.'
 				.well
 					.control-group
 						label.control-label Affiliation

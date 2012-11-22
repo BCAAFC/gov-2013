@@ -7,4 +7,3 @@ $('.member').click ->
 			
 $('#accountTabs li a').click ->
 	window.location.hash = $(this).attr('href')
-	

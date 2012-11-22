@@ -1,6 +1,11 @@
 extends ../layout
 
 block content
+	if 5 * group.chaperones.length < group.youth.length
+		div.alert.alert-error
+			button.button(class="close", data-dismiss="alert") x
+			b Warning:
+			p Your group does not have enough Chaperones to support it's youth. Please remove some youth or add new chaperones.
 	ul.nav.nav-tabs#accountTabs
 		li.active
 			a(href="#groupinfo", data-toggle="tab") Group Info
