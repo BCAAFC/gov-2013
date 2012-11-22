@@ -45,19 +45,24 @@ form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 
 		fieldset
 			legend Group Status
-			b Youth Attending: 
-			| #{group.youth.length}
-			br
+			if 5 * group.chaperones.length < group.youth.length
+				.alert.alert-error
+					b Youth Attending: 
+					| #{group.youth.length}
+			else
+				b Youth Attending: 
+				| #{group.youth.length}
+				br
 			b Young Adults Attending: 
 			| #{group.youngAdults.length}
 			br
-			b Chaperones Attending: 
-			| #{group.chaperones.length}
-			br
 			if 5 * group.chaperones.length < group.youth.length
-				div.alert.alert-error
-					button.button(class="close", data-dismiss="alert") x
-					b Warning:
-					p Your group does not have enough Chaperones to support it's youth. Please remove some youth or add new chaperones.
+				.alert.alert-error
+					b Chaperones Attending: 
+					| #{group.chaperones.length}
+			else
+				b Chaperones Attending: 
+				| #{group.chaperones.length}
+				br
 	.span10
 		input.btn.btn-primary.btn-block(type="submit", value="Submit Changes")

@@ -85,6 +85,7 @@ groupSchema = new Schema
 	chaperones: [memberSchema]
 	youngAdults: [memberSchema]
 	log: [logSchema]
+	payments: [Schema.Types.ObjectId]
 Group = db.model 'Group', groupSchema
 
 ###
