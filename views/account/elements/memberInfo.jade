@@ -1,47 +1,69 @@
-.row-fluid
-	.span6
-		h3 General Info
-		b Name: 
-		| #{member.name}
-		br
-		b Type: 
-		| #{member.type}
-		br
-		b Birth Date: 
-		| #{member.birthDate}
-		br
-		b Gender: 
-		| #{member.gender}
-		br
-		b Phone: 
-		| #{member.phone}
-		br
-		b Email: 
-		| #{member.email}
+form.form-horizontal.row-fluid(action="/api/editMember", method='post')
+	div(style="display: none")
+		input(type='text', name='id', required, value="#{member._id}")
+		input(type="text", name="type", required, value="#{member.type}")
+	// Member Info
+	fieldset
+		legend Member Info
+		.control-group
+			label.control-label Name
+			.controls
+				input(type='text', name='member.name', required, value="#{member.name}")
+		.control-group
+			label.control-label Type
+			.controls
+				p #{member.type}
+				small Remove and re-add the member to change this!
+		.control-group
+			label.control-label Birth Date
+			.controls
+				input(type='date', name='member.birthDate', required, value="#{member.birthDate}")
+		.control-group
+			label.control-label Gender
+			.controls
+				p #{member.gender}
+		.control-group
+			label.control-label Phone
+			.controls
+				input(type='text', name='member.phone', required, value="#{member.phone}")
+		.control-group
+			label.control-label Email
+			.controls
+				input(type='text', name='member.email', required, value="#{member.email}")
 
-		h3 Workshops Attending
-		p <To be done>
+	// Emergency Info
+	fieldset
+		legend Emergency Info
+		.control-group
+			label.control-label Medical Number
+			.controls
+				input(type='text', name='member.emergencyInfo.medicalNum', required, value="#{member.emergencyInfo.medicalNum}")
+		.control-group
+			label.control-label Allergies
+			.controls
+				input(type='text', name='member.emergencyInfo.allergies', value="#{member.emergencyInfo.allergies}")
+		.control-group
+			label.control-label Conditions
+			.controls
+				input(type='text', name='member.emergencyInfo.conditions', value="#{member.emergencyInfo.conditions}")
+			
+	// Emergency Contact
+	fieldset
+		legend Emergency Contact
+		.control-group
+			label.control-label Name
+			.controls
+				input(type='text', name='member.emergencyInfo.name', required, value="#{member.emergencyInfo.name}")
+		.control-group
+			label.control-label Relation
+			.controls
+				input(type='text', name='member.emergencyInfo.relation', required, value="#{member.emergencyInfo.relation}")
+		.control-group
+			label.control-label Phone
+			.controls
+				input(type='text', name='member.emergencyInfo.phone', required, value="#{member.emergencyInfo.phone}")
+	input.btn.btn-info(type='submit', value="Edit #{member.name}")
 
-	.span6
-		h3 Emergency Info
-		b Medical Number: 
-		| #{member.emergencyInfo.medicalNum}
-		br
-		b Allergies: 
-		| #{member.emergencyInfo.allergies}
-		br
-		b Conditions: 
-		| #{member.emergencyInfo.conditions}
-
-		h3 Emergency Contact
-		b Name: 
-		| #{member.emergencyInfo.name}
-		br
-		b Relation: 
-		| #{member.emergencyInfo.relation}
-		br
-		b Phone: 
-		| #{member.emergencyInfo.phone}
 .row-fluid
 	hr
 	.span5
