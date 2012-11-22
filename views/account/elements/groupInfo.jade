@@ -1,44 +1,63 @@
-.row-fluid
+form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 	.span6
-		h3 Group Information
-		b Affiliation: 
-		| #{group.groupInformation.affiliation}
-		br
-		b Address: 
-		| #{group.groupInformation.address}
-		br
-		b City: 
-		| #{group.groupInformation.city}
-		br
-		b Province: 
-		| #{group.groupInformation.province}
-		br
-		b Postal Code: 
-		| #{group.groupInformation.postalCode}
-		br
-		b Fax:
-		| #{group.groupInformation.fax}
+		fieldset 
+			legend Group Information
+			.control-group
+				label.control-label Affiliation: 
+				.controls
+					input(type='text', name='affiliation', required, value="#{group.groupInformation.affiliation}")
+			.control-group
+				label.control-label Address: 
+				.controls
+					input(type='text', name='address', required, value="#{group.groupInformation.address}")
+			.control-group
+				label.control-label City: 
+				.controls
+					input(type='text', name='city', required, value="#{group.groupInformation.city}")
+			.control-group
+				label.control-label Province: 
+				.controls
+					input(type='text', name='province', required, value="#{group.groupInformation.province}")
+			.control-group
+				label.control-label Postal Code: 
+				.controls
+					input(type='text', name='postalCode', required, value="#{group.groupInformation.postalCode}")
+			.control-group
+				label.control-label Fax: 
+				.controls
+					input(type='text', name='fax', value="#{group.groupInformation.fax}")
 
 	.span6
-		h3 Primary Contact Information
-		b Name: 
-		| #{group.primaryContact.name}
-		br
-		b Email: 
-		| #{group.primaryContact.email}
-		br
-		b Phone: 
-		| #{group.primaryContact.phone}
+		fieldset
+			legend Primary Contact Information
+			.control-group
+				label.control-label Name: 
+				.controls
+					input(type='text', name='name', required, value="#{group.primaryContact.name}")
+			.control-group
+				label.control-label Email: 
+				.controls
+					input(type='text', name='email', required, value="#{group.primaryContact.email}")
+			.control-group
+				label.control-label Phone: 
+				.controls
+					input(type='text', name='phone', required, value="#{group.primaryContact.phone}")
 
-.row-fluid
-	.span6
-		h3 Group Status
-		b Youth Attending: 
-		| #{group.youth.length}
-		br
-		b Young Adults Attending: 
-		| #{group.youngAdults.length}
-		br
-		b Chaperones Attending: 
-		| #{group.chaperones.length}
-		br
+		fieldset
+			legend Group Status
+			b Youth Attending: 
+			| #{group.youth.length}
+			br
+			b Young Adults Attending: 
+			| #{group.youngAdults.length}
+			br
+			b Chaperones Attending: 
+			| #{group.chaperones.length}
+			br
+			if 5 * group.chaperones.length < group.youth.length
+				div.alert.alert-error
+					button.button(class="close", data-dismiss="alert") x
+					b Warning:
+					p Your group does not have enough Chaperones to support it's youth. Please remove some youth or add new chaperones.
+	.span10
+		input.btn.btn-primary.btn-block(type="submit", value="Submit Changes")

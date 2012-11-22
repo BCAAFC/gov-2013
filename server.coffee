@@ -370,6 +370,27 @@ app.post '/api/editMember', (req, res) ->
 								(err, group) ->
 									req.session.group = group
 									res.redirect '/account#members'
+									
+app.post '/api/editGroup', (req, res) ->
+	Group.findById req.session.group._id, (err, group) ->
+		if err
+			res.send "There was an error, could you try again?"
+		else
+			group.groupInformation.affiliation = req.body.affiliation
+			group.groupInformation.address = req.body.address
+			group.groupInformation.city = req.body.city
+			group.groupInformation.province = req.body.province
+			group.groupInformation.postalCode = req.body.postalCode
+			group.groupInformation.fax = req.body.fax
+			group.primaryContact.name = req.body.name
+			group.primaryContact.email = req.body.email
+			group.primaryContact.phone = req.body.phone
+			group.save (err) ->
+				if err
+					res.send "There was an error, could you try again?"
+				else
+					req.session.group = group
+					res.redirect '/account#groupinfo'
 
 
 app.post '/api/getMember', (req, res) ->
