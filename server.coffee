@@ -229,7 +229,7 @@ app.post '/api/addMember', (req, res) ->
 				else
 					req.session.group = group
 					res.redirect '/account#members'
-	if req.body.type is 'Young Adult'
+	else if req.body.type is 'Young Adult'
 		Group.findByIdAndUpdate req.session.group._id,
 			$push:
 				youngAdults: req.body
@@ -240,7 +240,7 @@ app.post '/api/addMember', (req, res) ->
 				else
 					req.session.group = group
 					res.redirect '/account#members'
-	if req.body.type is 'Chaperone'
+	else if req.body.type is 'Chaperone'
 		Group.findByIdAndUpdate req.session.group._id,
 			$push:
 				chaperones: req.body
@@ -265,7 +265,7 @@ app.get '/api/removeMember/:type/:name/:id', (req, res) ->
 				else
 					req.session.group = group
 					res.redirect '/account#members'
-	if req.params.type is 'Young Adult'
+	else if req.params.type is 'Young Adult'
 		Group.findByIdAndUpdate req.session.group._id,
 			$pull:
 				youngAdults: _id: req.params.id
@@ -277,7 +277,7 @@ app.get '/api/removeMember/:type/:name/:id', (req, res) ->
 				else
 					req.session.group = group
 					res.redirect '/account#members'
-	if req.params.type is 'Chaperone'
+	else if req.params.type is 'Chaperone'
 		Group.findByIdAndUpdate req.session.group._id,
 			$pull:
 				chaperones: _id: req.params.id
@@ -314,7 +314,7 @@ app.post '/api/editMember', (req, res) ->
 						else
 							req.session.group = group
 							res.redirect '/account#members'
-	if req.body.type is 'Young Adult'
+	else if req.body.type is 'Young Adult'
 		Group.findById req.session.group._id,
 			(err, group) ->
 				if err
@@ -338,7 +338,7 @@ app.post '/api/editMember', (req, res) ->
 							req.session.group = group
 							res.redirect '/account#members'
 
-	if req.body.type is 'Chaperone'
+	else if req.body.type is 'Chaperone'
 		Group.findById req.session.group._id,
 			(err, group) ->
 				if err
