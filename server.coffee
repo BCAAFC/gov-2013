@@ -312,8 +312,11 @@ app.post '/api/editMember', (req, res) ->
 						if err
 							res.send "There was an error, could you try again?"
 						else
-							req.session.group = group
-							res.redirect '/account#members'
+							Group.findByIdAndUpdate req.session.group._id,
+								$push: log: event: "#{member.name} was edited."
+								(err, group) ->
+									req.session.group = group
+									res.redirect '/account#members'
 	else if req.body.type is 'Young Adult'
 		Group.findById req.session.group._id,
 			(err, group) ->
@@ -335,8 +338,11 @@ app.post '/api/editMember', (req, res) ->
 						if err
 							res.send "There was an error, could you try again?"
 						else
-							req.session.group = group
-							res.redirect '/account#members'
+							Group.findByIdAndUpdate req.session.group._id,
+								$push: log: event: "#{member.name} was edited."
+								(err, group) ->
+									req.session.group = group
+									res.redirect '/account#members'
 
 	else if req.body.type is 'Chaperone'
 		Group.findById req.session.group._id,
@@ -359,8 +365,11 @@ app.post '/api/editMember', (req, res) ->
 						if err
 							res.send "There was an error, could you try again?"
 						else
-							req.session.group = group
-							res.redirect '/account#members'
+							Group.findByIdAndUpdate req.session.group._id,
+								$push: log: event: "#{member.name} was edited."
+								(err, group) ->
+									req.session.group = group
+									res.redirect '/account#members'
 
 
 app.post '/api/getMember', (req, res) ->
