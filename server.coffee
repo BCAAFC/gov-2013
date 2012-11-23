@@ -62,6 +62,7 @@ memberSchema = new Schema
 		medicalNum: String
 		allergies: [String]
 		conditions: [String]
+	ticketPrice: Number
 
 logSchema = new Schema
 	date:
@@ -87,6 +88,17 @@ groupSchema = new Schema
 	log: [logSchema]
 	payments: [Schema.Types.ObjectId]
 Group = db.model 'Group', groupSchema
+
+###
+# Custom Functions
+###
+getTicketPrice = () ->
+	today = new Date()
+	deadline = new Date("Febuary 9, 2012 00:00:00")
+	if (today <= deadline)
+		return 175
+	else
+		return 125
 
 ###
 Configure the app
@@ -126,22 +138,43 @@ app.get '/privacy', (req, res) ->
 		group: req.session.group || null
 
 app.get '/account', (req, res) ->
+	bill = 0
+	for member in req.session.group.youth
+		bill += member.ticketPrice
+	for member in req.session.group.youngAdults
+		bill += member.ticketPrice
+	for member in req.session.group.chaperones
+		bill += member.ticketPrice
+	paid = 0
+	if req.session.group.payments
+		for payment in req.session.group.payments
+			paid += payment.amount
 	res.render 'account/index',
 		title: "Account Management"
 		group: req.session.group || null
+		billing:
+			total: bill
+			paid: paid
 
 app.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
 		title: "Signup"
 		group: req.session.group || null
 
+###
 app.get '/account/', (req, res) ->
 	if req.session.group is null
 		res.redirect '/'
 	else
+		bill = 0
+		for youth in group.youth
+			if youth.ticketPrice
+				bill += youth.ticketPrice
 		res.render 'account/index',
 			title: "Account Management"
 			group: req.session.group
+			billing: bill
+###
 
 # Error Pages
 app.get '/404', (req, res) ->
@@ -219,6 +252,7 @@ app.post '/api/logout', (req, res) ->
 			res.redirect "/"
 
 app.post '/api/addMember', (req, res) ->
+	req.body.ticketPrice = getTicketPrice()
 	if req.body.type is 'Youth'
 		Group.findByIdAndUpdate req.session.group._id,
 			$push:

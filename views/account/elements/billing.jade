@@ -2,7 +2,14 @@ h3 Disclaimer
 p The information presented here is limited by the time involved to recieve, process, review, and confirm payments. The information may be out of date, please give us a call at <b>250-388-5522</b> and ask for Della if you need any assistance.
 
 h2 Billing Status
-
+b Your current group total: 
+| #{billing.total}
+br
+b Your group has paid: 
+| #{billing.paid}
+br
+b Balance: 
+| #{billing.total - billing.paid}
 
 h2 Payments
 p The following is an approximate log of payments confirmed to this date. If there is a problem please contact us.
