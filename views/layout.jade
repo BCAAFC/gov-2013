@@ -81,6 +81,12 @@ html
 								a(href="/privacy")
 									i.icon-eye-open.icon-white
 									| Privacy Policy
+							if group
+								if group.admin
+									li
+										a(href="/admin")
+											i.icon-hdd.icon-white
+											| Admin
 		.container-fluid
 			.row-fluid
 				.span1.offset3
@@ -100,7 +106,7 @@ html
 				.span2
 					a(href="http://www.friendshipcentre.ca/")
 						img(src="/img/logos/ooknakane.png")
-		include elements/addMember.jade
+		include elements/addMember
 		include elements/login
 		!= js("bootstrap.min")
 		script

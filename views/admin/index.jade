@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+	.row-fluid
+		.span5
+			h3 Groups
+			table.table.table-hover
+				thead
+					tr
+						th Name
+						th Actions
+						th
+				tbody
+					if groups
+						for group in groups
+							tr
+								td #{group.groupInformation.affiliation}
+								td 
+									.btn-group
+										a.btn.btn-primary(href="/admin/login/#{group._id}") Login
+										a.btn.btn-info#groupNotes(data-id="#{group._id}") Notes
+								td
+									a.btn.btn-danger(href="") Del
+						tr
+							td
+								a(href="/account/signup") Add a new group...
+							td
+								small This will log you out!
+
+		.span5
+			h3 Workshops
+			table.table.table-hover
+				thead
+					tr
+						th Name
+						th Actions
+						th 
+				tbody
+					if workshops
+						for workshop in workshops
+							tr
+								td #{workshop.name}
+								td
+									a.btn.btn-primary.workshop(href="#workshop", data-id="#{workshop._id}", data-toggle="modal") Edit
+								td
+									a.btn.btn-danger(href="") Del
+						tr
+							td
+								a#addWorkshop(href="#workshop", data-id="null", data-toggle="modal") Add a new workshop...
+							td
+
+	.modal.hide.fade#workshop(tabindex='-1', role='dialog', aria-hidden='true', aria-labelledby='workshopLabel')
+		include elements/workshop.jade
+	.modal.hide.fade#group(tabindex='-1', role='dialog', aria-hidden='true')
+		include elements/group.jade

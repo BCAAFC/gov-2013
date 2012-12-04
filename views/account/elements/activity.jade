@@ -1,5 +1,13 @@
 p Events listed from oldest to newest.
 hr
-for event in group.log
-	p #{event.date} :: #{event.event}
+table.table.table-hover
+	thead
+		tr
+			th Time
+			th Event
+	tbody
+		for event in group.log
+			tr
+				td #{new Date(event.date).toString()}
+				td #{event.event}
 hr

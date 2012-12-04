@@ -37,7 +37,8 @@ form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 			.control-group
 				label.control-label Email: 
 				.controls
-					input(type='text', name='email', required, value="#{group.primaryContact.email}")
+					//input(type='text', name='email', required, value="#{group.primaryContact.email}")
+					p= group.primaryContact.email
 			.control-group
 				label.control-label Phone: 
 				.controls

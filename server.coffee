@@ -63,6 +63,7 @@ memberSchema = new Schema
 		allergies: [String]
 		conditions: [String]
 	ticketPrice: Number
+	workshops: [Schema.Types.ObjectId]
 
 logSchema = new Schema
 	date:
@@ -87,7 +88,26 @@ groupSchema = new Schema
 	youngAdults: [memberSchema]
 	log: [logSchema]
 	payments: [Schema.Types.ObjectId]
+	internal:
+		regDate:
+			type: Date
+			default: Date.now
+		status: String
+		youthInCare: String
+		notes: String
+		admin: 
+			type: Boolean
+			default: false
 Group = db.model 'Group', groupSchema
+
+workshopSchema = new Schema
+	name: String
+	host: String
+	description: String
+	day: String
+	time: String
+	room: String
+Workshop = db.model 'Workshop', workshopSchema
 
 ###
 # Custom Functions
@@ -160,27 +180,33 @@ app.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
 		title: "Signup"
 		group: req.session.group || null
-
-###
-app.get '/account/', (req, res) ->
-	if req.session.group is null
-		res.redirect '/'
+		
+app.get '/admin', (req, res) ->
+	if not req.session.group.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
 	else
-		bill = 0
-		for youth in group.youth
-			if youth.ticketPrice
-				bill += youth.ticketPrice
-		res.render 'account/index',
-			title: "Account Management"
-			group: req.session.group
-			billing: bill
-###
+		Group.find {}, (err, groups) -> # Find all groups
+			Workshop.find {}, (err, workshops) -> # Find all workshops
+				res.render 'admin/index',
+					title: "Administration"
+					group: req.session.group || null
+					groups: groups
+					workshops: workshops
+
+app.get '/admin/login/:id', (req, res) ->
+	if not req.session.group.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.params.id, (err, group) ->
+			req.session.group = group
+			res.redirect '/account'
 
 # Error Pages
 app.get '/404', (req, res) ->
 	res.render 'index',
 		title: "404"
 		group: req.session.group || null
+
 
 ###
 API routes
@@ -251,6 +277,9 @@ app.post '/api/logout', (req, res) ->
 		else
 			res.redirect "/"
 
+###
+Group API
+###
 app.post '/api/addMember', (req, res) ->
 	req.body.ticketPrice = getTicketPrice()
 	if req.body.type is 'Youth'
@@ -418,14 +447,17 @@ app.post '/api/editGroup', (req, res) ->
 			group.groupInformation.postalCode = req.body.postalCode
 			group.groupInformation.fax = req.body.fax
 			group.primaryContact.name = req.body.name
-			group.primaryContact.email = req.body.email
+#			group.primaryContact.email = req.body.email   # This is bad! Don't do this!
 			group.primaryContact.phone = req.body.phone
 			group.save (err) ->
 				if err
 					res.send "There was an error, could you try again?"
 				else
-					req.session.group = group
-					res.redirect '/account#groupinfo'
+					Group.findByIdAndUpdate req.session.group._id,
+						$push: log: event: "The group information was edited.",
+						(err, result) ->
+							req.session.group = group
+							res.redirect '/account#groupinfo'
 
 
 app.post '/api/getMember', (req, res) ->
@@ -433,9 +465,22 @@ app.post '/api/getMember', (req, res) ->
 		if err
 			req.session.destroy
 			res.redirect '/'
-		req.session.group = group # Update the group, in case of changes.
-		member = group[req.body.type].id(req.body.id)
-		res.render 'account/elements/memberInfo', member: member
+		else
+			req.session.group = group # Update the group, in case of changes.
+			member = group[req.body.type].id(req.body.id)
+			res.render 'account/elements/memberInfo', member: member
+		
+###
+Workshop API
+###
+app.post 'api/editWorkshop', (req, res) ->
+	
+app.post '/api/getWorkshop', (req, res) ->
+	Workshop.findById req.body.id, (err, result) ->
+		if err
+			res.send "No workshop found! Try again?"
+		else
+			res.render '/admin/elements/workshop', workshop: result
 
 ###
 Start listening.
