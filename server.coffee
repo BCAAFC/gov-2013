@@ -480,7 +480,32 @@ app.post '/api/getWorkshop', (req, res) ->
 		if err
 			res.send "No workshop found! Try again?"
 		else
-			res.render '/admin/elements/workshop', workshop: result
+			res.render 'admin/elements/workshop', workshop: result
+			
+###
+Group API
+###
+app.post '/api/getGroupNotes', (req, res) ->
+	Group.findById req.body.id, (err, result) ->
+		if err
+			res.send "No group found! Try again?"
+		else
+			res.render 'admin/elements/groupNotes', group: result
+			
+app.post '/api/editGroupNotes', (req, res) ->
+	Group.findById req.body.id, (err, result) ->
+		if err
+			res.send "Couldn't find that group!! Try again?"
+		else
+			result.internal.status = req.body.status
+			result.internal.youthInCare = req.body.youthInCare
+			result.internal.notes = req.body.notes
+			result.save (err, result) ->
+				console.log result
+				if err
+					res.send "Couldn't save those changes. Try again?"
+				else
+					res.redirect '/admin'
 
 ###
 Start listening.
