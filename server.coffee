@@ -474,6 +474,10 @@ app.post '/api/getMember', (req, res) ->
 Workshop API
 ###
 app.post 'api/editWorkshop', (req, res) ->
+	if not req.session.group.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		# TODO
 	
 app.post '/api/getWorkshop', (req, res) ->
 	Workshop.findById req.body.id, (err, result) ->
@@ -486,26 +490,41 @@ app.post '/api/getWorkshop', (req, res) ->
 Group API
 ###
 app.post '/api/getGroupNotes', (req, res) ->
-	Group.findById req.body.id, (err, result) ->
-		if err
-			res.send "No group found! Try again?"
-		else
-			res.render 'admin/elements/groupNotes', group: result
+	if not req.session.group.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.body.id, (err, result) ->
+			if err
+				res.send "No group found! Try again?"
+			else
+				res.render 'admin/elements/groupNotes', group: result
 			
 app.post '/api/editGroupNotes', (req, res) ->
-	Group.findById req.body.id, (err, result) ->
-		if err
-			res.send "Couldn't find that group!! Try again?"
-		else
-			result.internal.status = req.body.status
-			result.internal.youthInCare = req.body.youthInCare
-			result.internal.notes = req.body.notes
-			result.save (err, result) ->
-				console.log result
-				if err
-					res.send "Couldn't save those changes. Try again?"
-				else
-					res.redirect '/admin'
+	if not req.session.group.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.body.id, (err, result) ->
+			if err
+				res.send "Couldn't find that group!! Try again?"
+			else
+				result.internal.status = req.body.status
+				result.internal.youthInCare = req.body.youthInCare
+				result.internal.notes = req.body.notes
+				result.save (err, result) ->
+					if err
+						res.send "Couldn't save those changes. Try again?"
+					else
+						res.redirect '/admin'
+					
+app.get '/api/removeGroup/:id', (req, res) ->
+	if not req.session.group.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.remove _id: req.params.id, (err) ->
+			if err
+				res.send "Couldn't remove that group! Try again?"
+			else
+				res.redirect '/admin'
 
 ###
 Start listening.
