@@ -182,7 +182,7 @@ app.get '/account/signup', (req, res) ->
 		group: req.session.group || null
 		
 app.get '/admin', (req, res) ->
-	if not req.session.group.admin # If --not-- admin
+	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
 		Group.find {}, (err, groups) -> # Find all groups
@@ -194,7 +194,7 @@ app.get '/admin', (req, res) ->
 					workshops: workshops
 
 app.get '/admin/login/:id', (req, res) ->
-	if not req.session.group.admin # If --not-- admin
+	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
 		Group.findById req.params.id, (err, group) ->
@@ -229,6 +229,11 @@ app.post '/api/login', (req, res) ->
 						res.send "Wrong password. <a href='/'>Go back</a>"
 
 app.post '/api/signup', (req, res) ->
+	# Fail if the form isn't filled out
+	for item in ['name', 'email', 'pass', 'passConfirm', 'phone', 'affiliation', 'address', 'city', 'province', 'postalCode']
+		if req.body[item] is "" or null
+			res.send "Please be aware all fields (except fax) are required and must be filled out."
+	
 	Login.findOne
 		email: req.body.email
 		(err, found) ->
@@ -281,6 +286,10 @@ app.post '/api/logout', (req, res) ->
 Group API
 ###
 app.post '/api/addMember', (req, res) ->
+	# Fail if the name is empty
+	if req.body.name is "" or null
+		res.send "Please fill out a name (even a placeholder) for this member."
+	
 	req.body.ticketPrice = getTicketPrice()
 	if req.body.type is 'Youth'
 		Group.findByIdAndUpdate req.session.group._id,
@@ -490,7 +499,7 @@ app.post '/api/getWorkshop', (req, res) ->
 Group API
 ###
 app.post '/api/getGroupNotes', (req, res) ->
-	if not req.session.group.admin # If --not-- admin
+	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
 		Group.findById req.body.id, (err, result) ->
@@ -500,7 +509,7 @@ app.post '/api/getGroupNotes', (req, res) ->
 				res.render 'admin/elements/groupNotes', group: result
 			
 app.post '/api/editGroupNotes', (req, res) ->
-	if not req.session.group.admin # If --not-- admin
+	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
 		Group.findById req.body.id, (err, result) ->
@@ -517,7 +526,7 @@ app.post '/api/editGroupNotes', (req, res) ->
 						res.redirect '/admin'
 					
 app.get '/api/removeGroup/:id', (req, res) ->
-	if not req.session.group.admin # If --not-- admin
+	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
 		Group.remove _id: req.params.id, (err) ->

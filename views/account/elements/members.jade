@@ -12,20 +12,46 @@
 					a(href="#chaperones", data-toggle="tab") Chaperones
 			.tab-content(style="height: 200px;")
 				.tab-pane.fade.active.in#youth
-					ul.nav.nav-list
-						for member in group.youth
-							li
-								a.member(data-id="#{member._id}", data-type="youth")= member.name
+					table.table.table-hover
+						thead
+							tr
+								th Name
+								th Del
+						tbody
+							for member in group.youth
+								tr
+									td
+										a.member(data-id="#{member._id}", data-type="youth")= member.name
+									td
+										a(href="/api/removeMember/#{member.type}/#{member.name}/#{member._id}") x
 				.tab-pane.fade#youngAdults
-					ul.nav.nav-list
-						for member in group.youngAdults
-							li
-								a.member(data-id="#{member._id}", data-type="youngAdults")= member.name
+					table.table.table-hover
+						thead
+							tr
+								th Name
+								th Del
+						tbody
+							for member in group.youngAdults
+								tr
+									td
+										a.member(data-id="#{member._id}", data-type="youngAdults")= member.name
+									td
+										a(href="/api/removeMember/#{member.type}/#{member.name}/#{member._id}") x
+					
 				.tab-pane.fade#chaperones
-					ul.nav.nav-list
-						for member in group.chaperones
-							li
-								a.member(data-id="#{member._id}", data-type="chaperones")= member.name
+					table.table.table-hover
+						thead
+							tr
+								th Name
+								th Del
+						tbody
+							for member in group.chaperones
+								tr
+									td
+										a.member(data-id="#{member._id}", data-type="chaperones")= member.name
+									td
+										a(href="/api/removeMember/#{member.type}/#{member.name}/#{member._id}") x
+					
 			hr
 			a(href='#add', data-toggle="modal") Add New...
 		// Info on Selected Member

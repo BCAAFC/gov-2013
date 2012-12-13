@@ -12,7 +12,7 @@
 				.control-group
 					label.control-label Name
 					.controls
-						input(type='text', name='name', required)
+						input(type='text', name='name', value="Unnamed Member", required)
 				.control-group
 					label.control-label Type
 					.controls
@@ -24,13 +24,13 @@
 				.control-group
 					label.control-label Birth Date
 					.controls
-						input(type='date', name='birthDate', required)
+						input(type='date', name='birthDate')
 						br
 						small Please use yyyy-mm-dd.
 				.control-group
 					label.control-label Gender
 					.controls
-						select(name='gender', required)
+						select(name='gender')
 							option(value="") Please Select...
 							option(value="Male") Male
 							option(value="Female") Female
@@ -38,11 +38,11 @@
 				.control-group
 					label.control-label Phone
 					.controls
-						input(type='text', name='phone', required)
+						input(type='text', name='phone')
 				.control-group
 					label.control-label Email
 					.controls
-						input(type='text', name='email', required)
+						input(type='text', name='email')
 
 			// Emergency Info
 			fieldset
@@ -50,7 +50,7 @@
 				.control-group
 					label.control-label Medical Number
 					.controls
-						input(type='text', name='emergencyInfo.medicalNum', required)
+						input(type='text', name='emergencyInfo.medicalNum')
 				.control-group
 					label.control-label Allergies
 					.controls
@@ -66,15 +66,15 @@
 				.control-group
 					label.control-label Name
 					.controls
-						input(type='text', name='emergencyInfo.name', required)
+						input(type='text', name='emergencyInfo.name')
 				.control-group
 					label.control-label Relation
 					.controls
-						input(type='text', name='emergencyInfo.relation', required)
+						input(type='text', name='emergencyInfo.relation')
 				.control-group
 					label.control-label Phone
 					.controls
-						input(type='text', name='emergencyInfo.phone', required)
+						input(type='text', name='emergencyInfo.phone')
 
 		.modal-footer
 			button.btn(data-dismiss='modal', aria-hidden='true') Cancel
