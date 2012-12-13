@@ -107,6 +107,8 @@ workshopSchema = new Schema
 	day: String
 	time: String
 	room: String
+	capacity: Number
+	signedUp: [Schema.Types.ObjectId]
 Workshop = db.model 'Workshop', workshopSchema
 
 ###
@@ -482,8 +484,29 @@ app.post '/api/getMember', (req, res) ->
 ###
 Workshop API
 ###
-app.post 'api/editWorkshop', (req, res) ->
-	if not req.session.group.admin # If --not-- admin
+app.post '/api/addWorkshop', (req,res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else if req.body.name is ""
+		res.send "You need to put a name in at least!"
+	else
+		workshop = new Workshop
+			name: req.body.name
+			host: req.body.host
+			description: req.body.description
+			time: req.body.time
+			room: req.body.room
+			day: req.body.day
+			capacity: req.body.capacity
+			signedUp: []
+		workshop.save (err, workshop) ->
+			if err
+				res.send "There was an error saving."
+			else
+				res.redirect '/admin'
+
+app.post '/api/editWorkshop', (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
 		# TODO

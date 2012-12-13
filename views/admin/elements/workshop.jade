@@ -1,9 +1,9 @@
 // This is the --inside-- of a model used in /admin/index.
-form.form-horizontal(action="/api/nothing", method='post', style="margin-bottom: 0px")
+form.form-horizontal(action="/api/addWorkshop", method='post', style="margin-bottom: 0px")
 	.modal-header
 		.close(data-dismiss='modal', aria-hidden='true')
 			| x
-		h3#workshopLabel Add a Workshop
+		h3#workshopLabel Workshop
 	.modal-body
 
 		// Member Info
@@ -25,10 +25,9 @@ form.form-horizontal(action="/api/nothing", method='post', style="margin-bottom:
 				label.control-label Day
 				.controls
 					select(name='day', required)
-						option(value='1') 19th
-						option(value='2') 20th
-						option(value='3') 21st
-						option(value='4') 22nd
+						option(value='') Select a value...
+						option(value='20') 20th
+						option(value='21') 21st
 			.control-group
 				label.control-label Time
 				.controls
@@ -40,4 +39,4 @@ form.form-horizontal(action="/api/nothing", method='post', style="margin-bottom:
 
 	.modal-footer
 		button.btn(data-dismiss='modal', aria-hidden='true') Cancel
-		input.btn.btn-primary(type='submit', value='Do Nothing!!')
+		input.btn.btn-primary(type='submit', value='Add Workshop')
