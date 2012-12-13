@@ -487,7 +487,7 @@ Workshop API
 app.post '/api/addWorkshop', (req,res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
-	else if req.body.name is ""
+	else if req.body.name is "" or req.body.day is ""
 		res.send "You need to put a name in at least!"
 	else
 		workshop = new Workshop
@@ -518,6 +518,16 @@ app.post '/api/getWorkshop', (req, res) ->
 		else
 			res.render 'admin/elements/workshop', workshop: result
 			
+app.get '/api/delWorkshop/:id', (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Workshop.remove _id: req.params.id, (err) ->
+			if err
+				res.send "Couldn't remove that workshop! Try again?"
+			else
+				res.redirect '/admin'
+		
 ###
 Group API
 ###

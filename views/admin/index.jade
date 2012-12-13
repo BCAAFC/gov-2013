@@ -43,7 +43,7 @@ block content
 								td
 									a.btn.btn-primary.workshop(href="#workshop", data-id="#{workshop._id}", data-toggle="modal") Edit
 								td
-									a.btn.btn-danger(href="") Del
+									a.btn.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
 						tr
 							td
 								a#addWorkshop(href="#workshop", data-id="null", data-toggle="modal") Add a new workshop...
