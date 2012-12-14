@@ -1,0 +1,54 @@
+// This is the --inside-- of a model used in /admin/index.
+form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style="margin-bottom: 0px")
+	// Initialize to an empty workshop.
+	- var workshop = workshop || {}
+	.modal-header
+		.close(data-dismiss='modal', aria-hidden='true')
+			| x
+		h3#workshopLabel Workshop
+	.modal-body
+		div(style="display: none")
+			input#workshopId(type='text', name='id', required, value="#{workshop._id || null}")
+		// Member Info
+		fieldset
+			legend Information
+			.control-group
+				label.control-label Name
+				.controls
+					input(type='text', name='name', required, value="#{workshop.name || ''}")
+			.control-group
+				label.control-label Host
+				.controls
+					input(type='text', name='host', required, value="#{workshop.host || ''}")
+			.control-group
+				label.control-label Description
+				.controls
+					textarea(type='text', name='description', cols="5", rows="5", required)
+						| #{workshop.description || ''}
+			.control-group
+				label.control-label Day
+				.controls
+					select(name='day', required)
+						option(value='') Select a value...
+						option(value='wednesday', selected=(workshop.day == 'wednesday')) Wednesday the 20th
+						option(value='thursday', selected=(workshop.day == 'thursday')) Thursday the 21st
+			.control-group
+				label.control-label Start Time
+				.controls
+					input(type='text', name='startTime', required, , value="#{workshop.startTime || ''}")
+			.control-group
+				label.control-label End Time
+				.controls
+					input(type='text', name='endTime', required, value="#{workshop.endTime || ''}")
+			.control-group
+				label.control-label Room
+				.controls
+					input(type='text', name='room', required, value="#{workshop.room || ''}")
+			.control-group
+				label.control-label Capacity
+				.controls
+					input(type='text', name='capacity', required, value="#{workshop.capacity || ''}")
+
+	.modal-footer
+		button.btn(data-dismiss='modal', aria-hidden='true') Cancel
+		input.btn.btn-primary(type='submit', value='Submit')

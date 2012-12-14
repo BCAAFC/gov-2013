@@ -27,30 +27,6 @@ block content
 							td
 								small This will log you out!
 
-		.span6
-			h3 Workshops
-			table.table.table-hover
-				thead
-					tr
-						th Name
-						th Actions
-						th 
-				tbody
-					if workshops
-						for workshop in workshops
-							tr
-								td #{workshop.name}
-								td
-									a.btn.btn-primary.workshop(href="#workshop", data-id="#{workshop._id}", data-toggle="modal") Edit
-								td
-									a.btn.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
-						tr
-							td
-								a#addWorkshop(href="#workshop", data-id="null", data-toggle="modal") Add a new workshop...
-							td
-
-	.modal.hide.fade#workshop(tabindex='-1', role='dialog', aria-hidden='true', aria-labelledby='workshopLabel')
-		include elements/workshop.jade
 	.modal.hide.fade#groupNotes(tabindex='-1', role='dialog', aria-hidden='true')
 		include elements/groupNotes.jade
 

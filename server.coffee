@@ -105,7 +105,8 @@ workshopSchema = new Schema
 	host: String
 	description: String
 	day: String
-	time: String
+	timeStart: String
+	timeEnd: String
 	room: String
 	capacity: Number
 	signedUp: [Schema.Types.ObjectId]
@@ -202,6 +203,13 @@ app.get '/admin/login/:id', (req, res) ->
 		Group.findById req.params.id, (err, group) ->
 			req.session.group = group
 			res.redirect '/account'
+			
+app.get '/workshops/:day', (req, res) ->
+	Workshop.find day: req.params.day, (err, workshops) ->
+		res.render 'workshops',
+			title: '404'
+			group: req.session.group || null
+			workshops: workshops
 
 # Error Pages
 app.get '/404', (req, res) ->
@@ -484,17 +492,19 @@ app.post '/api/getMember', (req, res) ->
 ###
 Workshop API
 ###
-app.post '/api/addWorkshop', (req,res) ->
+app.post '/api/editWorkshop', (req,res) ->
+	console.log req.body.id
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else if req.body.name is "" or req.body.day is ""
-		res.send "You need to put a name in at least!"
-	else
+		res.send "You need to put a name and day in at least!"
+	else if req.body.id is null
 		workshop = new Workshop
 			name: req.body.name
 			host: req.body.host
 			description: req.body.description
-			time: req.body.time
+			timeStart: req.body.timeStart
+			timeEnd: req.body.timeEnd
 			room: req.body.room
 			day: req.body.day
 			capacity: req.body.capacity
@@ -503,30 +513,42 @@ app.post '/api/addWorkshop', (req,res) ->
 			if err
 				res.send "There was an error saving."
 			else
-				res.redirect '/admin'
-
-app.post '/api/editWorkshop', (req, res) ->
-	if not req.session.group.internal.admin # If --not-- admin
-		res.send "You're not authorized, please don't try again!"
+				res.redirect "/workshops/#{req.body.day}"
 	else
-		# TODO
+		Workshop.findById req.body.id, (err, workshop) ->
+			if err
+				res.send "There was an error editing that workshop."
+			else
+				workshop.name = req.body.name
+				workshop.host = req.body.host
+				workshop.description = req.body.description
+				workshop.timeStart = req.body.timeStart
+				workshop.timeEnd = req.body.timeEnd
+				workshop.room = req.body.room
+				workshop.day = req.body.day
+				workshop.capacity = req.body.capacity
+				workshop.save (err, workshop) ->
+					if err
+						res.send "There was an error saving."
+					else
+						res.redirect "/workshops/#{req.body.day}"
 	
 app.post '/api/getWorkshop', (req, res) ->
 	Workshop.findById req.body.id, (err, result) ->
 		if err
 			res.send "No workshop found! Try again?"
 		else
-			res.render 'admin/elements/workshop', workshop: result
+			res.render 'elements/workshop', workshop: result
 			
 app.get '/api/delWorkshop/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Workshop.remove _id: req.params.id, (err) ->
+		Workshop.remove _id: req.params.id, (err, workshop) ->
 			if err
 				res.send "Couldn't remove that workshop! Try again?"
 			else
-				res.redirect '/admin'
+				res.redirect "/workshops/#{workshop.day}"
 		
 ###
 Group API

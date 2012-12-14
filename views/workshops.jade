@@ -1,0 +1,42 @@
+extends layout
+
+block content
+	.row-fluid
+		.span12
+			table.table.table-hover
+				thead
+					tr
+						th Name
+						th Host
+						th Description
+						th Start
+						th End
+						th Actions
+						if group
+							if group.internal.admin
+								th admin
+				tbody
+					for workshop in workshops
+						tr
+							td= workshop.name
+							td= workshop.host
+							td= workshop.description.substring(0,40)
+							td= workshop.timeStart
+							td= workshop.timeEnd
+							td
+								.btn-group
+									a.btn.btn-small Moo
+									a.btn.btn-small Moo
+							if group
+								if group.internal.admin
+									td
+										.btn-group
+											a.btn.btn-small.btn-info.edit(data-id="#{workshop._id}", href="#workshop", data-toggle="modal") Edit
+											a.btn.btn-small.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
+
+	if group
+		if group.internal.admin
+			a.addWorkshop(href="#workshop", data-toggle="modal") Add a new workshop...
+			.modal.hide.fade#workshop(tabindex='-1', role='dialog', aria-hidden='true', aria-labelledby='workshopLabel')
+				include elements/workshop.jade
+			!= js('workshops')
