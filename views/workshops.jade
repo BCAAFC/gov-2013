@@ -11,6 +11,7 @@ block content
 						th Description
 						th Start
 						th End
+						th Capacity
 						th Actions
 						if group
 							if group.internal.admin
@@ -23,6 +24,7 @@ block content
 							td= workshop.description.substring(0,40)
 							td= workshop.timeStart
 							td= workshop.timeEnd
+							td= workshop.capacity
 							td
 								.btn-group
 									a.btn.btn-small Moo

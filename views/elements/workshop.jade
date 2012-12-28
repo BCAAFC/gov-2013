@@ -8,7 +8,7 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 		h3#workshopLabel Workshop
 	.modal-body
 		div(style="display: none")
-			input#workshopId(type='text', name='id', required, value="#{workshop._id || null}")
+			input#workshopId(type='text', name='id', value="#{workshop._id || null}")
 		// Member Info
 		fieldset
 			legend Information
@@ -35,11 +35,11 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 			.control-group
 				label.control-label Start Time
 				.controls
-					input(type='text', name='startTime', required, , value="#{workshop.startTime || ''}")
+					input(type='text', name='timeStart', required, , value="#{workshop.timeStart || ''}")
 			.control-group
 				label.control-label End Time
 				.controls
-					input(type='text', name='endTime', required, value="#{workshop.endTime || ''}")
+					input(type='text', name='timeEnd', required, value="#{workshop.timeEnd || ''}")
 			.control-group
 				label.control-label Room
 				.controls

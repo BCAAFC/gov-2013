@@ -63,7 +63,10 @@ memberSchema = new Schema
 		allergies: [String]
 		conditions: [String]
 	ticketPrice: Number
-	workshops: [Schema.Types.ObjectId]
+	workshops: [
+		type: Schema.Types.ObjectId
+		ref: "Workshop"
+	]
 
 logSchema = new Schema
 	date:
@@ -83,9 +86,10 @@ groupSchema = new Schema
 		province: String
 		postalCode: String
 		fax: String
-	youth: [memberSchema]
-	chaperones: [memberSchema]
-	youngAdults: [memberSchema]
+	groupMembers: [
+		type: Schema.Types.ObjectId
+		ref: "Member"
+	] # Points to Member
 	log: [logSchema]
 	payments: [Schema.Types.ObjectId]
 	internal:
@@ -100,6 +104,31 @@ groupSchema = new Schema
 			default: false
 Group = db.model 'Group', groupSchema
 
+# Members exist as part of groups, and are associated with groups.
+memberSchema = new Schema
+	name: String
+	# Youth, Young Adult, or Chaperone
+	type: String
+	gender: String
+	birthDate: String
+	phone: String
+	email: String
+	emergencyInfo:
+		name: String
+		relation: String
+		phone: String
+		medicalNum: String
+		# Ideally we will split the items listed in the future.
+		allergies: String
+		conditions: String
+	ticketPrice: Number
+	# These associate to `Workshop`s
+	workshops: [
+		type: Schema.Types.ObjectId
+		ref: "Workshop"
+	]
+Member = db.model 'Member', memberSchema
+
 workshopSchema = new Schema
 	name: String
 	host: String
@@ -109,7 +138,7 @@ workshopSchema = new Schema
 	timeEnd: String
 	room: String
 	capacity: Number
-	signedUp: [Schema.Types.ObjectId]
+	signedUp: [Schema.Types.ObjectId] # Points to Member
 Workshop = db.model 'Workshop', workshopSchema
 
 ###
@@ -161,23 +190,40 @@ app.get '/privacy', (req, res) ->
 		group: req.session.group || null
 
 app.get '/account', (req, res) ->
-	bill = 0
-	for member in req.session.group.youth
-		bill += member.ticketPrice
-	for member in req.session.group.youngAdults
-		bill += member.ticketPrice
-	for member in req.session.group.chaperones
-		bill += member.ticketPrice
-	paid = 0
-	if req.session.group.payments
-		for payment in req.session.group.payments
-			paid += payment.amount
-	res.render 'account/index',
-		title: "Account Management"
-		group: req.session.group || null
-		billing:
-			total: bill
-			paid: paid
+	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
+		# Accumulate Bill and toss members into buckets for easy JADE-ing.
+		bill = 0
+		youth = []
+		youngAdults = []
+		chaperones = []
+		for member in group.groupMembers
+			bill += member.ticketPrice
+			if member.type is "Youth"
+				youth.push member
+			else if member.type is "Young Adult"
+				youngAdults.push member
+			else if member.type is "Chaperone"
+				chaperones.push member
+		# Temp workaround while we migrate to a better UI
+		group.youth = youth
+		group.youngAdults = youngAdults
+		group.chaperones = chaperones
+		console.log group.youth or "No youth"
+		console.log group.youngAdults or "No Adults"
+		console.log group.chaperones or "No Chaperones"
+		
+		req.session.group = group
+		# Accumulate Paid
+		paid = 0
+		if req.session.group.payments
+			for payment in req.session.group.payments
+				paid += payment.amount
+		res.render 'account/index',
+			title: "Account Management"
+			group: req.session.group || null
+			billing:
+				total: bill
+				paid: paid
 
 app.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
@@ -299,77 +345,35 @@ app.post '/api/addMember', (req, res) ->
 	# Fail if the name is empty
 	if req.body.name is "" or null
 		res.send "Please fill out a name (even a placeholder) for this member."
-	
 	req.body.ticketPrice = getTicketPrice()
-	if req.body.type is 'Youth'
-		Group.findByIdAndUpdate req.session.group._id,
-			$push:
-				youth: req.body
-				log: event: "The member #{req.body.name} was added to youth."
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					req.session.group = group
-					res.redirect '/account#members'
-	else if req.body.type is 'Young Adult'
-		Group.findByIdAndUpdate req.session.group._id,
-			$push:
-				youngAdults: req.body
-				log: event: "The member #{req.body.name} was added to Young Adults."
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					req.session.group = group
-					res.redirect '/account#members'
-	else if req.body.type is 'Chaperone'
-		Group.findByIdAndUpdate req.session.group._id,
-			$push:
-				chaperones: req.body
-				log: event: "The member #{req.body.name} was added to Chaperones."
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					req.session.group = group
-					res.redirect '/account#members'
+	member = new Member req.body
+	member.save (err) ->
+		if err
+			res.send "We could not save that member, could you try again?"
+		else
+			Group.findByIdAndUpdate req.session.group._id,
+				$push:
+					groupMembers: member._id
+					log: event: "The member #{req.body.name} was added to the group member list."
+				(err, group) ->
+					if err
+						res.send "There was an error adding the member to your group."
+					else
+						req.session.group = group
+						res.redirect '/account#members'
 
 app.get '/api/removeMember/:type/:name/:id', (req, res) ->
-	if req.params.type is 'Youth'
-		Group.findByIdAndUpdate req.session.group._id,
-			$pull:
-				youth: _id: req.params.id
-			$push:
-				log: event: "The member #{req.params.name} was removed to youth."
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					req.session.group = group
-					res.redirect '/account#members'
-	else if req.params.type is 'Young Adult'
-		Group.findByIdAndUpdate req.session.group._id,
-			$pull:
-				youngAdults: _id: req.params.id
-			$push:
-				log: event: "The member #{req.params.name} was removed to youth."
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					req.session.group = group
-					res.redirect '/account#members'
-	else if req.params.type is 'Chaperone'
-		Group.findByIdAndUpdate req.session.group._id,
-			$pull:
-				chaperones: _id: req.params.id
-			$push:
-				log: event: "The member #{req.params.name} was removed to youth."
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
+	Group.findByIdAndUpdate req.session.group._id,
+		$pull:
+			groupMembers: req.params.id
+		$push:
+			log: event: "The member #{req.params.name} was removed from the group member list."
+		(err, group) ->
+			if err
+				res.send "There was an error removing that member, could you try again?"
+			else
+				Member.remove req.params.id, (err) ->
+					console.log "#{member.name} removed!"
 					req.session.group = group
 					res.redirect '/account#members'
 					
@@ -466,7 +470,7 @@ app.post '/api/editGroup', (req, res) ->
 			group.groupInformation.postalCode = req.body.postalCode
 			group.groupInformation.fax = req.body.fax
 			group.primaryContact.name = req.body.name
-#			group.primaryContact.email = req.body.email   # This is bad! Don't do this!
+#			group.primaryContact.email = req.body.email		# This is bad! Don't do this!
 			group.primaryContact.phone = req.body.phone
 			group.save (err) ->
 				if err
@@ -493,7 +497,6 @@ app.post '/api/getMember', (req, res) ->
 Workshop API
 ###
 app.post '/api/editWorkshop', (req,res) ->
-	console.log req.body.id
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else if req.body.name is "" or req.body.day is ""
@@ -538,6 +541,13 @@ app.post '/api/getWorkshop', (req, res) ->
 		if err
 			res.send "No workshop found! Try again?"
 		else
+			result.sort (a,b) ->
+				if a.name == b.name
+					return 0
+				else if a.name > b.name
+					return -1
+				else
+					1
 			res.render 'elements/workshop', workshop: result
 			
 app.get '/api/delWorkshop/:id', (req, res) ->
