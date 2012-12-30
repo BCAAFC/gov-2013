@@ -208,10 +208,6 @@ app.get '/account', (req, res) ->
 		group.youth = youth
 		group.youngAdults = youngAdults
 		group.chaperones = chaperones
-		console.log group.youth or "No youth"
-		console.log group.youngAdults or "No Adults"
-		console.log group.chaperones or "No Chaperones"
-		
 		req.session.group = group
 		# Accumulate Paid
 		paid = 0
@@ -378,85 +374,31 @@ app.get '/api/removeMember/:type/:name/:id', (req, res) ->
 					res.redirect '/account#members'
 					
 app.post '/api/editMember', (req, res) ->
-	if req.body.type is 'Youth'
-		Group.findById req.session.group._id,
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					member = group.youth.id req.body.id
-					member.name = req.body['member.name']
-					member.birthDate = req.body['member.birthDate']
-					member.phone = req.body['member.phone']
-					member.email = req.body['member.email']
-					member.emergencyInfo.medicalNum = req.body['member.emergencyInfo.medicalNum']
-					member.emergencyInfo.allergies = req.body['member.emergencyInfo.allergies']
-					member.emergencyInfo.conditions = req.body['member.emergencyInfo.conditions']
-					member.emergencyInfo.name = req.body['member.emergencyInfo.name']
-					member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
-					member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
-					group.save (err) ->
+	Member.findOne req.body.id, (err, member) ->
+		member.name = req.body['member.name']
+		member.birthDate = req.body['member.birthDate']
+		member.phone = req.body['member.phone']
+		member.email = req.body['member.email']
+		member.emergencyInfo.medicalNum = req.body['member.emergencyInfo.medicalNum']
+		member.emergencyInfo.allergies = req.body['member.emergencyInfo.allergies']
+		member.emergencyInfo.conditions = req.body['member.emergencyInfo.conditions']
+		member.emergencyInfo.name = req.body['member.emergencyInfo.name']
+		member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
+		member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
+		member.save (err) ->
+			if err
+				res.send "The edits could not be saved. Please try again?"
+			else
+				Group.findByIdAndUpdate req.session.group._id,
+					$push:
+						log:
+							event: "The member #{req.body['member.name']} was updated."
+					(err, group) ->
 						if err
-							res.send "There was an error, could you try again?"
+							res.send "You're not logged in."
 						else
-							Group.findByIdAndUpdate req.session.group._id,
-								$push: log: event: "#{member.name} was edited."
-								(err, group) ->
-									req.session.group = group
-									res.redirect '/account#members'
-	else if req.body.type is 'Young Adult'
-		Group.findById req.session.group._id,
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					member = group.youngAdults.id req.body.id
-					member.name = req.body['member.name']
-					member.birthDate = req.body['member.birthDate']
-					member.phone = req.body['member.phone']
-					member.email = req.body['member.email']
-					member.emergencyInfo.medicalNum = req.body['member.emergencyInfo.medicalNum']
-					member.emergencyInfo.allergies = req.body['member.emergencyInfo.allergies']
-					member.emergencyInfo.conditions = req.body['member.emergencyInfo.conditions']
-					member.emergencyInfo.name = req.body['member.emergencyInfo.name']
-					member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
-					member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
-					group.save (err) ->
-						if err
-							res.send "There was an error, could you try again?"
-						else
-							Group.findByIdAndUpdate req.session.group._id,
-								$push: log: event: "#{member.name} was edited."
-								(err, group) ->
-									req.session.group = group
-									res.redirect '/account#members'
-
-	else if req.body.type is 'Chaperone'
-		Group.findById req.session.group._id,
-			(err, group) ->
-				if err
-					res.send "There was an error, could you try again?"
-				else
-					member = group.chaperones.id req.body.id
-					member.name = req.body['member.name']
-					member.birthDate = req.body['member.birthDate']
-					member.phone = req.body['member.phone']
-					member.email = req.body['member.email']
-					member.emergencyInfo.medicalNum = req.body['member.emergencyInfo.medicalNum']
-					member.emergencyInfo.allergies = req.body['member.emergencyInfo.allergies']
-					member.emergencyInfo.conditions = req.body['member.emergencyInfo.conditions']
-					member.emergencyInfo.name = req.body['member.emergencyInfo.name']
-					member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
-					member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
-					group.save (err) ->
-						if err
-							res.send "There was an error, could you try again?"
-						else
-							Group.findByIdAndUpdate req.session.group._id,
-								$push: log: event: "#{member.name} was edited."
-								(err, group) ->
-									req.session.group = group
-									res.redirect '/account#members'
+							req.session.group = group
+							res.redirect '/account#members'
 									
 app.post '/api/editGroup', (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
@@ -484,13 +426,10 @@ app.post '/api/editGroup', (req, res) ->
 
 
 app.post '/api/getMember', (req, res) ->
-	Group.findById req.session.group._id, (err, group) ->
+	Member.findById req.body.id, (err, member) ->
 		if err
-			req.session.destroy
-			res.redirect '/'
+			res.send "Could not find member."
 		else
-			req.session.group = group # Update the group, in case of changes.
-			member = group[req.body.type].id(req.body.id)
 			res.render 'account/elements/memberInfo', member: member
 		
 ###
