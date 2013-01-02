@@ -67,6 +67,9 @@ memberSchema = new Schema
 		type: Schema.Types.ObjectId
 		ref: "Workshop"
 	]
+	group:
+		type: Schema.Types.ObjectId
+		ref: "Group"
 
 logSchema = new Schema
 	date:
@@ -441,7 +444,7 @@ app.post '/api/editWorkshop', (req,res) ->
 		res.send "You're not authorized, please don't try again!"
 	else if req.body.name is "" or req.body.day is ""
 		res.send "You need to put a name and day in at least!"
-	else if req.body.id is null
+	else if req.body.id is "new"
 		workshop = new Workshop
 			name: req.body.name
 			host: req.body.host
@@ -455,6 +458,7 @@ app.post '/api/editWorkshop', (req,res) ->
 		workshop.save (err, workshop) ->
 			if err
 				res.send "There was an error saving."
+				console.log err
 			else
 				res.redirect "/workshops/#{req.body.day}"
 	else
@@ -481,13 +485,6 @@ app.post '/api/getWorkshop', (req, res) ->
 		if err
 			res.send "No workshop found! Try again?"
 		else
-			result.sort (a,b) ->
-				if a.name == b.name
-					return 0
-				else if a.name > b.name
-					return -1
-				else
-					1
 			res.render 'elements/workshop', workshop: result
 			
 app.get '/api/delWorkshop/:id', (req, res) ->

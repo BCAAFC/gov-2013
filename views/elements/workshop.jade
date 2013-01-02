@@ -8,7 +8,7 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 		h3#workshopLabel Workshop
 	.modal-body
 		div(style="display: none")
-			input#workshopId(type='text', name='id', value="#{workshop._id || null}")
+			input#workshopId(type='text', name='id', value="#{workshop._id || 'new'}")
 		// Member Info
 		fieldset
 			legend Information
@@ -47,7 +47,7 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 			.control-group
 				label.control-label Capacity
 				.controls
-					input(type='text', name='capacity', required, value="#{workshop.capacity || ''}")
+					input(type='number', name='capacity', required, value="#{workshop.capacity || ''}")
 
 	.modal-footer
 		button.btn(data-dismiss='modal', aria-hidden='true') Cancel
