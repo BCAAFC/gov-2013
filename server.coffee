@@ -47,30 +47,6 @@ loginSchema = new Schema
 	_group: Schema.Types.ObjectId
 Login = db.model 'Login', loginSchema
 
-
-memberSchema = new Schema
-	name: String
-	type: String
-	gender: String
-	birthDate: String
-	phone: String
-	email: String
-	emergencyInfo:
-		name: String
-		relation: String
-		phone: String
-		medicalNum: String
-		allergies: [String]
-		conditions: [String]
-	ticketPrice: Number
-	workshops: [
-		type: Schema.Types.ObjectId
-		ref: "Workshop"
-	]
-	group:
-		type: Schema.Types.ObjectId
-		ref: "Group"
-
 logSchema = new Schema
 	date:
 		type: Date
@@ -130,6 +106,9 @@ memberSchema = new Schema
 		type: Schema.Types.ObjectId
 		ref: "Workshop"
 	]
+	group:
+		type: Schema.Types.ObjectId
+		ref: "Group"
 Member = db.model 'Member', memberSchema
 
 workshopSchema = new Schema
@@ -346,6 +325,7 @@ app.post '/api/addMember', (req, res) ->
 		res.send "Please fill out a name (even a placeholder) for this member."
 	req.body.ticketPrice = getTicketPrice()
 	member = new Member req.body
+	member.group = req.session.group._id
 	member.save (err) ->
 		if err
 			res.send "We could not save that member, could you try again?"
