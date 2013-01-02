@@ -377,6 +377,7 @@ app.post '/api/editMember', (req, res) ->
 	Member.findOne req.body.id, (err, member) ->
 		member.name = req.body['member.name']
 		member.birthDate = req.body['member.birthDate']
+		member.gender = req.body['member.gender']
 		member.phone = req.body['member.phone']
 		member.email = req.body['member.email']
 		member.emergencyInfo.medicalNum = req.body['member.emergencyInfo.medicalNum']

@@ -21,7 +21,11 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 		.control-group
 			label.control-label Gender
 			.controls
-				p #{member.gender}
+				select(name='member.gender')
+					option(value="", selected=member.gender == "") Please Select...
+					option(value="Male", selected=member.gender == "Male") Male
+					option(value="Female", selected=member.gender == "Female") Female
+					option(value="Other", selected=member.gender == "Other") Other
 		.control-group
 			label.control-label Phone
 			.controls
