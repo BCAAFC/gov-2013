@@ -173,35 +173,40 @@ app.get '/privacy', (req, res) ->
 
 app.get '/account', (req, res) ->
 	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
-		# Accumulate Bill and toss members into buckets for easy JADE-ing.
-		bill = 0
-		youth = []
-		youngAdults = []
-		chaperones = []
-		for member in group.groupMembers
-			bill += member.ticketPrice
-			if member.type is "Youth"
-				youth.push member
-			else if member.type is "Young Adult"
-				youngAdults.push member
-			else if member.type is "Chaperone"
-				chaperones.push member
-		# Temp workaround while we migrate to a better UI
-		group.youth = youth
-		group.youngAdults = youngAdults
-		group.chaperones = chaperones
-		req.session.group = group
-		# Accumulate Paid
-		paid = 0
-		if req.session.group.payments
-			for payment in req.session.group.payments
-				paid += payment.amount
-		res.render 'account/index',
-			title: "Account Management"
-			group: req.session.group || null
-			billing:
-				total: bill
-				paid: paid
+		if err
+			console.log err
+			res.send "There was an error."
+		else
+			# Accumulate Bill and toss members into buckets for easy JADE-ing.
+			req.session.group = group
+			bill = 0
+			youth = []
+			youngAdults = []
+			chaperones = []
+			for member in group.groupMembers
+				bill += member.ticketPrice
+				if member.type is "Youth"
+					youth.push member
+				else if member.type is "Young Adult"
+					youngAdults.push member
+				else if member.type is "Chaperone"
+					chaperones.push member
+			# Temp workaround while we migrate to a better UI
+			group.youth = youth
+			group.youngAdults = youngAdults
+			group.chaperones = chaperones
+			req.session.group = group
+			# Accumulate Paid
+			paid = 0
+			if req.session.group.payments
+				for payment in req.session.group.payments
+					paid += payment.amount
+			res.render 'account/index',
+				title: "Account Management"
+				group: req.session.group || null
+				billing:
+					total: bill
+					paid: paid
 
 app.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
@@ -343,19 +348,26 @@ app.post '/api/addMember', (req, res) ->
 						res.redirect '/account#members'
 
 app.get '/api/removeMember/:type/:name/:id', (req, res) ->
-	Group.findByIdAndUpdate req.session.group._id,
-		$pull:
-			groupMembers: req.params.id
-		$push:
-			log: event: "The member #{req.params.name} was removed from the group member list."
-		(err, group) ->
-			if err
-				res.send "There was an error removing that member, could you try again?"
-			else
-				Member.remove req.params.id, (err) ->
-					console.log "#{member.name} removed!"
-					req.session.group = group
-					res.redirect '/account#members'
+	Group.findById req.session.group._id, (err, group) ->
+		if err
+			res.send "There was an error removing that member, could you try again?"
+			console.log err
+		else
+			index = group.groupMembers.indexOf req.params.id
+			group.groupMembers.splice index, 1
+			group.save (err) ->
+				if err
+					res.send "We couldn't save your changes. try again?"
+				else
+					Member.findById req.params.id, (err, member) ->
+						if err
+							console.log err
+							res.send "The user was removed from your group, but may still exist in our system. (There was an error)"
+						else
+							member.remove()
+							console.log "#{member.name} removed!"
+							req.session.group = group
+							res.redirect '/account#members'
 					
 app.post '/api/editMember', (req, res) ->
 	Member.findOne req.body.id, (err, member) ->
