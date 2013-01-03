@@ -6,6 +6,11 @@ $('a.edit').click ->
 
 $('a.addWorkshop').click ->
 	inputs = $('form#workshops')
-	console.log inputs
 	for input in inputs
 		$(input).val('')
+		
+
+$('select.select2').select2
+	allowclear: true
+	placeholder: "Select members..."
+	

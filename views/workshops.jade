@@ -36,6 +36,19 @@ block content
 											a.btn.btn-small.btn-info.edit(data-id="#{workshop._id}", href="#workshop", data-toggle="modal") Edit
 											a.btn.btn-small.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
 
+
+	select.select2(type='hidden', multiple, style='width: 150px;')
+		option(value="foo") foo
+		option(value="bar") bar
+	br
+	select.select2(type='hidden', multiple, style='width: 150px;')
+		option(value="foo") foo
+		option(value="bar") bar
+
+	link(rel="stylesheet", type="text/css", href="/select2/select2.css")
+	script(src="/select2/select2.min.js")
+	!= js('workshops')
+
 	if group
 		if group.internal.admin
 			a.addWorkshop(href="#workshop", data-toggle="modal") Add a new workshop...
