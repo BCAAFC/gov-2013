@@ -230,10 +230,11 @@ app.get '/admin/login/:id', (req, res) ->
 			
 app.get '/workshops/:day', (req, res) ->
 	Workshop.find day: req.params.day, (err, workshops) ->
-		res.render 'workshops',
-			title: '404'
-			group: req.session.group || null
-			workshops: workshops
+		Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
+			res.render 'workshops',
+				title: '404'
+				group: group || null
+				workshops: workshops
 
 # Error Pages
 app.get '/404', (req, res) ->
@@ -476,6 +477,9 @@ app.get '/api/delWorkshop/:id', (req, res) ->
 				res.send "Couldn't remove that workshop! Try again?"
 			else
 				res.redirect "/workshops/#{workshop.day}"
+				
+app.post '/api/workshop/changeMembers', (req, res) ->
+	console.log req.body
 		
 ###
 Group API
@@ -516,6 +520,7 @@ app.get '/api/removeGroup/:id', (req, res) ->
 				res.send "Couldn't remove that group! Try again?"
 			else
 				res.redirect '/admin'
+				
 
 ###
 Start listening.

@@ -13,4 +13,3 @@ $('a.addWorkshop').click ->
 $('select.select2').select2
 	allowclear: true
 	placeholder: "Select members..."
-	

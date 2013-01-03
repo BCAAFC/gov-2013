@@ -12,38 +12,36 @@ block content
 						th Start
 						th End
 						th Capacity
-						th Actions
 						if group
 							if group.internal.admin
 								th admin
+						if group
+							th Attending
 				tbody
 					for workshop in workshops
-						tr
+						tr(rowspan=2)
 							td= workshop.name
 							td= workshop.host
 							td= workshop.description.substring(0,40)
 							td= workshop.timeStart
 							td= workshop.timeEnd
 							td= workshop.capacity
-							td
-								.btn-group
-									a.btn.btn-small Moo
-									a.btn.btn-small Moo
 							if group
 								if group.internal.admin
 									td
 										.btn-group
 											a.btn.btn-small.btn-info.edit(data-id="#{workshop._id}", href="#workshop", data-toggle="modal") Edit
 											a.btn.btn-small.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
+							if group
+								form(action="/api/workshop/changeMembers", method='post')
+									td
+										input(type='hidden', name='workshop', value='#{workshop._id}')
+										select.select2(type='hidden', multiple, style='width: 250px;', name='attending')
+											for member in group.groupMembers
+												option(value="#{member._id}") #{member.name}
+									td
+										input.btn.btn-primary(type='submit', value='Submit')
 
-
-	select.select2(type='hidden', multiple, style='width: 150px;')
-		option(value="foo") foo
-		option(value="bar") bar
-	br
-	select.select2(type='hidden', multiple, style='width: 150px;')
-		option(value="foo") foo
-		option(value="bar") bar
 
 	link(rel="stylesheet", type="text/css", href="/select2/select2.css")
 	script(src="/select2/select2.min.js")
