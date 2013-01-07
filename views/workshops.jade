@@ -33,14 +33,11 @@ block content
 											a.btn.btn-small.btn-info.edit(data-id="#{workshop._id}", href="#workshop", data-toggle="modal") Edit
 											a.btn.btn-small.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
 							if group
-								form(action="/api/workshop/changeMembers", method='post')
-									td
-										input(type='hidden', name='workshop', value='#{workshop._id}')
-										select.select2(type='hidden', multiple, style='width: 250px;', name='attending')
-											for member in group.groupMembers
-												option(value="#{member._id}") #{member.name}
-									td
-										input.btn.btn-primary(type='submit', value='Submit')
+								td
+									a.btn.btn-small.btn-primary.info(href="/api/workshop/get?workshop=#{workshop._id}&group=#{group._id}") More info...
+							else
+								td
+									a.btn.btn-small.btn-primary.info(href="/api/workshop/get?workshop=#{workshop._id}") More info...
 
 
 	link(rel="stylesheet", type="text/css", href="/select2/select2.css")

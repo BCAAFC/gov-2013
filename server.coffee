@@ -120,7 +120,10 @@ workshopSchema = new Schema
 	timeEnd: String
 	room: String
 	capacity: Number
-	signedUp: [Schema.Types.ObjectId] # Points to Member
+	signedUp: [
+		type: Schema.Types.ObjectId
+		ref: 'Member'
+	] # Points to Member
 Workshop = db.model 'Workshop', workshopSchema
 
 ###
@@ -235,11 +238,20 @@ app.get '/admin/login/:id', (req, res) ->
 			
 app.get '/workshops/:day', (req, res) ->
 	Workshop.find day: req.params.day, (err, workshops) ->
-		Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
-			res.render 'workshops',
-				title: '404'
-				group: group || null
-				workshops: workshops
+		if err
+			res.send "There was an error fetching the workshops."
+		else
+			if req.session.group
+				Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
+					res.render 'workshops',
+						title: '404'
+						group: group || null
+						workshops: workshops
+			else
+				res.render 'workshops',
+					title: '404'
+					group: null
+					workshops: workshops
 
 # Error Pages
 app.get '/404', (req, res) ->
@@ -490,8 +502,44 @@ app.get '/api/delWorkshop/:id', (req, res) ->
 			else
 				res.redirect "/workshops/#{workshop.day}"
 				
+app.get '/api/workshop/get', (req, res) ->
+	Workshop.findById
+	if req.query.workshop
+		Workshop.findById req.query.workshop, (err, workshop) ->
+			if err
+				res.send "We couldn't get that workshop for you."
+			else
+				if req.query.group
+					Group.findById(req.query.workshop).populate('groupMembers').exec (err, group)->
+						if err
+							res.send "We couldn't find your group!"
+						else
+							res.render 'workshopInfo',
+								title: "Workshop Info"
+								group: req.session.group || null
+								workshop: workshop
+				else
+					res.render 'workshopInfo',
+								title: "Workshop Info"
+								group: null
+								workshop: workshop
+	else
+		res.send "You need to ask for a workshop."
+
+# Maybe Deprecate this
 app.post '/api/workshop/changeMembers', (req, res) ->
 	console.log req.body
+	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
+		if err
+			res.send "We couldn't find your group... Maybe there has been a mistake?"
+		else
+			Workshop.findById req.body.workshop, (err, workshop) ->
+				if err
+					res.send "We couldn't find that workshop... Maybe there has been a mistake?"
+				else
+					for member in req.body.attending
+						# Do stuff
+						console.log member
 		
 ###
 Group API

@@ -1,0 +1,46 @@
+extends layout
+
+block content
+	.row-fluid
+		.span12
+			h1= workshop.name
+			h3= workshop.host
+			p= workshop.description
+			br
+			h3 Time Details
+			p Day: 
+				b= workshop.day
+			p Start: 
+				b= workshop.timeStart
+			p End: 
+				b= workshop.timeEnd
+			br
+			h3 Location Details
+			p Room: 
+				b= workshop.room
+			p Capacity: 
+				b Used: #{workshop.signedUp.length} Max: #{workshop.capacity}
+	if group
+		.row-fluid
+			.span12
+				h1 Group Attendance
+				table.table-hover
+					thead
+						th Name
+						th Type
+						th Attending
+						th Actions
+					tbody
+						for member in group.groupMembers
+							tr
+								td= member.name
+								td= member.type
+								td
+									if member.workshops.indexOf(workshop._id) == -1
+										| Not attending
+									else
+										| Attending!
+								td
+									.btn-group
+										a.btn.btn-small.btn-success(href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') +
+										a.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}') -

@@ -9,7 +9,8 @@ $('a.addWorkshop').click ->
 	for input in inputs
 		$(input).val('')
 		
-
+###
 $('select.select2').select2
 	allowclear: true
 	placeholder: "Select members..."
+###
