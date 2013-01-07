@@ -100,6 +100,37 @@ server.configure ->
 		res.status 404
 		res.send "You've hit a page which doesn't exist!"
 
+# ## Useful Middleware
+# TODO: Move to cookies
+requireAuthentication = (req, res, next) ->
+	if not req.session.group?
+		res.send "This page requires authentication, please log in."
+	else
+		next()
+
+# TODO: Move to cookies
+populateGroup = (req, res, next) ->
+	if not req.session.group?
+		next()
+	else
+		Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
+			if err
+				res.send "It looks like that group doesn't exist in our records. You might want to give us a call. \n #{err}"
+			else
+				req.group = group
+				next()
+
+# This method requires the workshop to be specified in the query. Eg. `/foo?workshop=foo` would result in `req.query.workshop = foo`
+populateWorkshop = (req, res, next) ->
+	if not req.query.workshop?
+		next()
+	else
+		Workshop.findById req.query.workshop, (err, workshop) ->
+			if err
+				res.send "There was an error finding that workshop. \n #{err}"
+			else
+				req.workshop = workshop
+				next()
 
 ###
 GET routes
@@ -114,7 +145,7 @@ server.get '/privacy', (req, res) ->
 		title: "Privacy Policy"
 		group: req.session.group || null
 
-server.get '/account', (req, res) ->
+server.get '/account', populateGroup, (req, res) ->
 	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
 		if err
 			console.log err
@@ -441,44 +472,15 @@ server.get '/api/delWorkshop/:id', (req, res) ->
 			else
 				res.redirect "/workshops/#{workshop.day}"
 				
-server.get '/api/workshop/get', (req, res) ->
-	Workshop.findById
-	if req.query.workshop
-		Workshop.findById req.query.workshop, (err, workshop) ->
-			if err
-				res.send "We couldn't get that workshop for you."
-			else
-				if req.query.group
-					Group.findById(req.query.workshop).populate('groupMembers').exec (err, group)->
-						if err
-							res.send "We couldn't find your group!"
-						else
-							res.render 'workshopInfo',
-								title: "Workshop Info"
-								group: req.session.group || null
-								workshop: workshop
-				else
-					res.render 'workshopInfo',
-								title: "Workshop Info"
-								group: null
-								workshop: workshop
+server.get '/api/workshop/get', populateGroup, populateWorkshop, (req, res) ->
+	if not req.workshop
+		res.send "We could not get the data for your workshop."
 	else
-		res.send "You need to ask for a workshop."
+		res.render 'workshopInfo',
+			title: "Workshop Info"
+			group: req.group || null
+			workshop: req.workshop
 
-# Maybe Deprecate this
-server.post '/api/workshop/changeMembers', (req, res) ->
-	console.log req.body
-	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
-		if err
-			res.send "We couldn't find your group... Maybe there has been a mistake?"
-		else
-			Workshop.findById req.body.workshop, (err, workshop) ->
-				if err
-					res.send "We couldn't find that workshop... Maybe there has been a mistake?"
-				else
-					for member in req.body.attending
-						# Do stuff
-						console.log member
 		
 ###
 Group API

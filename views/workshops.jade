@@ -32,12 +32,8 @@ block content
 										.btn-group
 											a.btn.btn-small.btn-info.edit(data-id="#{workshop._id}", href="#workshop", data-toggle="modal") Edit
 											a.btn.btn-small.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
-							if group
-								td
-									a.btn.btn-small.btn-primary.info(href="/api/workshop/get?workshop=#{workshop._id}&group=#{group._id}") More info...
-							else
-								td
-									a.btn.btn-small.btn-primary.info(href="/api/workshop/get?workshop=#{workshop._id}") More info...
+							td
+								a.btn.btn-small.btn-primary.info(href="/api/workshop/get?workshop=#{workshop._id}") More info...
 
 
 	link(rel="stylesheet", type="text/css", href="/select2/select2.css")
