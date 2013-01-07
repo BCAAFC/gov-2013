@@ -1,8 +1,7 @@
 $('a.edit').click ->
-	$.post '/api/getWorkshop',
-		id: $(this).data('id')
-		(data) ->
-			$('#workshop').html(data)
+	id = $(this).data('id')
+	$.post "/api/workshop/getEditForm?workshop=#{id}", (data) ->
+		$('#workshop').html(data)
 
 $('a.addWorkshop').click ->
 	inputs = $('form#workshops')

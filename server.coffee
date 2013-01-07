@@ -455,12 +455,8 @@ server.post '/api/editWorkshop', (req,res) ->
 					else
 						res.redirect "/workshops/#{req.body.day}"
 	
-server.post '/api/getWorkshop', (req, res) ->
-	Workshop.findById req.body.id, (err, result) ->
-		if err
-			res.send "No workshop found! Try again?"
-		else
-			res.render 'elements/workshop', workshop: result
+server.post '/api/workshop/getEditForm', populateWorkshop, (req, res) ->
+	res.render 'elements/workshop', workshop: req.workshop
 			
 server.get '/api/delWorkshop/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
