@@ -1,15 +1,29 @@
-# Dependencies
+# # server.coffee
+# This is the main workhorse script for all serverside handlings. Try to keep this file clean and tidy, you can always spin off modules and pull them in with `foo = require 'foo'`.
+
+# ## Pull in dependencies
+# Since w're already using coffeescript to bootstrap the application, we don't need to pull it in.
+
+# We'll pull in [Express](http://expressjs.com) which handles routing and generally makes life easier in a number of ways. Definately check out the API reference, it's gorgeously documented.
 express = require 'express'
-assets = require 'connect-assets'
-path = require 'path'
+
+# Next we'll need to pull in [Mongoose](http://mongoosejs.com) which drives our [MongoDB](http://www.mongodb.org) connection.
+mongoose = require 'mongoose'
+
+# We will also need the excellent [Node-pwd](https://github.com/visionmedia/node-pwd)
 pwd = require 'pwd'
 
-###
-Handle MongoDB
-###
-if process.env.VCAP_SERVICES
-	env = JSON.parse(process.env.VCAP_SERVICES)
-	mongo = env["mongodb-1.8"][0]["credentials"]
+# Connect-assets handles transparent compiling for us.
+assets = require 'connect-assets'
+
+# Setup the AppFog Enviroment. AppFog basically hands us a bunch of data in an enviroment variable called `VCAP_SERVICES`. [Appfog's Documentation](https://docs.appfog.com/services)
+appfog = JSON.parse process.env.VCAP_SERVICES if process.env.VCAP_SERVICES?
+
+# ## Set up the Database
+
+# We need to figure out where we are hosted, and set up some information regarding that. You should replace the **bottom** case if you need changes to your local deveopment property.
+if appfog
+	mongo = env['mongodb-1.8'][0]['credentials']
 else
 	mongo =
 		hostname: "localhost"
@@ -17,7 +31,8 @@ else
 		groupname: ""
 		password: ""
 		name: ""
-		db: "govNext"
+		db: "gov"
+# A function to create a connection URL. This was found in [Appfog's Mongodb Documentation](https://docs.appfog.com/services/mongodb).
 generate_mongo_url = (obj) ->
 	obj.hostname = (obj.hostname or "localhost")
 	obj.port = (obj.port or 27017)
@@ -26,105 +41,21 @@ generate_mongo_url = (obj) ->
 		"mongodb://" + obj.groupname + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db
 	else
 		"mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db
-
-mongourl = generate_mongo_url(mongo)
-mongoose = require 'mongoose'
-db = mongoose.createConnection mongourl
-Schema = mongoose.Schema
+# Now we can connect to our MongoDB server simply, regardless of where we're hosted.
+db = mongoose.createConnection generate_mongo_url mongo
+# We'll announce the state of the database connection to the console.
 db.on 'error', console.error.bind(console, 'Connection error:')
-db.once 'open', () -> 
-	console.log "You'll see '1' if the databases are ready."
-	console.log "Login DB Response: #{Login.db.readyState}"
-	console.log "Group DB Response: #{Login.db.readyState}"
+db.once 'open', () ->
+	console.log "Connection success: Database at #{mongo.hostname}:#{mongo.port}"
 
-###
-Mongoose Schemas
-###
-loginSchema = new Schema
-	email: String
-	salt: String
-	hash: String
-	_group: Schema.Types.ObjectId
-Login = db.model 'Login', loginSchema
+# ## App Resources
 
-logSchema = new Schema
-	date:
-		type: Date
-		default: Date.now
-	event: String
-
-groupSchema = new Schema
-	primaryContact:
-		name: String
-		email: String
-		phone: String
-	groupInformation:
-		affiliation: String
-		address: String
-		city: String
-		province: String
-		postalCode: String
-		fax: String
-	groupMembers: [
-		type: Schema.Types.ObjectId
-		ref: "Member"
-	] # Points to Member
-	log: [logSchema]
-	payments: [Schema.Types.ObjectId]
-	internal:
-		regDate:
-			type: Date
-			default: Date.now
-		status: String
-		youthInCare: String
-		notes: String
-		admin: 
-			type: Boolean
-			default: false
-Group = db.model 'Group', groupSchema
-
-# Members exist as part of groups, and are associated with groups.
-memberSchema = new Schema
-	name: String
-	# Youth, Young Adult, or Chaperone
-	type: String
-	gender: String
-	birthDate: String
-	phone: String
-	email: String
-	emergencyInfo:
-		name: String
-		relation: String
-		phone: String
-		medicalNum: String
-		# Ideally we will split the items listed in the future.
-		allergies: String
-		conditions: String
-	ticketPrice: Number
-	# These associate to `Workshop`s
-	workshops: [
-		type: Schema.Types.ObjectId
-		ref: "Workshop"
-	]
-	group:
-		type: Schema.Types.ObjectId
-		ref: "Group"
-Member = db.model 'Member', memberSchema
-
-workshopSchema = new Schema
-	name: String
-	host: String
-	description: String
-	day: String
-	timeStart: String
-	timeEnd: String
-	room: String
-	capacity: Number
-	signedUp: [
-		type: Schema.Types.ObjectId
-		ref: 'Member'
-	] # Points to Member
-Workshop = db.model 'Workshop', workshopSchema
+# [Mongoose](http://mongoosejs.com) provides us some amazing functionality in the form of schemas and models. We'll pull these from our `resources/models` file.
+Models = require './resources/models'
+Login = db.model 'Login', Models.loginSchema
+Workshop = db.model 'Workshop', Models.workshopSchema
+Group = db.model 'Group', Models.groupSchema
+Member = db.model 'Member', Models.memberSchema
 
 ###
 # Custom Functions
@@ -273,21 +204,20 @@ server.get '/404', (req, res) ->
 API routes
 ###
 server.post '/api/login', (req, res) ->
-	Login.findOne
-		email: req.body.email
-		(err, login) ->
-			if err or not login
-				res.send "You're not signed up."
-			else
-				pwd.hash req.body.pass, login.salt, (err, hash) ->
-					if login.hash is hash
-						Group.findByIdAndUpdate login._group,
-							$push: log: event: "This account was logged in with #{req.ip}"
-							(err, group) ->
-								req.session.group = group
-								res.redirect '/'
-					else
-						res.send "Wrong password. <a href='/'>Go back</a>"
+	Login.findOne email: req.body.email, (err, login) ->
+		console.log 'Found login'
+		if err or not login
+			res.send "You're not signed up."
+		else
+			pwd.hash req.body.pass, login.salt, (err, hash) ->
+				if login.hash is hash
+					Group.findByIdAndUpdate login._group,
+						$push: log: event: "This account was logged in with #{req.ip}"
+						(err, group) ->
+							req.session.group = group
+							res.redirect '/'
+				else
+					res.send "Wrong password. <a href='/'>Go back</a>"
 
 server.post '/api/signup', (req, res) ->
 	# Fail if the form isn't filled out

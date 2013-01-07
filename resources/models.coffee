@@ -17,7 +17,6 @@ exports.loginSchema = new Schema
 	salt: String
 	hash: String
 	_group: Schema.Types.ObjectId
-exports.Login = db.model 'Login', loginSchema
 
 exports.logSchema = new Schema
 	date:
@@ -41,7 +40,7 @@ exports.groupSchema = new Schema
 		type: Schema.Types.ObjectId
 		ref: "Member"
 	] # Points to Member
-	log: [logSchema]
+	log: [exports.logSchema]
 	payments: [Schema.Types.ObjectId]
 	internal:
 		regDate:
@@ -53,7 +52,6 @@ exports.groupSchema = new Schema
 		admin: 
 			type: Boolean
 			default: false
-exports.Group = db.model 'Group', groupSchema
 
 # Members exist as part of groups, and are associated with groups.
 exports.memberSchema = new Schema
@@ -81,7 +79,6 @@ exports.memberSchema = new Schema
 	group:
 		type: Schema.Types.ObjectId
 		ref: "Group"
-exports.Member = db.model 'Member', memberSchema
 
 exports.workshopSchema = new Schema
 	name: String
@@ -96,4 +93,3 @@ exports.workshopSchema = new Schema
 		type: Schema.Types.ObjectId
 		ref: 'Member'
 	] # Points to Member
-exports.Workshop = db.model 'Workshop', workshopSchema
