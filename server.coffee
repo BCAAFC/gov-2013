@@ -137,44 +137,53 @@ getTicketPrice = () ->
 	else
 		return 125
 
-###
-Configure the app
-###
-app = express()
-app.configure ->
-	app.set "views", "#{__dirname}/views"
-	app.set "view engine", "jade"
-	#app.use express.compress()
-	app.use express.favicon()
-	app.use express.logger("dev")
-	app.use express.bodyParser()
-	app.use express.methodOverride()
-	app.use assets
-		src: 'public'
-	app.use express.cookieParser(process.env.COOKIE_SECRET or 'test')
-	app.use express.session
+# ## Configure Express
+
+# The [Express API Documentation](http://expressjs.com/api.html) is extremely useful here.
+server = express()
+server.configure ->
+	server.set "views", "#{__dirname}/views"
+	server.set "view engine", "jade"
+	# Avoid using `server.use express.compress()`, it screws up connect-assets
+	# Use a favicon, however we don't expressly specify one yet.
+	server.use express.favicon()
+	server.use express.logger("dev")
+	server.use express.bodyParser()
+	server.use express.methodOverride()
+	# Connect-assets
+	server.use assets
+			src: 'public'
+	# You should set a proper cookie secret in your enviroment.
+	server.use express.cookieParser(process.env.COOKIE_SECRET or 'test')
+	# We store user sessions in memory. You should probably set a proper secret here as well.
+	server.use express.session
 		secret: process.env.SESSION_SECRET or 'test'
 		store: new express.session.MemoryStore
-	app.use app.router
-	app.use express.static "#{__dirname}/public"
-	app.use (req, res) ->
+	# It's very important that we use `server.router` before our 404 handler... Otherwise everything gets mapped to 404s.
+	server.use server.router
+	# Everything in the `/public` folder is mapped for easy access to styles and scripts.
+	server.use express.static "#{__dirname}/public"
+	server.use express.directory "#{__dirname}/public"
+	# Our 404 handler.
+	server.use (req, res) ->
 		res.status 404
-		res.redirect "/"
+		res.send "You've hit a page which doesn't exist!"
+
 
 ###
 GET routes
 ###
-app.get '/', (req, res) ->
+server.get '/', (req, res) ->
 	res.render 'index',
 		title: "Home"
 		group: req.session.group || null
 
-app.get '/privacy', (req, res) ->
+server.get '/privacy', (req, res) ->
 	res.render 'privacy',
 		title: "Privacy Policy"
 		group: req.session.group || null
 
-app.get '/account', (req, res) ->
+server.get '/account', (req, res) ->
 	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
 		if err
 			console.log err
@@ -211,12 +220,12 @@ app.get '/account', (req, res) ->
 					total: bill
 					paid: paid
 
-app.get '/account/signup', (req, res) ->
+server.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
 		title: "Signup"
 		group: req.session.group || null
 		
-app.get '/admin', (req, res) ->
+server.get '/admin', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -228,7 +237,7 @@ app.get '/admin', (req, res) ->
 					groups: groups
 					workshops: workshops
 
-app.get '/admin/login/:id', (req, res) ->
+server.get '/admin/login/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -236,7 +245,7 @@ app.get '/admin/login/:id', (req, res) ->
 			req.session.group = group
 			res.redirect '/account'
 			
-app.get '/workshops/:day', (req, res) ->
+server.get '/workshops/:day', (req, res) ->
 	Workshop.find day: req.params.day, (err, workshops) ->
 		if err
 			res.send "There was an error fetching the workshops."
@@ -254,7 +263,7 @@ app.get '/workshops/:day', (req, res) ->
 					workshops: workshops
 
 # Error Pages
-app.get '/404', (req, res) ->
+server.get '/404', (req, res) ->
 	res.render 'index',
 		title: "404"
 		group: req.session.group || null
@@ -263,7 +272,7 @@ app.get '/404', (req, res) ->
 ###
 API routes
 ###
-app.post '/api/login', (req, res) ->
+server.post '/api/login', (req, res) ->
 	Login.findOne
 		email: req.body.email
 		(err, login) ->
@@ -280,7 +289,7 @@ app.post '/api/login', (req, res) ->
 					else
 						res.send "Wrong password. <a href='/'>Go back</a>"
 
-app.post '/api/signup', (req, res) ->
+server.post '/api/signup', (req, res) ->
 	# Fail if the form isn't filled out
 	for item in ['name', 'email', 'pass', 'passConfirm', 'phone', 'affiliation', 'address', 'city', 'province', 'postalCode']
 		if req.body[item] is "" or null
@@ -324,7 +333,7 @@ app.post '/api/signup', (req, res) ->
 												req.session.group = group
 												res.redirect '/'
 
-app.post '/api/logout', (req, res) ->
+server.post '/api/logout', (req, res) ->
 	Group.findByIdAndUpdate req.session.group._id,
 		$push: log: event: "The account logged out from #{req.ip}"
 		(err, group) ->
@@ -337,7 +346,7 @@ app.post '/api/logout', (req, res) ->
 ###
 Group API
 ###
-app.post '/api/addMember', (req, res) ->
+server.post '/api/addMember', (req, res) ->
 	# Fail if the name is empty
 	if req.body.name is "" or null
 		res.send "Please fill out a name (even a placeholder) for this member."
@@ -359,7 +368,7 @@ app.post '/api/addMember', (req, res) ->
 						req.session.group = group
 						res.redirect '/account#members'
 
-app.get '/api/removeMember/:type/:name/:id', (req, res) ->
+server.get '/api/removeMember/:type/:name/:id', (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		if err
 			res.send "There was an error removing that member, could you try again?"
@@ -381,7 +390,7 @@ app.get '/api/removeMember/:type/:name/:id', (req, res) ->
 							req.session.group = group
 							res.redirect '/account#members'
 					
-app.post '/api/editMember', (req, res) ->
+server.post '/api/editMember', (req, res) ->
 	Member.findOne req.body.id, (err, member) ->
 		member.name = req.body['member.name']
 		member.birthDate = req.body['member.birthDate']
@@ -409,7 +418,7 @@ app.post '/api/editMember', (req, res) ->
 							req.session.group = group
 							res.redirect '/account#members'
 									
-app.post '/api/editGroup', (req, res) ->
+server.post '/api/editGroup', (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		if err
 			res.send "There was an error, could you try again?"
@@ -434,7 +443,7 @@ app.post '/api/editGroup', (req, res) ->
 							res.redirect '/account#groupinfo'
 
 
-app.post '/api/getMember', (req, res) ->
+server.post '/api/getMember', (req, res) ->
 	Member.findById req.body.id, (err, member) ->
 		if err
 			res.send "Could not find member."
@@ -444,7 +453,7 @@ app.post '/api/getMember', (req, res) ->
 ###
 Workshop API
 ###
-app.post '/api/editWorkshop', (req,res) ->
+server.post '/api/editWorkshop', (req,res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else if req.body.name is "" or req.body.day is ""
@@ -485,14 +494,14 @@ app.post '/api/editWorkshop', (req,res) ->
 					else
 						res.redirect "/workshops/#{req.body.day}"
 	
-app.post '/api/getWorkshop', (req, res) ->
+server.post '/api/getWorkshop', (req, res) ->
 	Workshop.findById req.body.id, (err, result) ->
 		if err
 			res.send "No workshop found! Try again?"
 		else
 			res.render 'elements/workshop', workshop: result
 			
-app.get '/api/delWorkshop/:id', (req, res) ->
+server.get '/api/delWorkshop/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -502,7 +511,7 @@ app.get '/api/delWorkshop/:id', (req, res) ->
 			else
 				res.redirect "/workshops/#{workshop.day}"
 				
-app.get '/api/workshop/get', (req, res) ->
+server.get '/api/workshop/get', (req, res) ->
 	Workshop.findById
 	if req.query.workshop
 		Workshop.findById req.query.workshop, (err, workshop) ->
@@ -527,7 +536,7 @@ app.get '/api/workshop/get', (req, res) ->
 		res.send "You need to ask for a workshop."
 
 # Maybe Deprecate this
-app.post '/api/workshop/changeMembers', (req, res) ->
+server.post '/api/workshop/changeMembers', (req, res) ->
 	console.log req.body
 	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
 		if err
@@ -544,7 +553,7 @@ app.post '/api/workshop/changeMembers', (req, res) ->
 ###
 Group API
 ###
-app.post '/api/getGroupNotes', (req, res) ->
+server.post '/api/getGroupNotes', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -554,7 +563,7 @@ app.post '/api/getGroupNotes', (req, res) ->
 			else
 				res.render 'admin/elements/groupNotes', group: result
 			
-app.post '/api/editGroupNotes', (req, res) ->
+server.post '/api/editGroupNotes', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -571,7 +580,7 @@ app.post '/api/editGroupNotes', (req, res) ->
 					else
 						res.redirect '/admin'
 					
-app.get '/api/removeGroup/:id', (req, res) ->
+server.get '/api/removeGroup/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -585,5 +594,5 @@ app.get '/api/removeGroup/:id', (req, res) ->
 ###
 Start listening.
 ###
-app.listen process.env.VCAP_APP_PORT or 8080
+server.listen process.env.VCAP_APP_PORT or 8080
 console.log "Now listening..."
