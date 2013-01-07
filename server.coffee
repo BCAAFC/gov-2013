@@ -145,7 +145,7 @@ server.get '/privacy', (req, res) ->
 		title: "Privacy Policy"
 		group: req.session.group || null
 
-server.get '/account', populateGroup, (req, res) ->
+server.get '/account', requireAuthentication, populateGroup, (req, res) ->
 	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
 		if err
 			console.log err
@@ -187,7 +187,7 @@ server.get '/account/signup', (req, res) ->
 		title: "Signup"
 		group: req.session.group || null
 		
-server.get '/admin', (req, res) ->
+server.get '/admin', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -199,7 +199,7 @@ server.get '/admin', (req, res) ->
 					groups: groups
 					workshops: workshops
 
-server.get '/admin/login/:id', (req, res) ->
+server.get '/admin/login/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -307,7 +307,7 @@ server.post '/api/logout', (req, res) ->
 ###
 Group API
 ###
-server.post '/api/addMember', (req, res) ->
+server.post '/api/addMember', requireAuthentication, (req, res) ->
 	# Fail if the name is empty
 	if req.body.name is "" or null
 		res.send "Please fill out a name (even a placeholder) for this member."
@@ -329,7 +329,7 @@ server.post '/api/addMember', (req, res) ->
 						req.session.group = group
 						res.redirect '/account#members'
 
-server.get '/api/removeMember/:type/:name/:id', (req, res) ->
+server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		if err
 			res.send "There was an error removing that member, could you try again?"
@@ -351,7 +351,7 @@ server.get '/api/removeMember/:type/:name/:id', (req, res) ->
 							req.session.group = group
 							res.redirect '/account#members'
 					
-server.post '/api/editMember', (req, res) ->
+server.post '/api/editMember', requireAuthentication, (req, res) ->
 	Member.findOne req.body.id, (err, member) ->
 		member.name = req.body['member.name']
 		member.birthDate = req.body['member.birthDate']
@@ -379,7 +379,7 @@ server.post '/api/editMember', (req, res) ->
 							req.session.group = group
 							res.redirect '/account#members'
 									
-server.post '/api/editGroup', (req, res) ->
+server.post '/api/editGroup', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		if err
 			res.send "There was an error, could you try again?"
@@ -404,7 +404,7 @@ server.post '/api/editGroup', (req, res) ->
 							res.redirect '/account#groupinfo'
 
 
-server.post '/api/getMember', (req, res) ->
+server.post '/api/getMember', requireAuthentication, (req, res) ->
 	Member.findById req.body.id, (err, member) ->
 		if err
 			res.send "Could not find member."
@@ -414,7 +414,7 @@ server.post '/api/getMember', (req, res) ->
 ###
 Workshop API
 ###
-server.post '/api/editWorkshop', (req,res) ->
+server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else if req.body.name is "" or req.body.day is ""
@@ -455,10 +455,10 @@ server.post '/api/editWorkshop', (req,res) ->
 					else
 						res.redirect "/workshops/#{req.body.day}"
 	
-server.post '/api/workshop/getEditForm', populateWorkshop, (req, res) ->
+server.post '/api/workshop/getEditForm', requireAuthentication, populateWorkshop, (req, res) ->
 	res.render 'elements/workshop', workshop: req.workshop
 			
-server.get '/api/delWorkshop/:id', (req, res) ->
+server.get '/api/delWorkshop/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
