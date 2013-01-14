@@ -9,9 +9,11 @@ block content
 				The ‘Gathering Our Voices on Health’ Aboriginal Youth Conference is hosted by the BC Association of Aboriginal Friendship Centres (BCAAFC) and their Provincial Aboriginal Youth Council (BCAAFC - PAYC). The Conference will be held from March 19-22, 2013 in Penticton, BC at the Penticton Trade and Convention Centre.	 Exploring this year’s theme of ‘Health’ up to 1500 youth (14-24years), chaperones, presenters and guests will network and learn new techniques and skills in workshops, share knowledge through cultural activities, witness performances by talented individuals, explore career and education possibilities and participate in sports and recreational activities.
 
 				For more information about the conference [visit our main site](http://www.bcaafc.com/newsandevents/gathering-our-voices).
-			if group
+	.row-fluid
+		if group
+			.span8.offset2
 				a.btn.btn-large.btn-success.btn-block(href="/account") Account Mangement
-			else
-				.btn-group.span10
-					a.btn.btn-large.btn-info.btn-large(style="width: 50%", href="/account/signup") Sign Up!
-					a.btn.btn-large.btn-primary.btn-large(style="width: 50%", href="#login", data-toggle='modal') Log In!
+		else
+			.btn-group.span8.offset2(style="text-align: center")
+				a.btn.btn-large.btn-info.btn-large(style="width: 25%", href="/account/signup") Sign Up!
+				a.btn.btn-large.btn-primary.btn-large(style="width: 25%", href="#login", data-toggle='modal') Log In!
