@@ -32,14 +32,21 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 						option(value='') Select a value...
 						option(value='wednesday', selected=(workshop.day == 'wednesday')) Wednesday the 20th
 						option(value='thursday', selected=(workshop.day == 'thursday')) Thursday the 21st
+			small Click the clock icon to edit times.
 			.control-group
 				label.control-label Start Time
 				.controls
-					input(type='text', name='timeStart', required, , value="#{workshop.timeStart || ''}")
+					.input-append.bootstrap-timepicker-component(data-date="12-02-2012", data-date-format="dd-mm-yyyy")
+						input.span2.timepicker-default(type='text', name='timeStart', required, , value="#{workshop.timeStart || ''}")
+						span.add-on
+							i.icon-time
 			.control-group
 				label.control-label End Time
 				.controls
-					input(type='text', name='timeEnd', required, value="#{workshop.timeEnd || ''}")
+					.input-append.bootstrap-timepicker-component(data-date="12-02-2012", data-date-format="dd-mm-yyyy")
+						input.span2.timepicker-default(type='text', name='timeEnd', required, value="#{workshop.timeEnd || ''}")
+						span.add-on
+							i.icon-time
 			.control-group
 				label.control-label Room
 				.controls
@@ -52,3 +59,9 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 	.modal-footer
 		button.btn(data-dismiss='modal', aria-hidden='true') Cancel
 		input.btn.btn-primary(type='submit', value='Submit')
+
+	:coffeescript
+		$('.timepicker-default').timepicker
+			showInputs: false
+			disableFocus: true
+			minuteStep: 15
