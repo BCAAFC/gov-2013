@@ -23,7 +23,7 @@ appfog = JSON.parse process.env.VCAP_SERVICES if process.env.VCAP_SERVICES?
 
 # We need to figure out where we are hosted, and set up some information regarding that. You should replace the **bottom** case if you need changes to your local deveopment property.
 if appfog
-	mongo = env['mongodb-1.8'][0]['credentials']
+	mongo = appfog['mongodb-1.8'][0]['credentials']
 else
 	mongo =
 		hostname: "localhost"
