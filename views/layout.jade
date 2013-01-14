@@ -17,8 +17,9 @@ html
 
 
 		// CSS Stuff
-		!= css('bootstrap')
-		!= css('custom')
+		link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css", rel="stylesheet")
+		style(type="text/css")
+			
 
 		// Jquery
 		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js")
@@ -35,86 +36,79 @@ html
 					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 				})();
 
-	body(style="padding-top: 60px")
+	body
 		// Navbar. This does not need a container.
 		.navbar.navbar-inverse.navbar-fixed-top
 			.navbar-inner
-				.container-fluid
-					a.brand(style="font-family: Rancho", href="/") Gathering Our Voices
-					.nav-collapse
-						ul.nav
-							li
-								a(href='/')
-									i.icon-home.icon-white
-									| Home
-							if group
-								li.dropdown
-									a.dropdown-toggle#accountDrop(href='#', data-toggle="dropdown")
-										i.icon-edit.icon-white
-										| Account
-										b.caret
-									ul.dropdown-menu(aria-labelledby="accountDrop")
-										li
-											a(href="/account") Management
-										li
-											a(href="#add", data-toggle="modal") Add a member
-										li
-											a(href="/account#billing") Payment Details
-										li
-											form(action="/api/logout", method="post", style="text-align: center; margin: 0px 0px 0px 0px;")
-												input.btn.btn-small.btn-warning(type="submit", value="Log Out")
-							else
+				a.brand(style="font-family: Rancho", href="/") Gathering Our Voices
+				ul.nav
+					li
+						a(href='/')
+							i.icon-home.icon-white
+							| Home
+					if group
+						li.dropdown
+							a.dropdown-toggle#accountDrop(href='#', data-toggle="dropdown")
+								i.icon-edit.icon-white
+								| Account
+								b.caret
+							ul.dropdown-menu(aria-labelledby="accountDrop")
 								li
-									a(href="#login", data-toggle='modal')
-										i.icon-ok-circle.icon-white
-										| Login
+									a(href="/account") Management
 								li
-									a(href='/account/signup')
-										i.icon-edit.icon-white
-										| Sign up
+									a(href="#add", data-toggle="modal") Add a member
+								li
+									a(href="/account#billing") Payment Details
+								li
+									form(action="/api/logout", method="post", style="text-align: center; margin: 0px 0px 0px 0px;")
+										input.btn.btn-small.btn-warning(type="submit", value="Log Out")
+					else
+						li
+							a(href="#login", data-toggle='modal')
+								i.icon-ok-circle.icon-white
+								| Login
+						li
+							a(href='/account/signup')
+								i.icon-edit.icon-white
+								| Sign up
 
-							li.dropdown
-								a.dropdown-toggle#workshopDrop(href="#", data-toggle="dropdown")
-									i.icon-list-alt.icon-white
-									| Workshops
-									b.caret
-								ul.dropdown-menu(aria-labelledby="workshopDrop")
-									li
-										a(href="/workshops/wednesday") Wednesday
-									li
-										a(href="/workshops/thursday") Thursday
+					li.dropdown
+						a.dropdown-toggle#workshopDrop(href="#", data-toggle="dropdown")
+							i.icon-list-alt.icon-white
+							| Workshops
+							b.caret
+						ul.dropdown-menu(aria-labelledby="workshopDrop")
 							li
-								a(href="/privacy")
-									i.icon-eye-open.icon-white
-									| Privacy Policy
-							if group
-								if group.internal.admin
-									li
-										a(href="/admin")
-											i.icon-hdd.icon-white
-											| Admin
-		.container-fluid
-			.row-fluid
-				.span1.offset3
-					img(src="/img/art/salmonflip.gif", style="height: 300px")
-				.span4(style="text-align: center;")
+								a(href="/workshops/wednesday") Wednesday
+							li
+								a(href="/workshops/thursday") Thursday
+					li
+						a(href="/privacy")
+							i.icon-eye-open.icon-white
+							| Privacy Policy
+					if group
+						if group.internal.admin
+							li
+								a(href="/admin")
+									i.icon-hdd.icon-white
+									| Admin
+		.container
+			.row
+				div(style="text-align: center;")
 					img(src="/img/logos/gov.png")
-				.span1
-					img(src="/img/art/salmon.gif", style="height: 300px")
 			block content
-			.row-fluid
+			.row
 				.span6.offset4
 					h4 Proudly supported by the following Organizations:
-			.row-fluid
-				.span2.offset4
+			.row
+				div(style="text-align: center;")
 					a(href="http://www.bcaafc.com")
 						img(src="/img/logos/bcaafc.png")
-				.span2
 					a(href="http://www.friendshipcentre.ca/")
 						img(src="/img/logos/ooknakane.png")
 		include elements/addMember
 		include elements/login
-		!= js("bootstrap.min")
+		script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js")
 		script
 			$(document).ready(function(){
 				$('a[href="' + window.location.hash + '"]').click()
