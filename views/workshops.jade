@@ -23,8 +23,8 @@ block content
 							td= workshop.name
 							td= workshop.host
 							td= workshop.description.substring(0,40)
-							td= workshop.timeStart
-							td= workshop.timeEnd
+							td= workshop.timeStart.toTimeString()
+							td= workshop.timeEnd.toTimeString()
 							td= workshop.capacity
 							if group
 								if group.internal.admin

@@ -30,20 +30,20 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 				.controls
 					select(name='day', required)
 						option(value='') Select a value...
-						option(value='wednesday', selected=(workshop.day == 'wednesday')) Wednesday the 20th
-						option(value='thursday', selected=(workshop.day == 'thursday')) Thursday the 21st
+						option(value='March 20, 2013', selected=(workshop.timeStart == 'March 20, 2013')) Wednesday the 20th
+						option(value='March 21, 2013', selected=(workshop.day == 'March 21, 2013')) Thursday the 21st
 			small Click the clock icon to edit times.
 			.control-group
 				label.control-label Start Time
 				.controls
-					.input-append.bootstrap-timepicker-component(data-date="12-02-2012", data-date-format="dd-mm-yyyy")
+					.input-append.bootstrap-timepicker-component
 						input.span2.timepicker-default(type='text', name='timeStart', required, , value="#{workshop.timeStart || ''}")
 						span.add-on
 							i.icon-time
 			.control-group
 				label.control-label End Time
 				.controls
-					.input-append.bootstrap-timepicker-component(data-date="12-02-2012", data-date-format="dd-mm-yyyy")
+					.input-append.bootstrap-timepicker-component
 						input.span2.timepicker-default(type='text', name='timeEnd', required, value="#{workshop.timeEnd || ''}")
 						span.add-on
 							i.icon-time
@@ -62,6 +62,7 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 
 	:coffeescript
 		$('.timepicker-default').timepicker
+			defaultTime: "9:00 AM"
 			showInputs: false
 			disableFocus: true
 			minuteStep: 15

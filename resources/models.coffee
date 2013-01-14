@@ -86,6 +86,7 @@ exports.workshopSchema = new Schema
 	description: String
 	timeStart: Date
 	timeEnd: Date
+	day: String
 	room: String
 	capacity: Number
 	signedUp: [

@@ -29,6 +29,10 @@ html
 		// Jquery
 		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js")
 		
+		// Bootstrap
+		script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js")
+		script(src="/js/bootstrap-timepicker.js")
+
 		// Google Analytics Tracker
 		script(type="text/javascript")
 				var _gaq = _gaq || [];
@@ -113,8 +117,6 @@ html
 						img(src="/img/logos/ooknakane.png")
 		include elements/addMember
 		include elements/login
-		script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js")
-		script(src="/js/bootstrap-timepicker.js")
 		script
 			$(document).ready(function(){
 				$('a[href="' + window.location.hash + '"]').click()

@@ -208,7 +208,11 @@ server.get '/admin/login/:id', requireAuthentication, (req, res) ->
 			res.redirect '/account'
 			
 server.get '/workshops/:day', (req, res) ->
-	Workshop.find day: req.params.day, (err, workshops) ->
+	if req.params.day == 'wednesday'
+		day = 'March 20, 2013'
+	else
+		day = 'March 21, 2013'
+	Workshop.find day: day, (err, workshops) ->
 		if err
 			res.send "There was an error fetching the workshops."
 		else
@@ -415,6 +419,10 @@ server.post '/api/getMember', requireAuthentication, (req, res) ->
 Workshop API
 ###
 server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
+	# Build Valid Times
+	timeStart = new Date "#{req.body.day} #{req.body.timeStart}"
+	timeEnd = new Date "#{req.body.day} #{req.body.timeEnd}"
+	
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else if req.body.name is "" or req.body.day is ""
@@ -424,8 +432,8 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 			name: req.body.name
 			host: req.body.host
 			description: req.body.description
-			timeStart: req.body.timeStart
-			timeEnd: req.body.timeEnd
+			timeStart: timeStart
+			timeEnd: timeEnd
 			room: req.body.room
 			day: req.body.day
 			capacity: req.body.capacity
@@ -435,7 +443,7 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 				res.send "There was an error saving."
 				console.log err
 			else
-				res.redirect "/workshops/#{req.body.day}"
+				res.redirect "/workshops/#{req.body.day == 'March 20, 2013' ? 'wednesday' : 'thursday'}"
 	else
 		Workshop.findById req.body.id, (err, workshop) ->
 			if err
@@ -444,8 +452,8 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 				workshop.name = req.body.name
 				workshop.host = req.body.host
 				workshop.description = req.body.description
-				workshop.timeStart = req.body.timeStart
-				workshop.timeEnd = req.body.timeEnd
+				workshop.timeStart = timeStart
+				workshop.timeEnd = timeEnd
 				workshop.room = req.body.room
 				workshop.day = req.body.day
 				workshop.capacity = req.body.capacity
@@ -453,7 +461,7 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 					if err
 						res.send "There was an error saving."
 					else
-						res.redirect "/workshops/#{req.body.day}"
+						res.redirect "/workshops/#{req.body.day == 'March 20, 2013' ? 'wednesday' : 'thursday'}"
 	
 server.post '/api/workshop/getEditForm', requireAuthentication, populateWorkshop, (req, res) ->
 	res.render 'elements/workshop', workshop: req.workshop
