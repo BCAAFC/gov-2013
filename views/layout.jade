@@ -18,8 +18,13 @@ html
 
 		// CSS Stuff
 		link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css", rel="stylesheet")
+		link(href="/css/datepicker.css", rel="stylesheet")
 		style(type="text/css")
-			
+			@media (min-width:980px) {
+				body {
+						padding-top: 40px;
+				}
+			}
 
 		// Jquery
 		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js")
@@ -109,6 +114,7 @@ html
 		include elements/addMember
 		include elements/login
 		script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js")
+		script(src="/js/bootstrap-datepicker.js")
 		script
 			$(document).ready(function(){
 				$('a[href="' + window.location.hash + '"]').click()
