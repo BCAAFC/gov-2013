@@ -109,11 +109,23 @@ requireAuthentication = (req, res, next) ->
 		next()
 
 # TODO: Move to cookies
-populateGroup = (req, res, next) ->
+populateGroupMembers = (req, res, next) ->
 	if not req.session.group?
 		next()
 	else
 		Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
+			if err
+				res.send "It looks like that group doesn't exist in our records. You might want to give us a call. \n #{err}"
+			else
+				req.group = group
+				next()
+				
+# TODO: Move to cookies
+populateGroup = (req, res, next) ->
+	if not req.session.group?
+		next()
+	else
+		Group.findById(req.session.group._id).exec (err, group) ->
 			if err
 				res.send "It looks like that group doesn't exist in our records. You might want to give us a call. \n #{err}"
 			else
@@ -145,7 +157,7 @@ server.get '/privacy', (req, res) ->
 		title: "Privacy Policy"
 		group: req.session.group || null
 
-server.get '/account', requireAuthentication, populateGroup, (req, res) ->
+server.get '/account', requireAuthentication, populateGroupMembers, (req, res) ->
 	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
 		if err
 			console.log err
@@ -475,8 +487,9 @@ server.get '/api/delWorkshop/:id', requireAuthentication, (req, res) ->
 				res.send "Couldn't remove that workshop! Try again?"
 			else
 				res.redirect "/workshops/#{workshop.day}"
-				
-server.get '/api/workshop/get', populateGroup, populateWorkshop, (req, res) ->
+
+# Requires a "?workshop=foo" query.
+server.get '/api/workshop/get', populateGroupMembers, populateWorkshop, (req, res) ->
 	if not req.workshop
 		res.send "We could not get the data for your workshop."
 	else
@@ -485,7 +498,56 @@ server.get '/api/workshop/get', populateGroup, populateWorkshop, (req, res) ->
 			group: req.group || null
 			workshop: req.workshop
 
-		
+# Requires a "?workshop=foo&member=bar" query.
+server.get '/api/workshop/attendees/add', populateGroup, populateWorkshop, (req, res) ->
+	if not req.workshop
+		res.send "We could not get the data for your workshop."
+	else if not req.query.member
+		res.send "You did not specify a member."
+	else
+		# Add workshop to the member
+		Member.findById req.query.member, (err, member)->
+			if err
+				res.send "We couldn't find your member."
+			else
+				member.workshops.push req.workshop._id
+				member.save (err)->
+					if err
+						res.send "We couldn't add that workshop to the member!"
+					else
+						# Add member to workshop
+						req.workshop.signedUp.push member._id
+						req.workshop.save (err)->
+							if err
+								res.send "There was an error adding that member to the workshop!"
+							else
+								res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
+
+# Requires a "?workshop=foo&member=bar" query.
+server.get '/api/workshop/attendees/remove', populateGroup, populateWorkshop, (req, res) ->
+	if not req.workshop
+		res.send "We could not get the data for your workshop."
+	else if not req.query.member
+		res.send "You did not specify a member."
+	else
+		# Remove workshop from member
+		Member.findById req.query.member, (err, member)->
+			if err
+				res.send "We couldn't find your member."
+			else
+				member.workshops.splice member.workshops.indexOf(req.workshop._id), 1
+				member.save (err)->
+					if err
+						res.send "We couldn't remove that workshop from the member!"
+					else
+						# Remove member from workshop
+						req.workshop.signedUp.splice req.workshop.signedUp.indexOf(member._id), 1
+						req.workshop.save (err)->
+							if err
+								res.send "There was an error removing that member from the workshop!"
+							else
+								res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
+
 ###
 Group API
 ###
