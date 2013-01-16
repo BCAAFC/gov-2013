@@ -23,15 +23,15 @@ block content
 							td= workshop.name
 							td= workshop.host
 							td= workshop.description.substring(0,40)
-							td= workshop.timeStart.toTimeString()
-							td= workshop.timeEnd.toTimeString()
+							td= workshop.timeStart.toLocaleTimeString()
+							td= workshop.timeEnd.toLocaleTimeString()
 							td= workshop.capacity
 							if group
 								if group.internal.admin
 									td
 										.btn-group
 											a.btn.btn-small.btn-info.edit(data-id="#{workshop._id}", href="#workshop", data-toggle="modal") Edit
-											a.btn.btn-small.btn-danger(href="/api/delWorkshop/#{workshop._id}") Del
+											a.btn.btn-small.btn-danger(href="/api/workshop/delete?workshop=#{workshop._id}") Del
 							td
 								a.btn.btn-small.btn-primary.info(href="/api/workshop/get?workshop=#{workshop._id}") More info...
 
