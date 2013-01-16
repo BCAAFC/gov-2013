@@ -543,18 +543,21 @@ server.get '/api/workshop/attendees/remove', populateGroup, populateWorkshop, (r
 			if err
 				res.send "We couldn't find your member."
 			else
-				member.workshops.splice member.workshops.indexOf(req.workshop._id), 1
-				member.save (err)->
-					if err
-						res.send "We couldn't remove that workshop from the member!"
-					else
-						# Remove member from workshop
-						req.workshop.signedUp.splice req.workshop.signedUp.indexOf(member._id), 1
-						req.workshop.save (err)->
-							if err
-								res.send "There was an error removing that member from the workshop!"
-							else
-								res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
+				if member.workshops.indexOf(req.workshop._id) is -1
+					res.send "That member is not part of the given workshop."
+				else
+					member.workshops.splice member.workshops.indexOf(req.workshop._id), 1
+					member.save (err)->
+						if err
+							res.send "We couldn't remove that workshop from the member!"
+						else
+							# Remove member from workshop
+							req.workshop.signedUp.splice req.workshop.signedUp.indexOf(member._id), 1
+							req.workshop.save (err)->
+								if err
+									res.send "There was an error removing that member from the workshop!"
+								else
+									res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
 
 ###
 Group API
