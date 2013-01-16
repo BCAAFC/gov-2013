@@ -510,18 +510,26 @@ server.get '/api/workshop/attendees/add', populateGroup, populateWorkshop, (req,
 			if err
 				res.send "We couldn't find your member."
 			else
-				member.workshops.push req.workshop._id
-				member.save (err)->
-					if err
-						res.send "We couldn't add that workshop to the member!"
-					else
-						# Add member to workshop
-						req.workshop.signedUp.push member._id
-						req.workshop.save (err)->
+				# Is the member already in that workshop?
+				if member.workshops.indexOf(req.workshop._id) is -1
+					# Is the workshop full already?
+					if req.workshop.signedUp.length < req.workshop.capacity
+						member.workshops.push req.workshop._id
+						member.save (err)->
 							if err
-								res.send "There was an error adding that member to the workshop!"
+								res.send "We couldn't add that workshop to the member!"
 							else
-								res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
+								# Add member to workshop
+								req.workshop.signedUp.push member._id
+								req.workshop.save (err)->
+									if err
+										res.send "There was an error adding that member to the workshop!"
+									else
+										res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
+					else
+						res.send "That workshop is full. Please find a different workshop."
+				else
+					res.send "That member is already a part of that workshop!"
 
 # Requires a "?workshop=foo&member=bar" query.
 server.get '/api/workshop/attendees/remove', populateGroup, populateWorkshop, (req, res) ->
