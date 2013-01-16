@@ -504,6 +504,8 @@ server.get '/api/workshop/attendees/add', populateGroup, populateWorkshop, (req,
 		res.send "We could not get the data for your workshop."
 	else if not req.query.member
 		res.send "You did not specify a member."
+	else if req.group.groupMembers.indexOf(req.query.member) is -1
+		res.send "That member is not a part of your group... Perhaps you're lost?"
 	else
 		# Add workshop to the member
 		Member.findById req.query.member, (err, member)->
@@ -537,6 +539,8 @@ server.get '/api/workshop/attendees/remove', populateGroup, populateWorkshop, (r
 		res.send "We could not get the data for your workshop."
 	else if not req.query.member
 		res.send "You did not specify a member."
+	else if req.group.groupMembers.indexOf(req.query.member) is -1
+		res.send "That member is not a part of your group... Perhaps you're lost?"
 	else
 		# Remove workshop from member
 		Member.findById req.query.member, (err, member)->
