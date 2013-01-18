@@ -41,7 +41,10 @@ exports.groupSchema = new Schema
 		ref: "Member"
 	] # Points to Member
 	log: [exports.logSchema]
-	payments: [Schema.Types.ObjectId]
+	payments: [
+		type: Schema.Types.ObjectId
+		ref: "Payment"
+	]
 	internal:
 		regDate:
 			type: Date
@@ -52,6 +55,15 @@ exports.groupSchema = new Schema
 		admin: 
 			type: Boolean
 			default: false
+
+exports.paymentSchema = new Schema
+	date: Date
+	amount: Number
+	id: String # Points to Paypal's Unique Transaction ID
+	group:
+		type: Schema.Types.ObjectId
+		ref: "Group"
+		
 
 # Members exist as part of groups, and are associated with groups.
 exports.memberSchema = new Schema

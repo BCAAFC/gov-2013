@@ -37,7 +37,7 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 				label.control-label Start Time
 				.controls
 					.input-append.bootstrap-timepicker-component
-						input.span2.timepicker-default(type='text', name='timeStart', required, , value="#{workshop.timeStart || ''}")
+						input.span2.timepicker-default(type='text', name='timeStart', required, value="#{workshop.timeStart || ''}")
 						span.add-on
 							i.icon-time
 			.control-group

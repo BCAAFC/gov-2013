@@ -56,6 +56,7 @@ Login = db.model 'Login', Models.loginSchema
 Workshop = db.model 'Workshop', Models.workshopSchema
 Group = db.model 'Group', Models.groupSchema
 Member = db.model 'Member', Models.memberSchema
+Payment = db.model 'Payment', Models.paymentSchema
 
 ###
 # Custom Functions
@@ -169,30 +170,44 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 			youth = []
 			youngAdults = []
 			chaperones = []
+			earlyPrice = 0
+			regPrice = 0
+			
 			for member in group.groupMembers
 				bill += member.ticketPrice
+				
+				if member.ticketPrice is 125
+					earlyPrice += 1
+				else if member.ticketPrice is 175
+					regPrice += 1
+				
 				if member.type is "Youth"
 					youth.push member
 				else if member.type is "Young Adult"
 					youngAdults.push member
 				else if member.type is "Chaperone"
 					chaperones.push member
+					
 			# Temp workaround while we migrate to a better UI
 			group.youth = youth
 			group.youngAdults = youngAdults
 			group.chaperones = chaperones
 			req.session.group = group
+			
 			# Accumulate Paid
 			paid = 0
 			if req.session.group.payments
 				for payment in req.session.group.payments
 					paid += payment.amount
+			
 			res.render 'account/index',
 				title: "Account Management"
 				group: req.session.group || null
 				billing:
 					total: bill
 					paid: paid
+					earlyPrice: earlyPrice
+					regPrice: regPrice
 
 server.get '/account/signup', (req, res) ->
 	res.render 'account/signup',

@@ -3,14 +3,61 @@ p The information presented here is limited by the time involved to recieve, pro
 
 h2 Billing Status
 b Your current group total: 
-| #{billing.total}
+| $ #{billing.total}
 br
 b Your group has paid: 
-| #{billing.paid}
+| $ #{billing.paid}
 br
 b Balance: 
-| #{billing.total - billing.paid}
+| $ #{billing.total - billing.paid}
 
 h2 Payments
 p The following is an approximate log of payments confirmed to this date. If there is a problem please contact us.
+
+table.table.table-hover
+	thead
+		tr
+			th Payment Date
+			th Payment Amount
+	tbody
+		for payment in group.payments
+			tr
+				td= payment.date.toDateString()
+				td= payment.amount
+
+h2 New Payment
+form(action="https://www.paypal.com/cgi-bin/webscr", method="post")
+	input(type="hidden", name="cmd", value="_cart")
+	input(type="hidden", name="upload", value="1")
+	input(type="hidden", name="business", value="accounting@bcaafc.com")
+	input(type="hidden", name="currency_code", value="CAD")
+	
+	input(type="hidden", name="no_note", value="0")
+	input(type="hidden", name="cn", value="Please enter your Affiliation:")
+	input(type="hidden", name="custom", value="A test value")
+
+	if billing.earlyPrice != 0 && billing.regPrice != 0
+		input(type='hidden', name='item_name_1', value='GOV 2013 Registration (Early Bird)')
+		input(type='hidden', name='quantity_1', value="#{billing.earlyPrice}")
+		input(type='hidden', name='amount_1', value='125')
+
+		input(type='hidden', name='item_name_2', value='GOV 2013 Registration (Regular)')
+		input(type='hidden', name='quantity_2', value="#{billing.regPrice}")
+		input(type='hidden', name='amount_2', value='175')
+
+
+	else if billing.earlyPrice != 0
+		input(type='hidden', name='item_name_1', value='GOV 2013 Registration (Early Bird)')
+		input(type='hidden', name='quantity_1', value="#{billing.earlyPrice}")
+		input(type='hidden', name='amount_1', value='125')
+
+	else if billing.regPrice != 0
+		input(type='hidden', name='item_name_1', value='GOV 2013 Registration (Early Bird)')
+		input(type='hidden', name='quantity_1', value="#{billing.regPrice}")
+		input(type='hidden', name='amount_1', value='175')
+
+	else
+		p You don't have any payments to make yet!
+
+	input.btn.btn-primary(type='submit')
 
