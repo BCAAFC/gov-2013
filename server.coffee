@@ -16,6 +16,17 @@ pwd = require 'pwd'
 # Connect-assets handles transparent compiling for us.
 assets = require 'connect-assets'
 
+# We will use NodeMailer to send emails from the app.
+nodemailer = require("nodemailer")
+mailer = nodemailer.createTransport("SMTP",
+		host: 'smtp.gmail.com',
+		port: 465,
+		ssl: true,
+		use_authentication: true,
+		user: process.env.mail_user,
+		pass: process.env.mail_pass
+)
+
 # Setup the AppFog Enviroment. AppFog basically hands us a bunch of data in an enviroment variable called `VCAP_SERVICES`. [Appfog's Documentation](https://docs.appfog.com/services)
 appfog = JSON.parse process.env.VCAP_SERVICES if process.env.VCAP_SERVICES?
 
@@ -214,6 +225,26 @@ server.get '/account/signup', (req, res) ->
 		title: "Signup"
 		group: req.session.group || null
 		
+server.get '/account/recoverPassword', (req, res) ->
+	res.render 'account/recoverPassword',
+		title: "Password Recovery"
+		group: null
+		
+server.post '/account/recoverPassword', (req, res) ->
+	if req.skill is 10 and req.query.key is null
+		mailer.sendMail
+			from: "gatheringourvoices.noreply@gmail.com"
+			to: "andrew@hoverbear.org, dpreston@bcaafc.com"
+			subject: "Test"
+			html: "This is a test to make sure the mailer works."
+			(err)->
+				if err
+					res.send "We couldn't mail you a recovery email... Call us at 250-388-5522"
+				else
+					res.send "We've sent you a recovery email... Please check your email."
+	else
+		console.log "Success!"
+
 server.get '/admin', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
