@@ -454,7 +454,7 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 							res.redirect '/account#members'
 					
 server.post '/api/editMember', requireAuthentication, (req, res) ->
-	Member.findOne req.body.id, (err, member) ->
+	Member.findById req.body.id, (err, member) ->
 		member.name = req.body['member.name']
 		member.birthDate = req.body['member.birthDate']
 		member.gender = req.body['member.gender']
@@ -466,6 +466,10 @@ server.post '/api/editMember', requireAuthentication, (req, res) ->
 		member.emergencyInfo.name = req.body['member.emergencyInfo.name']
 		member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
 		member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
+		if req.body['member.youthInCare'] is 'on'
+			member.youthInCare = true
+		else
+			member.youthInCare = false
 		member.save (err) ->
 			if err
 				res.send "The edits could not be saved. Please try again?"

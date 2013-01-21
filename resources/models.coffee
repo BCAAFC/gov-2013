@@ -83,6 +83,7 @@ exports.memberSchema = new Schema
 		# Ideally we will split the items listed in the future.
 		allergies: String
 		conditions: String
+	youthInCare: Boolean
 	ticketPrice: Number
 	# These associate to `Workshop`s
 	workshops: [

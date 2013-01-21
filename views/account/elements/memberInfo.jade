@@ -8,7 +8,7 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 		.control-group
 			label.control-label Name
 			.controls
-				input(type='text', name='member.name', required, value="#{member.name}")
+				input(type='text', name='member.name', value="#{member.name}")
 		.control-group
 			label.control-label Type
 			.controls
@@ -17,7 +17,7 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 		.control-group
 			label.control-label Birth Date
 			.controls
-				input(type='date', name='member.birthDate', required, value="#{member.birthDate}")
+				input(type='date', name='member.birthDate', value="#{member.birthDate}")
 		.control-group
 			label.control-label Gender
 			.controls
@@ -29,11 +29,18 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 		.control-group
 			label.control-label Phone
 			.controls
-				input(type='text', name='member.phone', required, value="#{member.phone}")
+				input(type='text', name='member.phone', value="#{member.phone}")
 		.control-group
 			label.control-label Email
 			.controls
-				input(type='text', name='member.email', required, value="#{member.email}")
+				input(type='text', name='member.email', value="#{member.email}")
+		.control-group
+			label.control-label Youth In Care
+			.controls
+				if member.youthInCare
+					input(type='checkbox', name="member.youthInCare", checked)
+				else
+					input(type='checkbox', name="member.youthInCare")
 
 	// Emergency Info
 	fieldset
@@ -41,7 +48,7 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 		.control-group
 			label.control-label Medical Number
 			.controls
-				input(type='text', name='member.emergencyInfo.medicalNum', required, value="#{member.emergencyInfo.medicalNum}")
+				input(type='text', name='member.emergencyInfo.medicalNum', value="#{member.emergencyInfo.medicalNum}")
 		.control-group
 			label.control-label Allergies
 			.controls
