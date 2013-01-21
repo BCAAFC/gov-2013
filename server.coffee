@@ -225,26 +225,59 @@ server.get '/account/signup', (req, res) ->
 		title: "Signup"
 		group: req.session.group || null
 		
-server.get '/account/recoverPassword', (req, res) ->
-	res.render 'account/recoverPassword',
+server.get '/account/startRecovery', (req, res) ->
+	res.render 'account/startRecovery',
 		title: "Password Recovery"
 		group: null
-		
-server.post '/account/recoverPassword', (req, res) ->
-	if req.skill is 10 and req.query.key is null
-		mailer.sendMail
-			from: "gatheringourvoices.noreply@gmail.com"
-			to: "andrew@hoverbear.org, dpreston@bcaafc.com"
-			subject: "Test"
-			html: "This is a test to make sure the mailer works."
-			(err)->
-				if err
-					res.send "We couldn't mail you a recovery email... Call us at 250-388-5522"
-				else
-					res.send "We've sent you a recovery email... Please check your email."
-	else
-		console.log "Success!"
 
+server.post '/account/startRecovery', (req, res) ->
+	if req.body.skill is '10'
+		Group.findOne 'primaryContact.email': req.body.email, (err, group) ->
+			if err
+				res.send "We couldn't find a group associated with that email... Maybe you used a different email?"
+			else
+				mailer.sendMail
+					from: "gatheringourvoices.noreply@gmail.com"
+					to: group.primaryContact.email
+					subject: "Gathering Our Voices 2013 -- Password Recovery"
+					html: "Hello! There was a request to recover your password via the Gathering Our Voices 2013 site. If this was you, please visit <a href='http://localhost:8080/account/endRecovery?key=#{group._id}&email=#{group.primaryContact.email}'>this link.</a>"
+					(err)->
+						if err
+							res.send "We couldn't mail you a recovery email... Call us at 250-388-5522"
+						else
+							res.send "We've sent you a recovery email... Please check your email."
+	else
+		res.send "It looks like you might be a robot... If you're having trouble with answering the question try entering '10'."
+
+# Requires a '?key=foo&email=bar' where key should be equal to the group ID.
+server.get '/account/endRecovery', (req, res) ->
+	res.render 'account/endRecovery',
+		title: "Password Recovery"
+		group: null
+		key: req.query.key || null
+		email: req.query.email || null
+
+server.post '/account/endRecovery', (req, res) ->
+	if req.body.pass is not req.body.passConfirm
+		res.send "Please make sure your passwords match!"
+	else
+		Login.findOne _group: req.body.key, (err, login) ->
+			if err
+				res.send "We couldn't find that group."
+			else
+				pwd.hash req.body.pass, (err, salt, hash) ->
+					if err
+						res.send "There was a problem hashing your password."
+					else
+						login.salt = salt
+						login.hash = hash
+						login.save (err) ->
+							if err
+								res.send "There was a problem saving your new password."
+							else
+								res.send "Password recovered successfully, please return <a href='localhost:8080'>home</a> and try to login!"
+
+		
 server.get '/admin', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
@@ -317,7 +350,6 @@ server.post '/api/signup', (req, res) ->
 	for item in ['name', 'email', 'pass', 'passConfirm', 'phone', 'affiliation', 'address', 'city', 'province', 'postalCode']
 		if req.body[item] is "" or null
 			res.send "Please be aware all fields (except fax) are required and must be filled out."
-	
 	Login.findOne
 		email: req.body.email
 		(err, found) ->

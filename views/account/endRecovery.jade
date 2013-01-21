@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+	p You're almost there! Please enter a new password!
+	form.form(action="/account/endRecovery", method="POST")
+		input(type="hidden", name="key", value="#{key}")
+		input(type="hidden", name="email", value="#{email}")
+		.control-group
+			label.control-label New Password
+			.controls
+				input(type="password", name="pass")
+		.control-group
+			label.control-label Password Confirmation
+			.controls
+				input(type="password", name="passConfirm")
+		input.btn.btn-primary.btn-block(type="submit", value="Finish Recovery")
