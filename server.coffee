@@ -125,7 +125,7 @@ populateGroupMembers = (req, res, next) ->
 	if not req.session.group?
 		next()
 	else
-		Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
+		Group.findById(req.session.group._id).populate('groupMembers').populate('payments').exec (err, group) ->
 			if err
 				res.send "It looks like that group doesn't exist in our records. You might want to give us a call. \n #{err}"
 			else
@@ -181,16 +181,16 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 			youth = []
 			youngAdults = []
 			chaperones = []
-			earlyPrice = 0
-			regPrice = 0
+			earlyTotal = 0
+			regTotal = 0
 			
 			for member in group.groupMembers
 				bill += member.ticketPrice
 				
 				if member.ticketPrice is 125
-					earlyPrice += 1
+					earlyTotal += 1
 				else if member.ticketPrice is 175
-					regPrice += 1
+					regTotal += 1
 				
 				if member.type is "Youth"
 					youth.push member
@@ -198,6 +198,12 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 					youngAdults.push member
 				else if member.type is "Chaperone"
 					chaperones.push member
+
+			earlyPaid = 0
+			regPaid = 0
+			for payment in group.payments
+				earlyPaid += payment.earlyTickets
+				regPaid += payment.regTickets
 					
 			# Temp workaround while we migrate to a better UI
 			group.youth = youth
@@ -217,8 +223,10 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 				billing:
 					total: bill
 					paid: paid
-					earlyPrice: earlyPrice
-					regPrice: regPrice
+					earlyTotal: earlyTotal
+					regTotal: regTotal
+					earlyPaid: earlyPaid
+					regPaid: regPaid
 
 server.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
@@ -240,7 +248,7 @@ server.post '/account/startRecovery', (req, res) ->
 					from: "gatheringourvoices.noreply@gmail.com"
 					to: group.primaryContact.email
 					subject: "Gathering Our Voices 2013 -- Password Recovery"
-					html: "Hello! There was a request to recover your password via the Gathering Our Voices 2013 site. If this was you, please visit <a href='http://localhost:8080/account/endRecovery?key=#{group._id}&email=#{group.primaryContact.email}'>this link.</a>"
+					html: "Hello! There was a request to recover your password via the Gathering Our Voices 2013 site. If this was you, please visit <a href='http://gov.hoverbear.org/account/endRecovery?key=#{group._id}&email=#{group.primaryContact.email}'>this link.</a>"
 					(err)->
 						if err
 							res.send "We couldn't mail you a recovery email... Call us at 250-388-5522"
@@ -275,7 +283,7 @@ server.post '/account/endRecovery', (req, res) ->
 							if err
 								res.send "There was a problem saving your new password."
 							else
-								res.send "Password recovered successfully, please return <a href='localhost:8080'>home</a> and try to login!"
+								res.send "Password recovered successfully, please return <a href='http://gov.hoverbear.org'>home</a> and try to login!"
 
 		
 server.get '/admin', requireAuthentication, (req, res) ->

@@ -36,24 +36,23 @@ form(action="https://www.paypal.com/cgi-bin/webscr", method="post")
 	input(type="hidden", name="cn", value="Please enter your Affiliation:")
 	input(type="hidden", name="custom", value="A test value")
 
-	if billing.earlyPrice != 0 && billing.regPrice != 0
+	if billing.earlyTotal - billing.earlyPaid != 0 && billing.regTotal - billing.regPaid != 0
 		input(type='hidden', name='item_name_1', value='GOV 2013 Registration (Early Bird)')
-		input(type='hidden', name='quantity_1', value="#{billing.earlyPrice}")
+		input(type='hidden', name='quantity_1', value="#{billing.earlyTotal - billing.earlyPaid}")
 		input(type='hidden', name='amount_1', value='125')
 
 		input(type='hidden', name='item_name_2', value='GOV 2013 Registration (Regular)')
-		input(type='hidden', name='quantity_2', value="#{billing.regPrice}")
+		input(type='hidden', name='quantity_2', value="#{billing.regTotal - billing.regPaid}")
 		input(type='hidden', name='amount_2', value='175')
 
-
-	else if billing.earlyPrice != 0
+	else if billing.earlyTotal - billing.earlyPaid != 0
 		input(type='hidden', name='item_name_1', value='GOV 2013 Registration (Early Bird)')
-		input(type='hidden', name='quantity_1', value="#{billing.earlyPrice}")
+		input(type='hidden', name='quantity_1', value="#{billing.earlyTotal - billing.earlyPaid}")
 		input(type='hidden', name='amount_1', value='125')
 
-	else if billing.regPrice != 0
-		input(type='hidden', name='item_name_1', value='GOV 2013 Registration (Early Bird)')
-		input(type='hidden', name='quantity_1', value="#{billing.regPrice}")
+	else if billing.regTotal - billing.regPaid != 0
+		input(type='hidden', name='item_name_1', value='GOV 2013 Registration (Regular)')
+		input(type='hidden', name='quantity_1', value="#{billing.regTotal - billing.regPaid}")
 		input(type='hidden', name='amount_1', value='175')
 
 	else
