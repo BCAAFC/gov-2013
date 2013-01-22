@@ -1,7 +1,7 @@
 extends layout
 
 block content
-	.row-fluid
+	.row
 		.span8.offset2
 			h1 Gathering Our Voices
 
@@ -9,11 +9,35 @@ block content
 
 			p For more information about the conference 
 				a(href="http://www.bcaafc.com/newsandevents/gathering-our-voices") visit our main site.
-	.row-fluid
+	.row
 		if group
 			.span8.offset2
 				a.btn.btn-large.btn-success.btn-block(href="/account") Account Mangement
 		else
-			.btn-group.span8.offset2(style="text-align: center")
-				a.btn.btn-large.btn-info.btn-large(style="width: 25%", href="/account/signup") Sign Up!
-				a.btn.btn-large.btn-primary.btn-large(style="width: 25%", href="#login", data-toggle='modal') Log In!
+			.span8.offset2
+				hr
+				.container
+					.row
+						.span4.loginForm(style="text-align: center")
+							form.form(action="/api/login", method='post', style="margin-bottom: 0px")
+								.control-group
+									label.control-label Email
+									.controls
+										input(type='text', name='email', placeholder="example@bcaafc.com", required)
+								.control-group
+									label.control-label Password
+									.controls
+										input(type='password', name='pass', placeholder="", required)
+								.control-group
+									label.control-label 
+									.controls
+										input.btn.btn-primary(type='submit', value="Log In")
+						.span4.register(style="text-align: center")
+							p Not signed up?
+							p Want to go to this year's Gathering Our Voices Conference?
+							br
+							br
+							br
+							a.btn.btn-inverse.btn-block(href="/account/signup") Register Now
+				hr
+							

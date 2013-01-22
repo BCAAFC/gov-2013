@@ -339,7 +339,6 @@ API routes
 ###
 server.post '/api/login', (req, res) ->
 	Login.findOne email: req.body.email, (err, login) ->
-		console.log 'Found login'
 		if err or not login
 			res.send "You're not signed up."
 		else
@@ -545,7 +544,11 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 				res.send "There was an error saving."
 				console.log err
 			else
-				res.redirect "/workshops/#{req.body.day == 'March 20, 2013' ? 'wednesday' : 'thursday'}"
+				if req.body.day is 'March 20, 2013'
+					target = 'wednesday'
+				else
+					target = 'thursday'
+				res.redirect "/workshops/#{target}"
 	else
 		Workshop.findById req.body.id, (err, workshop) ->
 			if err
@@ -563,7 +566,11 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 					if err
 						res.send "There was an error saving."
 					else
-						res.redirect "/workshops/#{req.body.day == 'March 20, 2013' ? 'wednesday' : 'thursday'}"
+						if req.body.day is 'March 20, 2013'
+							target = 'wednesday'
+						else
+							target = 'thursday'
+						res.redirect "/workshops/#{target}"
 	
 server.post '/api/workshop/getEditForm', requireAuthentication, populateWorkshop, (req, res) ->
 	res.render 'elements/workshop', workshop: req.workshop

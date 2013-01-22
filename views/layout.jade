@@ -55,31 +55,6 @@ html
 						a(href='/')
 							i.icon-home.icon-white
 							| Home
-					if group
-						li.dropdown
-							a.dropdown-toggle#accountDrop(href='#', data-toggle="dropdown")
-								i.icon-edit.icon-white
-								| Account
-								b.caret
-							ul.dropdown-menu(aria-labelledby="accountDrop")
-								li
-									a(href="/account") Management
-								li
-									a(href="#add", data-toggle="modal") Add a member
-								li
-									a(href="/account#billing") Payment Details
-								li
-									form(action="/api/logout", method="post", style="text-align: center; margin: 0px 0px 0px 0px;")
-										input.btn.btn-small.btn-warning(type="submit", value="Log Out")
-					else
-						li
-							a(href="#login", data-toggle='modal')
-								i.icon-ok-circle.icon-white
-								| Login
-						li
-							a(href='/account/signup')
-								i.icon-edit.icon-white
-								| Sign up
 
 					li.dropdown
 						a.dropdown-toggle#workshopDrop(href="#", data-toggle="dropdown")
@@ -95,12 +70,33 @@ html
 						a(href="/privacy")
 							i.icon-eye-open.icon-white
 							| Privacy Policy
+				ul.nav.pull-right
 					if group
 						if group.internal.admin
 							li
 								a(href="/admin")
 									i.icon-hdd.icon-white
 									| Admin
+					if group
+						li.dropdown
+							a.dropdown-toggle#accountDrop(href='#', data-toggle="dropdown")
+								i.icon-edit.icon-white
+								| Account
+								b.caret
+							ul.dropdown-menu(aria-labelledby="accountDrop")
+								li
+									a(href="/account") Management
+								li
+									a(href="#add", data-toggle="modal") Add a member
+								li
+									a(href="/account#billing") Payment Details
+						li
+							form(action="/api/logout", method="post", style="text-align: center; margin: 0px 0px 0px 0px;")
+								input.btn.btn-small.btn-danger(type="submit", value="Log Out")
+					else
+						li
+							form(action="/", style="text-align: center; margin: 0px 0px 0px 0px;")
+								input.btn.btn-success.btn-small(type="submit", value="Login")
 		.container
 			.row
 				div(style="text-align: center;")
@@ -115,8 +111,8 @@ html
 						img(src="/img/logos/bcaafc.png")
 					a(href="http://www.friendshipcentre.ca/")
 						img(src="/img/logos/ooknakane.png")
-		include elements/addMember
 		include elements/login
+		include elements/addMember
 		script
 			$(document).ready(function(){
 				$('a[href="' + window.location.hash + '"]').click()
