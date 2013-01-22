@@ -412,23 +412,26 @@ server.post '/api/addMember', requireAuthentication, (req, res) ->
 	# Fail if the name is empty
 	if req.body.name is "" or null
 		res.send "Please fill out a name (even a placeholder) for this member."
-	req.body.ticketPrice = getTicketPrice()
-	member = new Member req.body
-	member.group = req.session.group._id
-	member.save (err) ->
-		if err
-			res.send "We could not save that member, could you try again?"
-		else
-			Group.findByIdAndUpdate req.session.group._id,
-				$push:
-					groupMembers: member._id
-					log: event: "The member #{req.body.name} was added to the group member list."
-				(err, group) ->
-					if err
-						res.send "There was an error adding the member to your group."
-					else
-						req.session.group = group
-						res.redirect '/account#members'
+	else if req.body.type is "" or null
+		res.send "You need to specify a type for that attendee (Youth, Young Adult, or Chaperone)"
+	else
+		req.body.ticketPrice = getTicketPrice()
+		member = new Member req.body
+		member.group = req.session.group._id
+		member.save (err) ->
+			if err
+				res.send "We could not save that member, could you try again?"
+			else
+				Group.findByIdAndUpdate req.session.group._id,
+					$push:
+						groupMembers: member._id
+						log: event: "The member #{req.body.name} was added to the group member list."
+					(err, group) ->
+						if err
+							res.send "There was an error adding the member to your group."
+						else
+							req.session.group = group
+							res.redirect '/account#members'
 
 server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
@@ -451,6 +454,9 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 							console.log "#{member.name} removed!"
 							req.session.group = group
 							res.redirect '/account#members'
+							Group.findByIdAndUpdate req.params.id,
+								$push:
+									log: event: "The member #{req.body.name} was removed to the group member list."
 					
 server.post '/api/editMember', requireAuthentication, (req, res) ->
 	Member.findById req.body.id, (err, member) ->
