@@ -111,9 +111,12 @@ html
 						img(src="/img/logos/bcaafc.png")
 					a(href="http://www.friendshipcentre.ca/")
 						img(src="/img/logos/ooknakane.png")
-		include elements/login
 		include elements/addMember
 		script
 			$(document).ready(function(){
 				$('a[href="' + window.location.hash + '"]').click()
 			});
+			$('input').popover({
+				placement: 'right',
+				trigger: 'focus'
+			})

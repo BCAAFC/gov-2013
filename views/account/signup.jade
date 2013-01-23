@@ -12,7 +12,7 @@ block content
 					.control-group
 						label.control-label Email
 						.controls
-							input(type="text", name="email", placeholder="Email", required)
+							input(type="text", name="email", placeholder="Email", required, data-content="This is the email for the primary contact of your group. We will send all communications to this email.")
 					.control-group
 						label.control-label Password
 						.controls
@@ -20,7 +20,7 @@ block content
 					.control-group
 						label.control-label Password (again!)
 						.controls
-							input(type="password", name="passConfirm", placeholder="Pass Confirmation", required)
+							input(type="password", name="passConfirm", placeholder="Pass Confirmation", required, data-content="This should be the same as your password above.")
 
 			fieldset
 				legend Primary Contact Information
@@ -34,7 +34,7 @@ block content
 					.control-group
 						label.control-label Phone #
 						.controls
-							input(type="text", name="phone", placeholder="Phone", required)
+							input(type="text", name="phone", placeholder="Phone", required, data-content="If you're coming to the conference you might want to consider using your cell number, that way we can get in touch with you during the event.")
 
 			fieldset
 				legend Group Information
@@ -44,11 +44,11 @@ block content
 					.control-group
 						label.control-label Affiliation
 						.controls
-							input(type="text", name="affiliation", placeholder="Affiliation", required)
+							input(type="text", name="affiliation", placeholder="Affiliation", required, data-content="Please list the name of the group/band/school/Friendship Centre etc. that you are registering.")
 					.control-group
 						label.control-label Address
 						.controls
-							input(type="text", name="address", placeholder="Address", required)
+							input(type="text", name="address", placeholder="Address", required, data-content="The First Line of your mailing address. For the VNFC, this would be '231 Regina Avenue', for example.")
 					.control-group
 						label.control-label City
 						.controls
@@ -60,11 +60,11 @@ block content
 					.control-group
 						label.control-label Postal Code
 						.controls
-							input(type="text", name="postalCode", placeholder="Postal Code", required)
+							input(type="text", name="postalCode", placeholder="Postal Code", required, data-content="Please include the space. For example, 'V8Z 1J6'")
 					.control-group
 						label.control-label Fax
 						.controls
-							input(type="text", name="fax", placeholder="Fax")
+							input(type="text", name="fax", placeholder="Fax", data-content="This is not required, but if you don't give us a fax number, all documents sent to you will be via email.")
 
 			br
 			
