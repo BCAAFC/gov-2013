@@ -8,6 +8,6 @@ table.table.table-hover
 	tbody
 		for event in group.log
 			tr
-				td #{new Date(event.date).toString()}
+				td #{event.date.toDateString()} @ #{event.date.toLocaleTimeString()}
 				td #{event.event}
 hr

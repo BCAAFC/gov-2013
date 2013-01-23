@@ -2,11 +2,12 @@ extends ../layout
 
 block content
 	.row-fluid
-		h1= title
+		h1 Register
 		form.form-horizontal(action="/api/signup", method='post')
 			fieldset
 				legend Login Information
-				p Please keep this information in a safe place. We have not yet implemented password recovery, so if you loose your password manual intervention will be required.
+				p This information should reflect the email and password of <b>your group's primary contact.</b>
+				p Please keep this information in a safe place.
 				.well
 					.control-group
 						label.control-label Email
@@ -66,4 +67,4 @@ block content
 							input(type="text", name="fax", placeholder="Fax")
 
 			br
-			input.btn.btn-block.btn-large.btn-primary(type="submit")
+			input.btn.btn-block.btn-large.btn-primary(type="submit", value="Register")
