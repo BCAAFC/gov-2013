@@ -24,7 +24,7 @@
 				.control-group
 					label.control-label Birth Date
 					.controls
-						input(type='text', name='birthDate')
+						input(type='text', name='birthDate', data-content="Youth <b>must</b> be fourteen (14) to attend this event. Any delegate seventeen (17) and under <b>must</b> be accompanied by a chaperone.<br> <b>Born After:</b> March 18, 1996 <br> <b>Born before:</b> March 19, 1999")
 						br
 						small Please use yyyy-mm-dd.
 				.control-group
@@ -38,7 +38,7 @@
 				.control-group
 					label.control-label Phone
 					.controls
-						input(type='text', name='phone')
+						input(type='text', name='phone', data-content="If you're coming to the conference you might want to consider using your cell number, that way we can get in touch with you during the event.")
 				.control-group
 					label.control-label Email
 					.controls
@@ -54,15 +54,15 @@
 				.control-group
 					label.control-label Medical Number
 					.controls
-						input(type='text', name='emergencyInfo.medicalNum')
+						input(type='text', name='emergencyInfo.medicalNum', data-content="This should be your 10-digit CareCard number.<br> If you are unable to provide this information immediately, please ensure that you have the medical number on hand at the conference.")
 				.control-group
 					label.control-label Allergies
 					.controls
-						input(type='text', name='emergencyInfo.allergies')
+						input(type='text', name='emergencyInfo.allergies', data-content="Please enter a list of all allergies. If you have multiple allergies please comma separate them.")
 				.control-group
 					label.control-label Conditions
 					.controls
-						input(type='text', name='emergencyInfo.conditions')
+						input(type='text', name='emergencyInfo.conditions', data-content="Please enter a list of medical conditions for the registrant, if you have multiple conditions to report, please use a comma to seperate them.")
 			
 			// Emergency Contact
 			fieldset
@@ -70,15 +70,15 @@
 				.control-group
 					label.control-label Name
 					.controls
-						input(type='text', name='emergencyInfo.name')
+						input(type='text', name='emergencyInfo.name', data-content="Please list the phone # of the emergency contact person above who can advise us on medical conditions, doctors or vital information.")
 				.control-group
 					label.control-label Relation
 					.controls
-						input(type='text', name='emergencyInfo.relation')
+						input(type='text', name='emergencyInfo.relation', data-content="For example, 'Mother' or 'Babysitter'")
 				.control-group
 					label.control-label Phone
 					.controls
-						input(type='text', name='emergencyInfo.phone')
+						input(type='text', name='emergencyInfo.phone', data-content="Please list the phone # of the emergency contact person above who can advise us on medical conditions, doctors or vital information.")
 
 		.modal-footer
 			button.btn(data-dismiss='modal', aria-hidden='true') Cancel
