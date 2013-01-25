@@ -5,11 +5,11 @@ form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 			.control-group
 				label.control-label Affiliation: 
 				.controls
-					input(type='text', name='affiliation', required, value="#{group.groupInformation.affiliation}")
+					input(type='text', name='affiliation', required, value="#{group.groupInformation.affiliation}", data-content="Please list the name of the group/band/school/Friendship Centre etc. that you are registering.")
 			.control-group
 				label.control-label Address: 
 				.controls
-					input(type='text', name='address', required, value="#{group.groupInformation.address}")
+					input(type='text', name='address', required, value="#{group.groupInformation.address}", data-content="The First Line of your mailing address. For the VNFC, this would be '231 Regina Avenue', for example.")
 			.control-group
 				label.control-label City: 
 				.controls
@@ -21,11 +21,11 @@ form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 			.control-group
 				label.control-label Postal Code: 
 				.controls
-					input(type='text', name='postalCode', required, value="#{group.groupInformation.postalCode}")
+					input(type='text', name='postalCode', required, value="#{group.groupInformation.postalCode}", data-content="Please include the space. For example, 'V8Z 1J6'")
 			.control-group
 				label.control-label Fax: 
 				.controls
-					input(type='text', name='fax', value="#{group.groupInformation.fax}")
+					input(type='text', name='fax', value="#{group.groupInformation.fax}", data-content="This is not required, but if you don't give us a fax number, all documents sent to you will be via email.")
 
 	.span6
 		fieldset
