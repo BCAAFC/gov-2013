@@ -471,8 +471,16 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 							console.log err
 							res.send "The user was removed from your group, but may still exist in our system. (There was an error)"
 						else
+							for workshopId in member.workshops
+								Workshop.findById workshopId, (err, workshop) ->
+									if err
+										console.log "Couldn't remove #{req.params.id} from #{workshop._id}: \n #{err}"
+									else
+										index = workshop.signedUp.indexOf req.params.id
+										workshop.signedUp.splice index, 1
+										console.log "Removed #{req.params.id} from #{workshop._id}"
+										workshop.save()
 							member.remove()
-							console.log "#{member.name} removed!"
 							req.session.group = group
 							res.redirect '/account#members'
 							Group.findByIdAndUpdate req.params.id,
