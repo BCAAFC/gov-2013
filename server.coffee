@@ -730,11 +730,30 @@ server.get '/api/removeGroup/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Group.remove _id: req.params.id, (err) ->
+		# Remove all members from the group first.
+		Group.findById req.params.id, (err, group) ->
 			if err
-				res.send "Couldn't remove that group! Try again?"
+				res.send "Couldn't find that group!"
 			else
-				res.redirect '/admin'
+				Login.remove _group: group._id, (err) ->
+					if err
+						console.log "Couldn't remove that login! #{err}"
+				for member in group.groupMembers
+					Member.findById member, (err, member) ->
+						for workshopId in member.workshops
+							Workshop.findById workshopId, (err, workshop) ->
+								if err
+									console.log "Couldn't remove #{req.params.id} from #{workshop._id}: \n #{err}"
+								else
+									index = workshop.signedUp.indexOf req.params.id
+									workshop.signedUp.splice index, 1
+									console.log "Removed #{req.params.id} from #{workshop._id}"
+									workshop.save()
+				Group.remove _id: req.params.id, (err) ->
+					if err
+						res.send "Couldn't remove that group! Try again?"
+					else
+						res.redirect '/admin'
 				
 
 ###
