@@ -311,7 +311,7 @@ server.get '/workshops/:day', (req, res) ->
 		day = 'March 20, 2013'
 	else
 		day = 'March 21, 2013'
-	Workshop.find day: day, (err, workshops) ->
+	Workshop.find(day: day).sort('timeStart').exec (err, workshops) ->
 		if err
 			res.send "There was an error fetching the workshops."
 		else
