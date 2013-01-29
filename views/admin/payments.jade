@@ -1,0 +1,63 @@
+extends ../layout
+
+block content
+	.row-fluid
+		.span12
+			h1 Payments for #{targetGroup.groupInformation.affiliation}
+			table.table.table-hover
+				thead
+					tr
+						th Date
+						th Earlybird ($125)
+						th Regular ($175)
+						th Paypal ID
+						th Actions
+				tbody
+					if targetGroup.payments
+						for payment in targetGroup.payments
+							tr
+								td= payment.date.toDateString()
+								td= payment.earlyTickets
+								td= payment.regTickets
+								td= payment.paypal
+								td
+									.btn-group
+										a.btn(href='/api/payment/delete?group=#{targetGroup._id}&payment=#{payment._id}') Delete
+						tr
+							td
+								b Totals:
+							td $ #{totals.early * 125}
+							td $ #{totals.reg * 175}
+							td 
+								b Grand Total: 
+								| $ #{totals.early * 125 + totals.reg * 175}
+
+	.row-fluid
+		.span12
+			h3 Add new payment
+			form.form-horizontal(action="/api/payment/add", method="POST")
+				input(type="hidden", name="id", value="#{group._id}")
+				.control-group
+					label.control-label Date
+					.controls
+						input(type="text", name="date", required)
+				.control-group
+					label.control-label Earlybird ($125)
+					.controls
+						input(type="number", name="earlyTickets", required)
+				.control-group
+					label.control-label Regular ($175)
+					.controls
+						input(type="number", name="regTickets", required)
+				.control-group
+					label.control-label Paypal ID
+					.controls
+						input(type="text", name="paypal", required)
+				.control-group
+					.controls
+						input.btn.btn-primary(type="submit", value="Add Payment")
+
+	.modal.hide.fade#groupNotes(tabindex='-1', role='dialog', aria-hidden='true')
+		include elements/groupNotes.jade
+
+	!= js('admin/main')

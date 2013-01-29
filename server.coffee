@@ -298,6 +298,31 @@ server.get '/admin', requireAuthentication, (req, res) ->
 					groups: groups
 					workshops: workshops
 
+# This route requires a '?group=foo' query where foo is the group id.
+server.get '/admin/payments', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById(req.query.group).populate('payments').exec (err, targetGroup) ->
+			if err
+				res.send "We couldn't find that group."
+			else
+				# Sum the totals
+				totalEarly = 0
+				totalReg = 0
+				for payment in targetGroup.payments
+					totalEarly += payment.earlyTickets
+					totalReg += payment.regTickets
+
+				res.render 'admin/payments',
+					title: "Administration - Payments for group"
+					group: req.session.group || null
+					targetGroup: targetGroup
+					totals:
+						early: totalEarly
+						reg: totalReg
+			
+
 server.get '/admin/login/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
@@ -755,6 +780,48 @@ server.get '/api/removeGroup/:id', (req, res) ->
 					else
 						res.redirect '/admin'
 				
+###
+Payments API
+###
+server.post '/api/payment/add', (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.body.id, (err, group) ->
+			payment = new Payment
+				date: req.body.date
+				earlyTickets: req.body.earlyTickets
+				regTickets: req.body.regTickets
+				paypal: req.body.paypal
+				group: req.body.id
+			payment.save (err) ->
+				if err
+					res.send "We couldn't save that payment."
+				else
+					group.payments.push payment._id
+					group.save (err) ->
+						if err
+							res.send "We couldn't save the pay`ment to the group, but we did save the payment. How strange."
+						else
+							res.redirect "/admin/payments?group=#{group._id}"
+
+# Requires a query: "/api/payment/delete?group=bar&payment=foo"
+server.get '/api/payment/delete', (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.query.group, (err, group) ->
+			payment = group.payments.indexOf req.query.payment
+			group.payments.splice payment, 1
+			group.save (err) ->
+				if err
+					res.send "We couldn't delete the payment from the group!"
+				else
+					Payment.remove "_id": req.query.payment, (err) ->
+						if err
+							res.send "We couldn't remove that payment."
+						else
+							res.redirect "/admin/payments?group=#{req.query.group}"
 
 ###
 Start listening.

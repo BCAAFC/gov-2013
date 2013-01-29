@@ -8,19 +8,25 @@ block content
 				thead
 					tr
 						th Name
-						th Actions
+						th Edit
 						th
+						th Delete
 				tbody
 					if groups
 						for group in groups
 							tr
-								td #{group.groupInformation.affiliation}
+								td
+									b #{group.groupInformation.affiliation}
+									br
+									small #{group._id}
 								td 
 									.btn-group
 										a.btn.btn-primary(href="/admin/login/#{group._id}") Login
 										a.btn.btn-info.notes(data-id="#{group._id}", href="#groupNotes", data-toggle="modal") Notes
+										a.btn.btn-inverse(href="/admin/payments?group=#{group._id}") Payments
 								td
-									a.btn.btn-danger(href="/api/removeGroup/#{group._id}") Del
+								td
+									a.btn.btn-danger(href="/api/removeGroup/#{group._id}") Delete
 						tr
 							td
 								a(href="/account/signup") Add a new group...

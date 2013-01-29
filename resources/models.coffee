@@ -60,7 +60,7 @@ exports.paymentSchema = new Schema
 	date: Date
 	earlyTickets: Number
 	regTickets: Number
-	id: String # Points to Paypal's Unique Transaction ID
+	paypal: String # Points to Paypal's Unique Transaction ID
 	group:
 		type: Schema.Types.ObjectId
 		ref: "Group"
