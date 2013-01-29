@@ -12,16 +12,12 @@ block content
 		li
 			a(href="#members", data-toggle="tab") Members
 		li
-			a(href="#billing", data-toggle="tab") Billing
-		li
 			a(href="#activity", data-toggle="tab") Activity Log
 	.tab-content(style="height: 1000px;")
 		.tab-pane.fade.active.in#groupinfo
 			include elements/groupInfo
 		.tab-pane.fade#members
 			include elements/members
-		.tab-pane.fade#billing
-			include elements/billing
 		.tab-pane.fade#activity
 			include elements/activity
 
