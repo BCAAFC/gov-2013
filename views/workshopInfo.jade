@@ -27,22 +27,30 @@ block content
 				.well
 					h1 Group Attendance
 					table.table-hover
-						thead
-							th Name
-							th Type
-							th Attending
+						thead(style="text-align: left")
+							th(style="width: 150px") Name
+							th(style="width: 150px") Type
+							th(style="width: 150px") Attending
 							th Actions
 						tbody
 							for member in group.groupMembers
 								tr
 									td= member.name
 									td= member.type
+									if member.workshops.indexOf(workshop._id) == -1
+										td
+											p.label.label-important Not Attending
+										td
+											.btn-group
+												a.btn.btn-small.btn-success(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add to Workshop  
+												.disabled.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}', style="width: 10px") -
+									else
+										td
+											p.label.label-success Attending
+										td
+											.btn-group
+												.disabled.btn.btn-small.btn-success(href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}', style="width: 10px") +
+												a.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}', style="width: 150px") Remove from Workshop
+											
 									td
-										if member.workshops.indexOf(workshop._id) == -1
-											| Not attending
-										else
-											| Attending!
-									td
-										.btn-group
-											a.btn.btn-small.btn-success(href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') +
-											a.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}') -
+

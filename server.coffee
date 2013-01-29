@@ -170,63 +170,51 @@ server.get '/privacy', (req, res) ->
 		group: req.session.group || null
 
 server.get '/account', requireAuthentication, populateGroupMembers, (req, res) ->
-	Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
-		if err
-			console.log err
-			res.send "There was an error."
-		else
-			# Accumulate Bill and toss members into buckets for easy JADE-ing.
-			req.session.group = group
-			bill = 0
-			youth = []
-			youngAdults = []
-			chaperones = []
-			earlyTotal = 0
-			regTotal = 0
+	# Accumulate Bill and toss members into buckets for easy JADE-ing.
+	group = req.group
+	bill = 0
+	youth = []
+	youngAdults = []
+	chaperones = []
+	earlyTotal = 0
+	regTotal = 0
 			
-			for member in group.groupMembers
-				bill += member.ticketPrice
+	for member in group.groupMembers
+		bill += member.ticketPrice
 				
-				if member.ticketPrice is 125
-					earlyTotal += 1
-				else if member.ticketPrice is 175
-					regTotal += 1
+		if member.ticketPrice is 125
+			earlyTotal += 1
+		else if member.ticketPrice is 175
+			regTotal += 1
 				
-				if member.type is "Youth"
-					youth.push member
-				else if member.type is "Young Adult"
-					youngAdults.push member
-				else if member.type is "Chaperone"
-					chaperones.push member
+		if member.type is "Youth"
+			youth.push member
+		else if member.type is "Young Adult"
+			youngAdults.push member
+		else if member.type is "Chaperone"
+			chaperones.push member
 
-			earlyPaid = 0
-			regPaid = 0
-			for payment in group.payments
-				earlyPaid += payment.earlyTickets
-				regPaid += payment.regTickets
+	earlyPaid = 0
+	regPaid = 0
+	for payment in group.payments
+		earlyPaid += payment.earlyTickets
+		regPaid += payment.regTickets
 					
-			# Temp workaround while we migrate to a better UI
-			group.youth = youth
-			group.youngAdults = youngAdults
-			group.chaperones = chaperones
-			req.session.group = group
+	# Temp workaround while we migrate to a better UI
+	group.youth = youth
+	group.youngAdults = youngAdults
+	group.chaperones = chaperones
+	req.session.group = group
 			
-			# Accumulate Paid
-			paid = 0
-			if req.session.group.payments
-				for payment in req.session.group.payments
-					paid += payment.amount
-			
-			res.render 'account/index',
-				title: "Account Management"
-				group: req.session.group || null
-				billing:
-					total: bill
-					paid: paid
-					earlyTotal: earlyTotal
-					regTotal: regTotal
-					earlyPaid: earlyPaid
-					regPaid: regPaid
+	res.render 'account/index',
+		title: "Account Management"
+		group: req.session.group || null
+		billing:
+			total: bill
+			earlyTotal: earlyTotal
+			regTotal: regTotal
+			earlyPaid: earlyPaid
+			regPaid: regPaid
 
 server.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
@@ -343,14 +331,16 @@ server.get '/workshops/:day', (req, res) ->
 			if req.session.group
 				Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
 					res.render 'workshops',
-						title: '404'
+						title: 'Workshops'
 						group: group || null
 						workshops: workshops
+						day: req.params.day
 			else
 				res.render 'workshops',
-					title: '404'
+					title: 'Workshops'
 					group: null
 					workshops: workshops
+					day: req.params.day
 
 # Error Pages
 server.get '/404', (req, res) ->
@@ -570,11 +560,13 @@ server.post '/api/editGroup', requireAuthentication, (req, res) ->
 
 
 server.post '/api/getMember', requireAuthentication, (req, res) ->
-	Member.findById req.body.id, (err, member) ->
+	Member.findById(req.body.id).populate('workshops').exec (err, member) ->
 		if err
 			res.send "Could not find member."
 		else
-			res.render 'account/elements/memberInfo', member: member
+			res.render 'account/elements/memberInfo', 
+				group: req.session.group
+				member: member
 		
 ###
 Workshop API
@@ -648,6 +640,14 @@ server.get '/api/workshop/delete', requireAuthentication, (req, res) ->
 
 # Requires a "?workshop=foo" query.
 server.get '/api/workshop/get', populateGroupMembers, populateWorkshop, (req, res) ->
+	req.group.groupMembers.sort (a, b) ->
+		if a.type > b.type
+			return -1
+		else if a.type < b.type
+			return 1
+		else
+			return 0
+			
 	if not req.workshop
 		res.send "We could not get the data for your workshop."
 	else

@@ -1,4 +1,4 @@
-.modal.hide.fade#add(tabindex='-1', role='dialog', aria-labelledby='addLabel', aria-hidden='true')
+.modal.hide.fade#add(tabindex='-1', role='dialog', aria-labelledby='addLabel', aria-hidden='true', style="width: 60%;")
 	form.form-horizontal(action="/api/addMember", method='post', style="margin-bottom: 0px")
 		.modal-header
 			.close(data-dismiss='modal', aria-hidden='true')
@@ -26,7 +26,7 @@
 					.controls
 						input(type='text', name='birthDate', data-content="Youth <b>must</b> be fourteen (14) to attend this event. Any delegate seventeen (17) and under <b>must</b> be accompanied by a chaperone.<br> <b>Born After:</b> March 18, 1996 <br> <b>Born before:</b> March 19, 1999")
 						br
-						small Please use yyyy-mm-dd.
+						small Please use a format similar to "April 23 1990"
 				.control-group
 					label.control-label Gender
 					.controls

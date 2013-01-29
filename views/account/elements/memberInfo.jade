@@ -15,6 +15,10 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 				p #{member.type}
 				small Remove and re-add the member to change this!
 		.control-group
+			label.control-label Affiliation
+			.controls
+				p #{group.groupInformation.affiliation}
+		.control-group
 			label.control-label Birth Date
 			.controls
 				input(type='text', name='member.birthDate', value="#{member.birthDate}", data-content="Youth <b>must</b> be fourteen (14) to attend this event. Any delegate seventeen (17) and under <b>must</b> be accompanied by a chaperone.<br> <b>Born After:</b> March 18, 1996 <br> <b>Born before:</b> March 19, 1999")
@@ -75,9 +79,18 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 			label.control-label Phone
 			.controls
 				input(type='text', name='member.emergencyInfo.phone', required, value="#{member.emergencyInfo.phone}", data-content="Please list the phone # of the emergency contact person above who can advise us on medical conditions, doctors or vital information.")
-	
+
 	// Submit
-	input.btn.btn-info.btn-block(type='submit', value="Submit Changes on #{member.name}")
+	input.btn.btn-primary.btn-block(type='submit', value="Submit Changes on #{member.name}")
+
+	fieldset
+		legend Workshops
+		for workshop in member.workshops
+			.control-group
+				label.control-label= workshop.name
+				.controls
+					a.btn.btn-info.btn-small(href="/api/workshop/get?workshop=#{workshop._id}") Get Info
+
 	script
 			$('input').popover({
 				placement: 'right',
