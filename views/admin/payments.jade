@@ -36,7 +36,7 @@ block content
 		.span12
 			h3 Add new payment
 			form.form-horizontal(action="/api/payment/add", method="POST")
-				input(type="hidden", name="id", value="#{group._id}")
+				input(type="hidden", name="id", value="#{targetGroup._id}")
 				.control-group
 					label.control-label Date
 					.controls
