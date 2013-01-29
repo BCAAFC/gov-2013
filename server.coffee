@@ -411,7 +411,7 @@ server.post '/api/signup', (req, res) ->
 												mailer.sendMail
 													from: "gatheringourvoices.noreply@gmail.com"
 													to: group.primaryContact.email
-													bcc: "dpreston@bcaafc.com"
+													bcc: "gatheringourvoices@bcaafc.com, dpreston@bcaafc.com"
 													subject: "Gathering Our Voices 2013 -- Registration Successful!"
 													html: "<h1>Hello #{group.primaryContact.name} of the #{group.groupInformation.affiliation}</h1>
 														<h3>Thank you for submitting your registration!</h3>
@@ -421,7 +421,7 @@ server.post '/api/signup', (req, res) ->
 														<h3>Questions or Concerns</h3>
 														<p>If you have any questions or concerns please contact</p>
 														<p>Della Preston, Conference Coordinator</p>
-														<p>Email: <a href='mailto:dpreston@bcaafc.com'>dpreston@bcaafc.com</a></p>
+														<p>Email: <a href='mailto:gatheringourvoices@bcaafc.com'>gatheringourvoices@bcaafc.com</a></p>
 														<p>Phone: 1-800-990-2432.</p>
 														<p>Web Registration: <a href='http://gatheringourvoices.bcaafc.com'>gatheringourvoices.bcaafc.com</a></p>
 														<p>Web Information: <a href='http://www.bcaafc.com/newsandevents/gathering-our-voices'>http://www.bcaafc.com/newsandevents/gathering-our-voices</a></p>"
