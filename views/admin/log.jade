@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+	.row-fluid
+		.span12
+			h1 Log for #{targetGroup.groupInformation.affiliation}
+			table.table.table-hover
+				thead
+					tr
+						th Date
+						th Event
+				tbody
+					if group.log
+						for entry in targetGroup.log
+							tr
+								td= entry.date.toDateString()
+								td= entry.event
+
+	!= js('admin/main')

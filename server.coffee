@@ -311,6 +311,20 @@ server.get '/admin/payments', requireAuthentication, (req, res) ->
 						reg: totalReg
 			
 
+# Requires a query: "/admin/log?group=foo"
+server.get '/admin/log', (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.query.group, (err, targetGroup) ->
+			if err
+				res.send "We couldn't get that group."
+			else
+				res.render 'admin/log',
+					title: "Administration - Log"
+					group: req.session.group || null
+					targetGroup: targetGroup
+
 server.get '/admin/login/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
@@ -822,6 +836,7 @@ server.get '/api/payment/delete', (req, res) ->
 							res.send "We couldn't remove that payment."
 						else
 							res.redirect "/admin/payments?group=#{req.query.group}"
+							
 
 ###
 Start listening.
