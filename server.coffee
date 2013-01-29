@@ -537,17 +537,12 @@ server.post '/api/editMember', requireAuthentication, (req, res) ->
 			if err
 				res.send "The edits could not be saved. Please try again?"
 			else
+				res.redirect '/account#members'
 				Group.findByIdAndUpdate req.session.group._id,
 					$push:
 						log:
 							event: "The member #{req.body['member.name']} was updated."
-					(err, group) ->
-						if err
-							res.send "You're not logged in."
-						else
-							req.session.group = group
-							res.redirect '/account#members'
-									
+
 server.post '/api/editGroup', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		if err
@@ -568,7 +563,7 @@ server.post '/api/editGroup', requireAuthentication, (req, res) ->
 				else
 					Group.findByIdAndUpdate req.session.group._id,
 						$push: log: event: "The group information was edited.",
-						(err, result) ->
+						(err) ->
 							req.session.group = group
 							res.redirect '/account#groupinfo'
 
@@ -764,6 +759,7 @@ server.post '/api/editGroupNotes', (req, res) ->
 						res.send "Couldn't save those changes. Try again?"
 					else
 						res.redirect '/admin'
+						
 					
 server.get '/api/removeGroup/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin

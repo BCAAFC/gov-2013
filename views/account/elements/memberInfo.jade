@@ -70,15 +70,15 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 		.control-group
 			label.control-label Name
 			.controls
-				input(type='text', name='member.emergencyInfo.name', required, value="#{member.emergencyInfo.name}", data-content="Please list the phone # of the emergency contact person above who can advise us on medical conditions, doctors or vital information.")
+				input(type='text', name='member.emergencyInfo.name', value="#{member.emergencyInfo.name}", data-content="Please list the phone # of the emergency contact person above who can advise us on medical conditions, doctors or vital information.")
 		.control-group
 			label.control-label Relation
 			.controls
-				input(type='text', name='member.emergencyInfo.relation', required, value="#{member.emergencyInfo.relation}", data-content="For example, 'Mother' or 'Babysitter'")
+				input(type='text', name='member.emergencyInfo.relation', value="#{member.emergencyInfo.relation}", data-content="For example, 'Mother' or 'Babysitter'")
 		.control-group
 			label.control-label Phone
 			.controls
-				input(type='text', name='member.emergencyInfo.phone', required, value="#{member.emergencyInfo.phone}", data-content="Please list the phone # of the emergency contact person above who can advise us on medical conditions, doctors or vital information.")
+				input(type='text', name='member.emergencyInfo.phone', value="#{member.emergencyInfo.phone}", data-content="Please list the phone # of the emergency contact person above who can advise us on medical conditions, doctors or vital information.")
 
 	// Submit
 	input.btn.btn-primary.btn-block(type='submit', value="Submit Changes on #{member.name}")
