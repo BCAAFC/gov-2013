@@ -641,11 +641,17 @@ server.get '/api/workshop/delete', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Workshop.remove _id: req.query.workshop, (err, workshop) ->
+		Workshop.findById req.query.workshop, (err, workshop) ->
 			if err
 				res.send "Couldn't remove that workshop! Try again?"
 			else
-				res.redirect "/workshops/#{workshop.day}"
+				Member.find workshops: workshop._id, (err, members) ->
+					for member in members
+						index = member.workshops.indexOf workshop._id
+						member.workshops.splice index, 1
+						console.log "removing index #{index}, workshop #{workshop._id}, member #{member._id}"
+					workshop.remove()
+					res.redirect "/workshops/#{workshop.day}"
 
 # Requires a "?workshop=foo" query.
 server.get '/api/workshop/get', populateGroupMembers, populateWorkshop, (req, res) ->
