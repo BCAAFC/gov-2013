@@ -312,7 +312,7 @@ server.get '/admin/payments', requireAuthentication, (req, res) ->
 			
 
 # Requires a query: "/admin/log?group=foo"
-server.get '/admin/log', (req, res) ->
+server.get '/admin/log', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
@@ -374,7 +374,7 @@ server.post '/api/login', (req, res) ->
 			pwd.hash req.body.pass, login.salt, (err, hash) ->
 				if login.hash is hash
 					Group.findByIdAndUpdate login._group,
-						$push: log: event: "This account was logged in with #{req.ip}"
+						$push: log: event: "LOGIN: From #{req.ip}"
 						(err, group) ->
 							req.session.group = group
 							res.redirect '/'
@@ -410,7 +410,7 @@ server.post '/api/signup', (req, res) ->
 								res.send "There was an error saving your information."
 							else
 								Group.findByIdAndUpdate group._id,
-									$push: log: event: 'This group account was created.',
+									$push: log: event: 'CREATION: Group was created',
 									(err, group) ->
 										login = new Login
 											email: req.body.email
@@ -447,7 +447,7 @@ server.post '/api/signup', (req, res) ->
 
 server.post '/api/logout', (req, res) ->
 	Group.findByIdAndUpdate req.session.group._id,
-		$push: log: event: "The account logged out from #{req.ip}"
+		$push: log: event: "LOGOUT: From #{req.ip}"
 		(err, group) ->
 	req.session.destroy (err) ->
 		if err
@@ -475,7 +475,7 @@ server.post '/api/addMember', requireAuthentication, (req, res) ->
 				Group.findByIdAndUpdate req.session.group._id,
 					$push:
 						groupMembers: member._id
-						log: event: "The member #{req.body.name} was added to the group member list."
+						log: event: "MEMBER ADD: #{req.body.name} (#{member._id}) was added."
 					(err, group) ->
 						if err
 							res.send "There was an error adding the member to your group."
@@ -514,7 +514,7 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 							res.redirect '/account#members'
 							Group.findByIdAndUpdate req.params.id,
 								$push:
-									log: event: "The member #{req.body.name} was removed to the group member list."
+									log: event: "MEMBER REMOVE: #{req.body.name} (#{member._id}) was removed."
 					
 server.post '/api/editMember', requireAuthentication, (req, res) ->
 	Member.findById req.body.id, (err, member) ->
@@ -537,11 +537,14 @@ server.post '/api/editMember', requireAuthentication, (req, res) ->
 			if err
 				res.send "The edits could not be saved. Please try again?"
 			else
-				res.redirect '/account#members'
 				Group.findByIdAndUpdate req.session.group._id,
 					$push:
 						log:
-							event: "The member #{req.body['member.name']} was updated."
+							event: "MEMBER UPDATE: #{req.body['member.name']} (#{member._id}) was updated."
+					(err) ->
+						if err
+							console.log err
+				res.redirect '/account#members'
 
 server.post '/api/editGroup', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
@@ -561,9 +564,11 @@ server.post '/api/editGroup', requireAuthentication, (req, res) ->
 				if err
 					res.send "There was an error, could you try again?"
 				else
-					Group.findByIdAndUpdate req.session.group._id,
-						$push: log: event: "The group information was edited.",
+					Group.findByIdAndUpdate req.group._id,
+						$push: log: event: "GROUP EDIT: Info updated.",
 						(err) ->
+							if err
+								console.log err
 							req.session.group = group
 							res.redirect '/account#groupinfo'
 
@@ -649,19 +654,19 @@ server.get '/api/workshop/delete', requireAuthentication, (req, res) ->
 					for member in members
 						index = member.workshops.indexOf workshop._id
 						member.workshops.splice index, 1
-						console.log "removing index #{index}, workshop #{workshop._id}, member #{member._id}"
 					workshop.remove()
 					res.redirect "/workshops/#{workshop.day}"
 
 # Requires a "?workshop=foo" query.
 server.get '/api/workshop/get', populateGroupMembers, populateWorkshop, (req, res) ->
-	req.group.groupMembers.sort (a, b) ->
-		if a.type > b.type
-			return -1
-		else if a.type < b.type
-			return 1
-		else
-			return 0
+	if req.group
+		req.group.groupMembers.sort (a, b) ->
+			if a.type > b.type
+				return -1
+			else if a.type < b.type
+				return 1
+			else
+				return 0
 			
 	if not req.workshop
 		res.send "We could not get the data for your workshop."
@@ -672,7 +677,7 @@ server.get '/api/workshop/get', populateGroupMembers, populateWorkshop, (req, re
 			workshop: req.workshop
 
 # Requires a "?workshop=foo&member=bar" query.
-server.get '/api/workshop/attendees/add', populateGroup, populateWorkshop, (req, res) ->
+server.get '/api/workshop/attendees/add', requireAuthentication, populateGroup, populateWorkshop, (req, res) ->
 	if not req.workshop
 		res.send "We could not get the data for your workshop."
 	else if not req.query.member
@@ -700,6 +705,13 @@ server.get '/api/workshop/attendees/add', populateGroup, populateWorkshop, (req,
 									if err
 										res.send "There was an error adding that member to the workshop!"
 									else
+										Group.findByIdAndUpdate req.group._id,
+											$push:
+												log:
+													event: "WORKSHOP: #{member.name} (#{member._id}) ADDED TO #{req.workshop.name} (#{req.workshop._id})."
+											(err) ->
+												if err
+													console.log err
 										res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
 					else
 						res.send "That workshop is full. Please find a different workshop."
@@ -707,7 +719,7 @@ server.get '/api/workshop/attendees/add', populateGroup, populateWorkshop, (req,
 					res.send "That member is already a part of that workshop!"
 
 # Requires a "?workshop=foo&member=bar" query.
-server.get '/api/workshop/attendees/remove', populateGroup, populateWorkshop, (req, res) ->
+server.get '/api/workshop/attendees/remove', requireAuthentication, populateGroup, populateWorkshop, (req, res) ->
 	if not req.workshop
 		res.send "We could not get the data for your workshop."
 	else if not req.query.member
@@ -734,7 +746,15 @@ server.get '/api/workshop/attendees/remove', populateGroup, populateWorkshop, (r
 								if err
 									res.send "There was an error removing that member from the workshop!"
 								else
+									Group.findByIdAndUpdate req.group._id,
+										$push:
+											log:
+												event: "WORKSHOP: #{member.name} (#{member._id}) REMOVED FROM #{req.workshop.name} (#{req.workshop._id})."
+										(err) ->
+											if err
+												console.log err
 									res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
+
 
 ###
 Group API
@@ -764,8 +784,15 @@ server.post '/api/editGroupNotes', (req, res) ->
 					if err
 						res.send "Couldn't save those changes. Try again?"
 					else
+						Group.findByIdAndUpdate req.body.id,
+							$push:
+								log:
+									event: "NOTES: The group notes were edited."
+							(err) ->
+								if err
+									console.log err
 						res.redirect '/admin'
-						
+
 					
 server.get '/api/removeGroup/:id', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
@@ -819,6 +846,13 @@ server.post '/api/payment/add', (req, res) ->
 						if err
 							res.send "We couldn't save the pay`ment to the group, but we did save the payment. How strange."
 						else
+							Group.findByIdAndUpdate group._id,
+								$push:
+									log:
+										event: "PAYMENT: A payment was added (#{payment._id})."
+								(err) ->
+									if err
+										console.log err
 							res.redirect "/admin/payments?group=#{group._id}"
 
 # Requires a query: "/api/payment/delete?group=bar&payment=foo"
@@ -837,8 +871,14 @@ server.get '/api/payment/delete', (req, res) ->
 						if err
 							res.send "We couldn't remove that payment."
 						else
+							Group.findByIdAndUpdate group._id,
+								$push:
+									log:
+										event: "PAYMENT: A payment was removed (#{req.query.payment})."
+								(err) ->
+									if err
+										console.log err
 							res.redirect "/admin/payments?group=#{req.query.group}"
-							
 
 ###
 Start listening.
