@@ -21,8 +21,10 @@ block content
 										span.badge.badge-important= group.groupMembers.length
 									else if group.internal.status == "Group waiting for info"
 										span.badge.badge-warning= group.groupMembers.length
+									else if group.internal.status == "New group - Reviewed"
+										span.badge= group.groupMembers.length
 									else
-										span.badge.badge.success= group.groupMembers.length
+										span.badge.badge.badge-success= group.groupMembers.length
 									// Group Affilation
 									b #{group.groupInformation.affiliation}
 									br
