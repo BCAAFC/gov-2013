@@ -16,6 +16,14 @@ block content
 						for group in groups
 							tr
 								td
+									// Group Badge
+									if group.internal.status == "New group - Unchecked" || group.internal.status == "Edited - Unchecked"
+										span.badge.badge-important= group.groupMembers.length
+									else if group.internal.status == "Group waiting for info"
+										span.badge.badge-warning= group.groupMembers.length
+									else
+										span.badge.badge.success= group.groupMembers.length
+									// Group Affilation
 									b #{group.groupInformation.affiliation}
 									br
 									small #{group._id}
