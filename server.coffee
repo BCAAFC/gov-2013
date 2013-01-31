@@ -278,7 +278,7 @@ server.get '/admin', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Group.find {}, (err, groups) -> # Find all groups
+		Group.find({}).sort({'groupInformation.affiliation':-1}).exec (err, groups) -> # Find all groups
 			Workshop.find {}, (err, workshops) -> # Find all workshops
 				res.render 'admin/index',
 					title: "Administration"
