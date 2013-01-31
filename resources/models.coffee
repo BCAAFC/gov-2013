@@ -49,7 +49,9 @@ exports.groupSchema = new Schema
 		regDate:
 			type: Date
 			default: Date.now
-		status: String
+		status: 
+			type: String
+			default: "New group - Unchecked"
 		youthInCare: String
 		notes: String
 		admin: 

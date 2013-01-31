@@ -17,7 +17,7 @@ block content
 							tr
 								td
 									// Group Badge
-									if group.internal.status == "New group - Unchecked" || group.internal.status == "Edited - Unchecked"
+									if group.internal.status == "New group - Unchecked" || group.internal.status == "Edited - Unchecked" || group.internal.status == null
 										span.badge.badge-important= group.groupMembers.length
 									else if group.internal.status == "Group waiting for info"
 										span.badge.badge-warning= group.groupMembers.length
