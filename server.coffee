@@ -564,7 +564,7 @@ server.post '/api/editGroup', requireAuthentication, (req, res) ->
 				if err
 					res.send "There was an error, could you try again?"
 				else
-					Group.findByIdAndUpdate req.group._id,
+					Group.findByIdAndUpdate group._id,
 						$push: log: event: "GROUP EDIT: Info updated.",
 						(err) ->
 							if err
