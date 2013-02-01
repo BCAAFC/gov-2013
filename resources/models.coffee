@@ -52,6 +52,12 @@ exports.groupSchema = new Schema
 		status: 
 			type: String
 			default: "New group - Unchecked"
+		workshopReg:
+			type: String
+			default: "Not sent"
+		paymentStatus:
+			type: String
+			default: "Need to contact"
 		youthInCare: String
 		notes: String
 		admin: 

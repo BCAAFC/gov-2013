@@ -782,6 +782,8 @@ server.post '/api/editGroupNotes', (req, res) ->
 				result.internal.status = req.body.status
 				result.internal.youthInCare = req.body.youthInCare
 				result.internal.notes = req.body.notes
+				result.internal.workshopReg = req.body.workshopReg
+				result.internal.paymentStatus = req.body.paymentStatus
 				result.save (err, result) ->
 					if err
 						res.send "Couldn't save those changes. Try again?"
