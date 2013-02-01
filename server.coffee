@@ -428,17 +428,19 @@ server.post '/api/signup', (req, res) ->
 													bcc: "gatheringourvoices@bcaafc.com, dpreston@bcaafc.com"
 													subject: "Gathering Our Voices 2013 -- Registration Successful!"
 													html: "<h1>Hello #{group.primaryContact.name} of the #{group.groupInformation.affiliation}</h1>
-														<h3>Thank you for submitting your registration!</h3>
-														<p>The Gathering Our Voices team will review your registration and send you an email response which can include the following:</p> <ul><li>Request for missing information</li><li>payment arrangements</li><li>Confirmation of official registration</li></ul>
+														<h3>Thank you for submitting your online registration!</h3>
+														<p>The Gathering Our Voices team will review your registration and send you an email response which can include the following:</p>
+														<ol>
+															<li>Request for missing information</li>
+															<li>Payment arrangements</li>
+															<li>Confirmation of official registration</li>
+														</ol>
 														<h3>Workshop Registration</h3>
-														<p>Workshop Registration is now available, please visit our website and browse to the 'Workshops' heading to see a list of the currently booked workshops. More will be added as time progresses.</p>
-														<h3>Questions or Concerns</h3>
-														<p>If you have any questions or concerns please contact</p>
-														<p>Della Preston, Conference Coordinator</p>
+														<p>Workshop Registration will be available mid-February. You will receive and e-mail when workshop registration is open.</p>
+														<p>If you have any questions or concerns please contact:</p>
+														<p>Siku Allooloo, Conference Registration Coordinator</p>
 														<p>Email: <a href='mailto:gatheringourvoices@bcaafc.com'>gatheringourvoices@bcaafc.com</a></p>
-														<p>Phone: 1-800-990-2432.</p>
-														<p>Web Registration: <a href='http://gatheringourvoices.bcaafc.com'>gatheringourvoices.bcaafc.com</a></p>
-														<p>Web Information: <a href='http://www.bcaafc.com/newsandevents/gathering-our-voices'>http://www.bcaafc.com/newsandevents/gathering-our-voices</a></p>"
+														<p>Phone: (250) 388-5522 or toll-free: 1-800-990-2432</p>"
 													(err)->
 														if err
 															res.send "We couldn't mail you a registration confirmation email... Call us at 250-388-5522"
