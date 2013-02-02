@@ -236,7 +236,7 @@ server.post '/account/startRecovery', (req, res) ->
 					from: "gatheringourvoices.noreply@gmail.com"
 					to: group.primaryContact.email
 					subject: "Gathering Our Voices 2013 -- Password Recovery"
-					html: "Hello! There was a request to recover your password via the Gathering Our Voices 2013 site. If this was you, please visit <a href='http://gov.hoverbear.org/account/endRecovery?key=#{group._id}&email=#{group.primaryContact.email}'>this link.</a>"
+					html: "Hello! There was a request to recover your password via the Gathering Our Voices 2013 site. If this was you, please visit <a href='http://gatheringourvoices.rs.af.cm/account/endRecovery?key=#{group._id}&email=#{group.primaryContact.email}'>this link.</a>"
 					(err)->
 						if err
 							res.send "We couldn't mail you a recovery email... Call us at 250-388-5522"
@@ -271,7 +271,7 @@ server.post '/account/endRecovery', (req, res) ->
 							if err
 								res.send "There was a problem saving your new password."
 							else
-								res.send "Password recovered successfully, please return <a href='http://gov.hoverbear.org'>home</a> and try to login!"
+								res.send "Password recovered successfully, please return <a href='http://gatheringourvoices.rs.af.cm'>home</a> and try to login!"
 
 		
 server.get '/admin', requireAuthentication, (req, res) ->
