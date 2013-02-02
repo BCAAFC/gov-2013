@@ -11,6 +11,22 @@ br
 b Balance: 
 | $ #{billing.total - (billing.regPaid * 175 + billing.earlyPaid * 125)}
 
+h2 Breakdown
+b Number of Earlybird Tickets:
+.badge.badge-info #{billing.earlyTotal}
+|  - 
+.badge.badge-important #{billing.freeEarly}
+|  = 
+.badge.badge-success #{billing.earlyTotal - billing.freeEarly} @ $125
+br
+b Number of Regular Tickets:
+.badge.badge-inverse #{billing.regTotal}
+|  - 
+.badge.badge-important #{billing.freeReg}
+|  = 
+.badge.badge-success #{billing.regTotal - billing.freeReg} @ $175
+
+
 h2 Payments
 p The following is an approximate log of payments confirmed to this date. If there is a problem please contact us.
 
@@ -37,6 +53,7 @@ form(action="https://www.paypal.com/cgi-bin/webscr", method="post")
 	input(type="hidden", name="upload", value="1")
 	input(type="hidden", name="business", value="accounting@bcaafc.com")
 	input(type="hidden", name="currency_code", value="CAD")
+	input(type="hidden", name="undefined_quantity", value="1")
 	
 	input(type="hidden", name="no_note", value="0")
 	input(type="hidden", name="cn", value="Please enter your Affiliation:")
