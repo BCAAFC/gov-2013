@@ -48,6 +48,10 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 						span.add-on
 							i.icon-time
 			.control-group
+				label.control-label Session
+				.controls
+					input(type='number', name='session', required, value="#{workshop.session || ''}")
+			.control-group
 				label.control-label Room
 				.controls
 					input(type='text', name='room', required, value="#{workshop.room || ''}")

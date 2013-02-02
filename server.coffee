@@ -617,57 +617,62 @@ server.post '/api/getMember', requireAuthentication, (req, res) ->
 Workshop API
 ###
 server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
-	# Build Valid Times
-	timeStart = new Date "#{req.body.day} #{req.body.timeStart}"
-	timeEnd = new Date "#{req.body.day} #{req.body.timeEnd}"
-	
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
-	else if req.body.name is "" or req.body.day is ""
-		res.send "You need to put a name and day in at least!"
-	else if req.body.id is "new"
-		workshop = new Workshop
-			name: req.body.name
-			host: req.body.host
-			description: req.body.description
-			timeStart: timeStart
-			timeEnd: timeEnd
-			room: req.body.room
-			day: req.body.day
-			capacity: req.body.capacity
-			signedUp: []
-		workshop.save (err, workshop) ->
-			if err
-				res.send "There was an error saving."
-				console.log err
-			else
-				if req.body.day is 'March 20, 2013'
-					target = 'wednesday'
-				else
-					target = 'thursday'
-				res.redirect "/workshops/#{target}"
 	else
-		Workshop.findById req.body.id, (err, workshop) ->
-			if err
-				res.send "There was an error editing that workshop."
-			else
-				workshop.name = req.body.name
-				workshop.host = req.body.host
-				workshop.description = req.body.description
-				workshop.timeStart = timeStart
-				workshop.timeEnd = timeEnd
-				workshop.room = req.body.room
-				workshop.day = req.body.day
-				workshop.capacity = req.body.capacity
-				workshop.save (err, workshop) ->
-					if err
-						res.send "There was an error saving."
+		# Build Valid Times
+		timeStart = new Date "#{req.body.day} #{req.body.timeStart}"
+		timeEnd = new Date "#{req.body.day} #{req.body.timeEnd}"
+	
+		if not req.session.group.internal.admin # If --not-- admin
+			res.send "You're not authorized, please don't try again!"
+		else if req.body.name is "" or req.body.day is ""
+			res.send "You need to put a name and day in at least!"
+		else if req.body.id is "new"
+			workshop = new Workshop
+				name: req.body.name
+				host: req.body.host
+				description: req.body.description
+				timeStart: timeStart
+				timeEnd: timeEnd
+				session: req.body.session
+				room: req.body.room
+				day: req.body.day
+				capacity: req.body.capacity
+				signedUp: []
+			workshop.save (err, workshop) ->
+				if err
+					res.send "There was an error saving."
+					console.log err
+				else
+					if req.body.day is 'March 20, 2013'
+						target = 'wednesday'
 					else
-						if req.body.day is 'March 20, 2013'
-							target = 'wednesday'
+						target = 'thursday'
+					res.redirect "/workshops/#{target}"
+		else
+			Workshop.findById req.body.id, (err, workshop) ->
+				if err or workshop is null
+					res.send "There was an error editing that workshop."
+				else
+					workshop.name = req.body.name
+					workshop.host = req.body.host
+					workshop.description = req.body.description
+					workshop.timeStart = timeStart
+					workshop.timeEnd = timeEnd
+					workshop.session = req.body.session
+					workshop.room = req.body.room
+					workshop.day = req.body.day
+					workshop.capacity = req.body.capacity
+					workshop.save (err, workshop) ->
+						if err
+							res.send "There was an error saving."
 						else
-							target = 'thursday'
-						res.redirect "/workshops/#{target}"
+							if req.body.day is 'March 20, 2013'
+								target = 'wednesday'
+							else
+								target = 'thursday'
+							res.redirect "/workshops/#{target}"
 	
 server.post '/api/workshop/getEditForm', requireAuthentication, populateWorkshop, (req, res) ->
 	res.render 'elements/workshop', workshop: req.workshop

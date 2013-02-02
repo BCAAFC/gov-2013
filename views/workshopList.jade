@@ -13,6 +13,7 @@ block content
 						th Venue
 						th Start
 						th End
+						th Session
 						th Capacity
 						if group
 							if group.internal.admin
@@ -27,6 +28,8 @@ block content
 							td= workshop.room
 							td= workshop.timeStart.toLocaleTimeString()
 							td= workshop.timeEnd.toLocaleTimeString()
+							td
+								.badge.badge #{workshop.session}
 							td= workshop.capacity
 							if group
 								if group.internal.admin
