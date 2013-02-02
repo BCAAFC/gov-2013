@@ -332,6 +332,11 @@ server.get '/admin/login/:id', requireAuthentication, (req, res) ->
 		Group.findById req.params.id, (err, group) ->
 			req.session.group = group
 			res.redirect '/account'
+
+server.get '/workshopHome', (req, res) ->
+	res.render 'workshopHome'
+		title: "Workshop"
+		group: req.session.group || null
 			
 server.get '/workshops/:day', (req, res) ->
 	if req.params.day == 'wednesday'
@@ -342,19 +347,23 @@ server.get '/workshops/:day', (req, res) ->
 		if err
 			res.send "There was an error fetching the workshops."
 		else
+			if req.params.day is "wednesday"
+				day = "Wednesday"
+			else
+				day = "Thursday"
 			if req.session.group
 				Group.findById(req.session.group._id).populate('groupMembers').exec (err, group) ->
-					res.render 'workshops',
+					res.render 'workshopList',
 						title: 'Workshops'
 						group: group || null
 						workshops: workshops
-						day: req.params.day
+						day: day
 			else
-				res.render 'workshops',
+				res.render 'workshopList',
 					title: 'Workshops'
 					group: null
 					workshops: workshops
-					day: req.params.day
+					day: day
 
 # Error Pages
 server.get '/404', (req, res) ->

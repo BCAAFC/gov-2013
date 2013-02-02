@@ -5,14 +5,22 @@ block content
 		h1 Register
 		form.form-horizontal(action="/api/signup", method='post')
 			fieldset
-				legend Login Information
-				p This information should reflect the email and password of <b>your group's primary contact.</b>
+				legend Login and Primary Contact Information
+				p This information should reflect the email and password of your group's primary contact. 
+				p The primary contact for each group will be contacted for information, payment, and announcements that are important for all delegates. It is not assumed that the primary contact will be attending the conference. If you are the <b>primary contact</b>, and plan on attending, please also add yourself as a member of the group after registration
+
 				p Please keep this information in a safe place.
 				.well
+					.control-group
+						label.control-label Name
+						.controls
+							input(type="text", name="name", placeholder="Name", required)
 					.control-group
 						label.control-label Email
 						.controls
 							input(type="text", name="email", placeholder="Email", required, data-content="This is the email for the primary contact of your group. We will send all communications to this email.")
+							br
+							small This will be your login!
 					.control-group
 						label.control-label Password
 						.controls
@@ -21,16 +29,6 @@ block content
 						label.control-label Password (again!)
 						.controls
 							input(type="password", name="passConfirm", placeholder="Pass Confirmation", required, data-content="This should be the same as your password above.")
-
-			fieldset
-				legend Primary Contact Information
-				p Each Group requires a primary contact. They will be the primary point of contact for information, payment, and announcements important for all delegates to receive.
-				p It is <b>not</b> assumed that this person will be attending. If you are the group contact, and plan on attending, please add yourself to the relevant group after registration.
-				.well
-					.control-group
-						label.control-label Name
-						.controls
-							input(type="text", name="name", placeholder="Name", required)
 					.control-group
 						label.control-label Phone #
 						.controls
@@ -71,4 +69,4 @@ block content
 			.alert.alert-success
 				input.btn.btn-block.btn-large.btn-primary(type="submit", value="Register")
 				h4 Thank you for submitting your registration!
-				p The Gathering Our Voices team will review your registration and send you an email response which can include the following:  request for missing information, payment arrangements or confirmation if registration is complete.
+				p The Gathering Our Voices team will review your registration and send you an email response which can include the following: request for missing information, payment arrangements, workshop registration details, or final confirmation when registration is complete.

@@ -3,7 +3,8 @@ extends layout
 block content
 	.row-fluid
 		.span12
-			h1 Workshops for #{day}
+			h1 Workshop Listing
+			h3 #{day}
 			table.table.table-hover
 				thead
 					tr
@@ -17,7 +18,7 @@ block content
 							if group.internal.admin
 								th Admin
 						if group
-							th Attending
+							th Register
 				tbody
 					for workshop in workshops
 						tr(rowspan=2)
@@ -38,8 +39,14 @@ block content
 
 	!= js('workshops')
 
+	if day == "Wednesday"
+		a.btn.btn-primary(href="/workshops/thursday") Thursday, March 21, 2013
+	else
+		a.btn.btn-primary(href="/workshops/wednesday") Wednesday, March 20, 2013
+	
 	if group
 		if group.internal.admin
+			br
 			a.addWorkshop(href="#workshop", data-toggle="modal") Add a new workshop...
 			.modal.hide.fade#workshop(tabindex='-1', role='dialog', aria-hidden='true', aria-labelledby='workshopLabel')
 				include elements/workshop.jade
