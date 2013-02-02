@@ -5,7 +5,9 @@ block content
 		.span12
 			.well
 				h1= workshop.name
-				h3= workshop.host
+				h3 Facilitator:
+					| #{workshop.host}
+				h3 Description: 
 				p= workshop.description
 				br
 				h3 Time Details
@@ -15,12 +17,16 @@ block content
 					b= workshop.timeStart.toLocaleTimeString()
 				p End: 
 					b= workshop.timeEnd.toLocaleTimeString()
+				b Session:
+					|  
+					.badge #{workshop.session}
 				br
 				h3 Location Details
 				p Room: 
 					b= workshop.room
-				p Capacity: 
-					b Used: #{workshop.signedUp.length} Max: #{workshop.capacity}
+				h3 Capacity: 
+				p Used: #{workshop.signedUp.length}
+				p Max: #{workshop.capacity}
 	if group
 		if group.internal.workshopReg == "Sent"
 			.row-fluid
