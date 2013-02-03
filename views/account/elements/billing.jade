@@ -17,14 +17,14 @@ b Number of Earlybird Tickets:
 |  - 
 .badge.badge-important #{billing.freeEarly}
 |  = 
-.badge.badge-success #{billing.earlyTotal - billing.freeEarly} @ $125
+.badge.badge-info #{billing.earlyTotal - billing.freeEarly} @ $125
 br
 b Number of Regular Tickets:
 .badge.badge-inverse #{billing.regTotal}
 |  - 
 .badge.badge-important #{billing.freeReg}
 |  = 
-.badge.badge-success #{billing.regTotal - billing.freeReg} @ $175
+.badge.badge-inverse #{billing.regTotal - billing.freeReg} @ $175
 
 
 h2 Payments

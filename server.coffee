@@ -200,16 +200,18 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 		else if member.type is "Chaperone"
 			chaperones.push member
 	
-	# Calculate free tickets
-	freeEarly = Math.floor( (earlyTotal + regTotal) / 6 )
-	# If we have extra free earlies
-	if (earlyTotal - freeEarly) < 0
-		freeReg += Math.abs(earlyTotal - freeEarly)
-		freeEarly -= Math.abs(earlyTotal - freeEarly)
-
-	console.log "Free Early: #{freeEarly} -- Free Reg: #{freeReg}"
+	# Calculate number of free tickets allowed.
+	freeTickets = Math.floor( (earlyTotal / 5) + (regTotal / 5) )
 	
+	# Calculate the number of free regular priced tickets
+	freeReg = Math.floor( regTotal / 6 )
+	freeEarly = Math.floor ( earlyTotal / 6 )
 	
+	# If we have extra free Regulars
+	if (freeTickets - freeReg - freeEarly) > 0
+		freeReg++
+	
+	# Accumulate the amounts paid.
 	earlyPaid = 0
 	regPaid = 0
 	for payment in group.payments
