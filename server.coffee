@@ -277,8 +277,8 @@ server.post '/account/endRecovery', (req, res) ->
 	if req.body.pass is not req.body.passConfirm
 		res.send "Please make sure your passwords match!"
 	else
-		Login.findOne email: req.body.email, (err, login) ->
-			if err
+		Login.findOne email: req.body.email, _group: req.body.key, (err, login) ->
+			if (err) or (login is null)
 				res.send "We couldn't find that group."
 			else
 				pwd.hash req.body.pass, (err, salt, hash) ->
