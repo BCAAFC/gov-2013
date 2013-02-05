@@ -48,6 +48,19 @@ form.form-horizontal(action="/api/editGroupNotes", method='post', style="margin-
 						option(value="Invoice Sent", selected=(group.internal.paymentStatus == 'Invoice Sent')) Invoice Sent
 						option(value="Payment recieved", selected=(group.internal.paymentStatus == 'Payment recieved')) Payment recieved
 			.control-group
+				label.control-label Payment Type
+				.controls
+					select(name='paymentType', required)
+						option(value='') Select a value...
+						option(value='Cheque', selected=(group.groupInformation.paymentType == 'Cheque')) Cheque
+						option(value='Money Order', selected=(group.groupInformation.paymentType == 'Money Order')) Money Order
+						option(value='Please Invoice', selected=(group.groupInformation.paymentType == 'Please Invoice')) Please Invoice
+						option(value='Credit Card', selected=(group.groupInformation.paymentType == 'Credit Card')) Credit Card
+						option(value='Paypal', selected=(group.groupInformation.paymentType == 'Paypal')) Paypal
+
+					br
+					small Note that this is group-selected.
+			.control-group
 				label.control-label Notes
 				.controls
 					textarea(type='text', name='notes', cols="5", rows="5")
