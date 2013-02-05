@@ -25,7 +25,24 @@ b Number of Regular Tickets:
 .badge.badge-important #{billing.freeReg}
 |  = 
 .badge.badge-inverse #{billing.regTotal - billing.freeReg} @ $175
+br
+h2 Payment Type
+p Please select the type of payment you will be using. Your payments made will be logged below after they are processed accordingly. If you plan to use PayPal, you can utilize the button below, otherwise 
 
+form.form-horizontal(action='/api/account/paymentType', method="POST")
+	.control-group
+		label.control-label Payment Type
+		.controls
+			select(name='paymentType', required)
+				option(value='') Select a value...
+				option(value='Cheque', selected=(group.groupInformation.paymentType == 'Cheque')) Cheque
+				option(value='Money Order', selected=(group.groupInformation.paymentType == 'Money Order')) Money Order
+				option(value='Please Invoice', selected=(group.groupInformation.paymentType == 'Please Invoice')) Please Invoice
+				option(value='Credit Card', selected=(group.groupInformation.paymentType == 'Credit Card')) Credit Card
+				option(value='Paypal', selected=(group.groupInformation.paymentType == 'Paypal')) Paypal
+	.control-group
+		.controls
+			input.btn.btn-small.btn-primary(type="submit")
 
 h2 Payments
 p The following is an approximate log of payments confirmed to this date. If there is a problem please contact us.

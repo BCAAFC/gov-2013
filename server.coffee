@@ -604,6 +604,16 @@ server.post '/api/editGroup', requireAuthentication, (req, res) ->
 								console.log err
 							req.session.group = group
 							res.redirect '/account#groupinfo'
+							
+server.post '/api/account/paymentType', requireAuthentication, (req, res) ->
+	Group.findById req.session.group._id, (err, group) ->
+		group.groupInformation.paymentType = req.body.paymentType
+		group.log.push {date: new Date(), event: "Group payment type updated."}
+		group.save (err) ->
+			if err
+				res.send "There was a problem saving your payment type... Could you try again?"
+			else
+				res.redirect '/account#billing'
 
 
 server.post '/api/getMember', requireAuthentication, (req, res) ->

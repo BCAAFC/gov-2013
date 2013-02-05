@@ -36,6 +36,9 @@ exports.groupSchema = new Schema
 		province: String
 		postalCode: String
 		fax: String
+		paymentType:
+			type: String
+			default: ''
 	groupMembers: [
 		type: Schema.Types.ObjectId
 		ref: "Member"
