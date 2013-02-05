@@ -37,7 +37,7 @@ block content
 										a.btn(href="/admin/log?group=#{group._id}") Log
 								td
 								td
-									a.btn.btn-danger(href="/api/removeGroup/#{group._id}") Delete
+									a.btn.btn-danger(href="#", rel="tooltip", data-trigger="click", data-title="Are you sure?", data-content="You'll need to manually navigate to <a href='http://gatheringourvoices.bcaafc.com/api/removeGroup/#{group._id}'>this link</a>. Otherwise, click the button again to leave this area.", data-html='true') Delete
 						tr
 							td
 								a(href="/account/signup") Add a new group...
@@ -47,4 +47,6 @@ block content
 	.modal.hide.fade#groupNotes(tabindex='-1', role='dialog', aria-hidden='true')
 		include elements/groupNotes.jade
 
+	script
+		$('.btn-danger').popover()
 	!= js('admin/main')

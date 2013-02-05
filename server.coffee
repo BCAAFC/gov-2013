@@ -453,7 +453,7 @@ server.post '/api/signup', (req, res) ->
 												req.session.group = group
 												mailer.sendMail
 													from: "gatheringourvoices.noreply@gmail.com"
-													#to: group.primaryContact.email
+													to: group.primaryContact.email
 													bcc: "gatheringourvoices@bcaafc.com, dpreston@bcaafc.com"
 													subject: "Gathering Our Voices 2013 -- Registration Successful!"
 													html: "<h1>Hello #{group.primaryContact.name} of the #{group.groupInformation.affiliation}</h1>
