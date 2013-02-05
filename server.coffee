@@ -509,6 +509,8 @@ server.post '/api/addMember', requireAuthentication, (req, res) ->
 					$push:
 						groupMembers: member._id
 						log: event: "MEMBER ADD: #{req.body.name} (#{member._id}) was added."
+					$set:
+						'internal.status': "Edited - Unchecked"
 					(err, group) ->
 						if err
 							res.send "There was an error adding the member to your group."
