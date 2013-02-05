@@ -300,11 +300,17 @@ server.get '/admin', requireAuthentication, (req, res) ->
 	else
 		Group.find({}).sort('groupInformation.affiliation').exec (err, groups) -> # Find all groups
 			Workshop.find {}, (err, workshops) -> # Find all workshops
+				totals =
+					members: 0
+					workshops: workshops.length
+				for group in groups
+					totals.members += group.groupMembers.length
 				res.render 'admin/index',
 					title: "Administration"
 					group: req.session.group || null
 					groups: groups
 					workshops: workshops
+					totals: totals
 
 # This route requires a '?group=foo' query where foo is the group id.
 server.get '/admin/payments', requireAuthentication, (req, res) ->

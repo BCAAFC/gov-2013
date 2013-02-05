@@ -2,8 +2,14 @@ extends ../layout
 
 block content
 	.row-fluid
-		.span6
-			h3 Groups
+		.span12
+			.well
+				h3 Conference Totals
+				p Total Members: #{totals.members}
+				p Total Workshops: #{totals.workshops}
+	.row-fluid
+		.span12
+			h1 Groups
 			table.table.table-hover
 				thead
 					tr
