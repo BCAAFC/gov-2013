@@ -486,14 +486,17 @@ server.post '/api/signup', (req, res) ->
 																res.redirect '/'
 
 server.post '/api/logout', (req, res) ->
-	Group.findByIdAndUpdate req.session.group._id,
-		$push: log: event: "LOGOUT: From #{req.ip}"
-		(err, group) ->
-	req.session.destroy (err) ->
-		if err
-			res.send err
-		else
-			res.redirect "/"
+	if req.session.group
+		Group.findByIdAndUpdate req.session.group._id,
+			$push: log: event: "LOGOUT: From #{req.ip}"
+			(err, group) ->
+		req.session.destroy (err) ->
+			if err
+				res.send err
+			else
+				res.redirect "/"
+	else
+		res.redirect "/"
 
 ###
 Group API
