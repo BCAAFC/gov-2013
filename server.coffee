@@ -412,69 +412,72 @@ server.post '/api/login', (req, res) ->
 
 server.post '/api/signup', (req, res) ->
 	# Fail if the form isn't filled out
+	isOk = true
 	for item in ['name', 'email', 'pass', 'passConfirm', 'phone', 'affiliation', 'address', 'city', 'province', 'postalCode']
 		if req.body[item] is "" or null
+			isOk = false
 			res.send "Please be aware all fields (except fax) are required and must be filled out."
-	Login.findOne
-		email: req.body.email
-		(err, found) ->
-			if err or found or req.body.pass is not req.body.passConfirm
-				res.send "Your passwords did not match, or you're already signed up."
-			else
-				pwd.hash req.body.pass, (err, salt, hash) ->
-					group = new Group
-						primaryContact:
-							email: req.body.email
-							name: req.body.name
-							phone: req.body.phone
-						groupInformation:
-							affiliation: req.body.affiliation
-							address: req.body.address
-							city: req.body.city
-							province: req.body.province
-							postalCode: req.body.postalCode
-							fax: req.body.fax
-					group.save (err, group) -> 
-							if err
-								res.send "There was an error saving your information."
-							else
-								Group.findByIdAndUpdate group._id,
-									$push: log: event: 'CREATION: Group was created',
-									(err, group) ->
-										login = new Login
-											email: req.body.email
-											salt: salt
-											hash: hash
-											_group: group._id
-										login.save (err) ->
-											if err
-												res.send "There was an error saving your login."
-											else
-												req.session.group = group
-												mailer.sendMail
-													from: "gatheringourvoices.noreply@gmail.com"
-													to: group.primaryContact.email
-													bcc: "gatheringourvoices@bcaafc.com, dpreston@bcaafc.com"
-													subject: "Gathering Our Voices 2013 -- Registration Successful!"
-													html: "<h1>Hello #{group.primaryContact.name} of the #{group.groupInformation.affiliation}</h1>
-														<h3>Thank you for submitting your online registration!</h3>
-														<p>The Gathering Our Voices team will review your registration and send you an email response which can include the following:</p>
-														<ol>
-															<li>Request for missing information</li>
-															<li>Payment arrangements</li>
-															<li>Confirmation of official registration</li>
-														</ol>
-														<h3>Workshop Registration</h3>
-														<p>Workshop Registration will be available mid-February. You will receive and e-mail when workshop registration is open.</p>
-														<p>If you have any questions or concerns please contact:</p>
-														<p>Siku Allooloo, Conference Registration Coordinator</p>
-														<p>Email: <a href='mailto:gatheringourvoices@bcaafc.com'>gatheringourvoices@bcaafc.com</a></p>
-														<p>Phone: (250) 388-5522 or toll-free: 1-800-990-2432</p>"
-													(err)->
-														if err
-															res.send "We couldn't mail you a registration confirmation email... Call us at 250-388-5522"
-														else
-															res.redirect '/'
+	if isOk
+		Login.findOne
+			email: req.body.email
+			(err, found) ->
+				if err or found or req.body.pass is not req.body.passConfirm
+					res.send "Your passwords did not match, or you're already signed up."
+				else
+					pwd.hash req.body.pass, (err, salt, hash) ->
+						group = new Group
+							primaryContact:
+								email: req.body.email
+								name: req.body.name
+								phone: req.body.phone
+							groupInformation:
+								affiliation: req.body.affiliation
+								address: req.body.address
+								city: req.body.city
+								province: req.body.province
+								postalCode: req.body.postalCode
+								fax: req.body.fax
+						group.save (err, group) -> 
+								if err
+									res.send "There was an error saving your information."
+								else
+									Group.findByIdAndUpdate group._id,
+										$push: log: event: 'CREATION: Group was created',
+										(err, group) ->
+											login = new Login
+												email: req.body.email
+												salt: salt
+												hash: hash
+												_group: group._id
+											login.save (err) ->
+												if err
+													res.send "There was an error saving your login."
+												else
+													req.session.group = group
+													mailer.sendMail
+														from: "gatheringourvoices.noreply@gmail.com"
+														to: group.primaryContact.email
+														bcc: "gatheringourvoices@bcaafc.com, dpreston@bcaafc.com"
+														subject: "Gathering Our Voices 2013 -- Registration Successful!"
+														html: "<h1>Hello #{group.primaryContact.name} of the #{group.groupInformation.affiliation}</h1>
+															<h3>Thank you for submitting your online registration!</h3>
+															<p>The Gathering Our Voices team will review your registration and send you an email response which can include the following:</p>
+															<ol>
+																<li>Request for missing information</li>
+																<li>Payment arrangements</li>
+																<li>Confirmation of official registration</li>
+															</ol>
+															<h3>Workshop Registration</h3>
+															<p>Workshop Registration will be available mid-February. You will receive and e-mail when workshop registration is open.</p>
+															<p>If you have any questions or concerns please contact:</p>
+															<p>Siku Allooloo, Conference Registration Coordinator</p>
+															<p>Email: <a href='mailto:gatheringourvoices@bcaafc.com'>gatheringourvoices@bcaafc.com</a></p>
+															<p>Phone: (250) 388-5522 or toll-free: 1-800-990-2432</p>"
+														(err)->
+															if err
+																res.send "We couldn't mail you a registration confirmation email... Call us at 250-388-5522"
+															else
+																res.redirect '/'
 
 server.post '/api/logout', (req, res) ->
 	Group.findByIdAndUpdate req.session.group._id,
