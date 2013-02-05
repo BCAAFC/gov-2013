@@ -94,7 +94,9 @@ exports.memberSchema = new Schema
 		# Ideally we will split the items listed in the future.
 		allergies: String
 		conditions: String
-	youthInCare: Boolean
+	youthInCare:
+		type: String
+		default: "Not Attending"
 	ticketPrice: Number
 	regDate:
 		type: Date

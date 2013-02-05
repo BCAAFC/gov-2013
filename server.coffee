@@ -572,10 +572,7 @@ server.post '/api/editMember', requireAuthentication, (req, res) ->
 		member.emergencyInfo.name = req.body['member.emergencyInfo.name']
 		member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
 		member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
-		if req.body['member.youthInCare'] is 'on'
-			member.youthInCare = true
-		else
-			member.youthInCare = false
+		member.youthInCare = req.body['youthInCare']
 		member.save (err) ->
 			if err
 				res.send "The edits could not be saved. Please try again?"
