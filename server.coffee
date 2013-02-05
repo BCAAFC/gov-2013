@@ -524,12 +524,14 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 		else
 			index = group.groupMembers.indexOf req.params.id
 			group.groupMembers.splice index, 1
+			group.internal.status = "Edited - Unchecked"
+			group.log.push {date: new Date(), event: "MEMBER REMOVE: #{req.body.name} (#{req.body.id}) was removed."}
 			group.save (err) ->
 				if err
 					res.send "We couldn't save your changes. try again?"
 				else
 					Member.findById req.params.id, (err, member) ->
-						if err
+						if err or member is null
 							console.log err
 							res.send "The user was removed from your group, but may still exist in our system. (There was an error)"
 						else
@@ -545,9 +547,6 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 							member.remove()
 							req.session.group = group
 							res.redirect '/account#members'
-							Group.findByIdAndUpdate req.params.id,
-								$push:
-									log: event: "MEMBER REMOVE: #{req.body.name} (#{member._id}) was removed."
 					
 server.post '/api/editMember', requireAuthentication, (req, res) ->
 	Member.findById req.body.id, (err, member) ->
@@ -570,7 +569,10 @@ server.post '/api/editMember', requireAuthentication, (req, res) ->
 			if err
 				res.send "The edits could not be saved. Please try again?"
 			else
+				# A neccessary evil.
 				Group.findByIdAndUpdate req.session.group._id,
+					$set:
+						'internal.status': "Edited - Unchecked"
 					$push:
 						log:
 							event: "MEMBER UPDATE: #{req.body['member.name']} (#{member._id}) was updated."
@@ -606,6 +608,7 @@ server.post '/api/editGroup', requireAuthentication, (req, res) ->
 server.post '/api/account/paymentType', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		group.groupInformation.paymentType = req.body.paymentType
+		group.internal.status = "Edited - Unchecked"
 		group.log.push {date: new Date(), event: "NOTES: Group payment type updated."}
 		group.save (err) ->
 			if err
