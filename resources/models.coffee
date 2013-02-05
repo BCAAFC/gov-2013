@@ -119,6 +119,9 @@ exports.workshopSchema = new Schema
 	session: Number
 	day: String
 	room: String
+	venue: 
+		type: String
+		default: ""
 	capacity: Number
 	signedUp: [
 		type: Schema.Types.ObjectId

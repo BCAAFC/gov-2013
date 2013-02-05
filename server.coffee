@@ -658,6 +658,7 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 				timeEnd: timeEnd
 				session: req.body.session
 				room: req.body.room
+				venue: req.body.venue
 				day: req.body.day
 				capacity: req.body.capacity
 				signedUp: []
@@ -683,6 +684,7 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 					workshop.timeEnd = timeEnd
 					workshop.session = req.body.session
 					workshop.room = req.body.room
+					workshop.venue = req.body.venue
 					workshop.day = req.body.day
 					workshop.capacity = req.body.capacity
 					workshop.save (err, workshop) ->

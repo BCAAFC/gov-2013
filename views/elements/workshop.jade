@@ -56,6 +56,10 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 				.controls
 					input(type='text', name='room', required, value="#{workshop.room || ''}")
 			.control-group
+				label.control-label Venue
+				.controls
+					input(type='text', name='venue', required, value="#{workshop.venue || ''}")
+			.control-group
 				label.control-label Capacity
 				.controls
 					input(type='number', name='capacity', required, value="#{workshop.capacity || ''}")
