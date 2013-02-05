@@ -593,22 +593,20 @@ server.post '/api/editGroup', requireAuthentication, (req, res) ->
 			group.primaryContact.name = req.body.name
 #			group.primaryContact.email = req.body.email		# This is bad! Don't do this!
 			group.primaryContact.phone = req.body.phone
+			# Side effects
+			group.log.push {date: new Date(), event: "GROUP EDIT: Info updated."}
+			group.internal.status = "Edited - Unchecked"
 			group.save (err) ->
 				if err
 					res.send "There was an error, could you try again?"
 				else
-					Group.findByIdAndUpdate group._id,
-						$push: log: event: "GROUP EDIT: Info updated.",
-						(err) ->
-							if err
-								console.log err
-							req.session.group = group
-							res.redirect '/account#groupinfo'
+					req.session.group = group
+					res.redirect '/account#groupinfo'
 							
 server.post '/api/account/paymentType', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
 		group.groupInformation.paymentType = req.body.paymentType
-		group.log.push {date: new Date(), event: "Group payment type updated."}
+		group.log.push {date: new Date(), event: "NOTES: Group payment type updated."}
 		group.save (err) ->
 			if err
 				res.send "There was a problem saving your payment type... Could you try again?"
