@@ -10,6 +10,11 @@ express = require 'express'
 # Next we'll need to pull in [Mongoose](http://mongoosejs.com) which drives our [MongoDB](http://www.mongodb.org) connection.
 mongoose = require 'mongoose'
 
+# Also we should pull in Redis for persistant session storage.
+redis = require 'redis'
+RedisStore = require('connect-redis')(express)
+url = require 'url'
+
 # We will also need the excellent [Node-pwd](https://github.com/visionmedia/node-pwd)
 pwd = require 'pwd'
 
@@ -57,7 +62,20 @@ db = mongoose.createConnection generate_mongo_url mongo
 # We'll announce the state of the database connection to the console.
 db.on 'error', console.error.bind(console, 'Connection error:')
 db.once 'open', () ->
-	console.log "Connection success: Database at #{mongo.hostname}:#{mongo.port}"
+	console.log "Mongoose success: Database at #{mongo.hostname}:#{mongo.port}"
+
+# ## Set up memstore (Redis)
+if appfog
+	credentials = appfog['redis-2.2'][0]['credentials']
+	redisClient = redis.createClient credentials['port'], credentials['hostname']
+	redisClient.auth credentials['password'], (err) ->
+		if err
+			console.log err
+		else
+			console.log "Redis success: Keystore connected!"
+else
+	redisClient = redis.createClient()
+
 
 # ## App Resources
 
@@ -103,7 +121,8 @@ server.configure ->
 	# We store user sessions in memory. You should probably set a proper secret here as well.
 	server.use express.session
 		secret: process.env.SESSION_SECRET or 'test'
-		store: new express.session.MemoryStore
+		maxAge: new Date Date.now() + 28800000 # 8h Session lifetime
+		store: new RedisStore {client: redisClient}
 	# It's very important that we use `server.router` before our 404 handler... Otherwise everything gets mapped to 404s.
 	server.use server.router
 	# Everything in the `/public` folder is mapped for easy access to styles and scripts.
