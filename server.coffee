@@ -551,14 +551,14 @@ server.post '/api/addMember', requireAuthentication, (req, res) ->
 
 server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
-		if err
+		if err or group is null
 			res.send "There was an error removing that member, could you try again?"
 			console.log err
 		else
 			index = group.groupMembers.indexOf req.params.id
 			group.groupMembers.splice index, 1
 			group.internal.status = "Edited - Unchecked"
-			group.log.push {date: new Date(), event: "MEMBER REMOVE: #{req.body.name} (#{req.body.id}) was removed."}
+			group.log.push {date: new Date(), event: "MEMBER REMOVE: #{req.params.name} (#{req.params.id}) was removed."}
 			group.save (err) ->
 				if err
 					res.send "We couldn't save your changes. try again?"
@@ -583,33 +583,36 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 					
 server.post '/api/editMember', requireAuthentication, (req, res) ->
 	Member.findById req.body.id, (err, member) ->
-		member.name = req.body['member.name']
-		member.birthDate = req.body['member.birthDate']
-		member.gender = req.body['member.gender']
-		member.phone = req.body['member.phone']
-		member.email = req.body['member.email']
-		member.emergencyInfo.medicalNum = req.body['member.emergencyInfo.medicalNum']
-		member.emergencyInfo.allergies = req.body['member.emergencyInfo.allergies']
-		member.emergencyInfo.conditions = req.body['member.emergencyInfo.conditions']
-		member.emergencyInfo.name = req.body['member.emergencyInfo.name']
-		member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
-		member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
-		member.youthInCare = req.body['youthInCare']
-		member.save (err) ->
-			if err
-				res.send "The edits could not be saved. Please try again?"
-			else
-				# A neccessary evil.
-				Group.findByIdAndUpdate req.session.group._id,
-					$set:
-						'internal.status': "Edited - Unchecked"
-					$push:
-						log:
-							event: "MEMBER UPDATE: #{req.body['member.name']} (#{member._id}) was updated."
-					(err) ->
-						if err
-							console.log err
-				res.redirect '/account#members'
+		if err or member is null
+			res.send "There was a problem editing that member, specifically, we did not see which member you wanted to edit."
+		else
+			member.name = req.body['member.name']
+			member.birthDate = req.body['member.birthDate']
+			member.gender = req.body['member.gender']
+			member.phone = req.body['member.phone']
+			member.email = req.body['member.email']
+			member.emergencyInfo.medicalNum = req.body['member.emergencyInfo.medicalNum']
+			member.emergencyInfo.allergies = req.body['member.emergencyInfo.allergies']
+			member.emergencyInfo.conditions = req.body['member.emergencyInfo.conditions']
+			member.emergencyInfo.name = req.body['member.emergencyInfo.name']
+			member.emergencyInfo.relation = req.body['member.emergencyInfo.relation']
+			member.emergencyInfo.phone = req.body['member.emergencyInfo.phone']
+			member.youthInCare = req.body['youthInCare']
+			member.save (err) ->
+				if err
+					res.send "The edits could not be saved. Please try again?"
+				else
+					# A neccessary evil.
+					Group.findByIdAndUpdate req.session.group._id,
+						$set:
+							'internal.status': "Edited - Unchecked"
+						$push:
+							log:
+								event: "MEMBER UPDATE: #{req.body['member.name']} (#{member._id}) was updated."
+						(err) ->
+							if err
+								console.log err
+					res.redirect '/account#members'
 
 server.post '/api/editGroup', requireAuthentication, (req, res) ->
 	Group.findById req.session.group._id, (err, group) ->
