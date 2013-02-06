@@ -43,6 +43,13 @@ form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 				label.control-label Phone: 
 				.controls
 					input(type='text', name='phone', required, value="#{group.primaryContact.phone}")
+			.control-group
+				label.control-label Password Change: 
+				.controls
+					a.btn.btn-small.btn-info(href="http://gatheringourvoices.bcaafc.com/account/endRecovery?key=#{group._id}&email=#{group.primaryContact.email}") Change your password
+					br
+					small This will not save any other changes!
+
 
 		fieldset
 			legend Group Status
