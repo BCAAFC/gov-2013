@@ -50,7 +50,7 @@ form.form-horizontal(action="/api/editGroupNotes", method='post', style="margin-
 			.control-group
 				label.control-label Payment Type
 				.controls
-					select(name='paymentType', required)
+					select(name='paymentType')
 						option(value='') Select a value...
 						option(value='Cheque', selected=(group.groupInformation.paymentType == 'Cheque')) Cheque
 						option(value='Money Order', selected=(group.groupInformation.paymentType == 'Money Order')) Money Order
