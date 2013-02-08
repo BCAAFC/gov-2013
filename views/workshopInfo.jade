@@ -30,7 +30,7 @@ block content
 				p Used: #{workshop.signedUp.length}
 				p Max: #{workshop.capacity}
 	if group
-		if group.internal.workshopReg == "Sent"
+		if group.internal.workshopReg == "Sent" || group.internal.workshopReg == "Complete"
 			.row-fluid
 				.span12
 					.well

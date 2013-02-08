@@ -51,8 +51,10 @@ block content
 									// Workshop Reg
 									if group.internal.workshopReg == "Not sent"
 										span.label Workshop Reg #{group.internal.workshopReg}
-									else if group.internal.workshopReg == "Sent"
+									else if group.internal.workshopReg == "Complete"
 										span.label.label-success Workshop Reg #{group.internal.workshopReg}
+									else if group.internal.workshopReg == "Sent"
+										span.label.label-info Workshop Reg #{group.internal.workshopReg}
 								td
 									.btn-group
 										a.btn.btn-primary(href="/admin/login/#{group._id}") Login

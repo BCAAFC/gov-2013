@@ -38,6 +38,7 @@ form.form-horizontal(action="/api/editGroupNotes", method='post', style="margin-
 					select(name="workshopReg", required)
 						option(value="Not sent", selected=(group.internal.workshopReg == 'Not sent')) Not sent
 						option(value="Sent", selected=(group.internal.workshopReg == 'Sent')) Sent
+						option(value="Complete", selected=(group.internal.workshopReg == 'Complete')) Complete
 			.control-group
 				label.control-label Payment Status
 				.controls
