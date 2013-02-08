@@ -32,7 +32,7 @@ block content
 							td= workshop.timeEnd.toLocaleTimeString()
 							td
 								.badge.badge #{workshop.session}
-							td= workshop.capacity
+							td #{workshop.signedUp.length} / #{workshop.capacity}
 							if group
 								if group.internal.admin
 									td
