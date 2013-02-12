@@ -312,7 +312,21 @@ server.post '/account/endRecovery', (req, res) ->
 							else
 								res.send "Password recovered successfully, please return <a href='http://gatheringourvoices.bcaafc.com'>home</a> and try to login!"
 
-		
+server.get '/account/printout', requireAuthentication, (req, res) ->
+	Group.findById(req.session.group._id).populate('groupMembers').populate('payments').exec (err, group) ->
+		group.groupMembers.sort (a, b) ->
+			if a.name > b.name
+				return 1
+			else if a.name < b.name
+				return -1
+			else
+				return 0
+		Workshop.find {}, (req, workshops) ->
+			res.render 'account/printout',
+				title: "Printout"
+				group: group
+				workshops: workshops
+
 server.get '/admin', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"

@@ -26,6 +26,11 @@ form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 				label.control-label Fax: 
 				.controls
 					input(type='text', name='fax', value="#{group.groupInformation.fax}", data-content="This is not required, but if you don't give us a fax number, all documents sent to you will be via email.")
+			.control-group
+				.controls
+					a.btn.btn-inverse(href="/account/printout")
+						i.icon-print.icon-white
+						| Group Information Printout
 
 	.span6
 		fieldset
@@ -72,5 +77,5 @@ form.form-horizontal.row-fluid(action="/api/editGroup", method='post')
 				b Chaperones Attending: 
 				| #{group.chaperones.length}
 				br
-	.span10
+	.span12
 		input.btn.btn-primary.btn-block(type="submit", value="Submit Changes")

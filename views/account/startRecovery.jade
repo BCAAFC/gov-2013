@@ -2,8 +2,3 @@ extends ../layout
 
 block content
 	p To recover your password please enter your email and solve the following skill-testing question to prove you're not a robot.
-	form(action="/account/startRecovery", method="POST")
-		input(type="text", name="email")
-		p What is 5+5?
-		input(type="number", name="skill")
-		input.btn.btn-primary.btn-block(type="submit", value="Recover Password")

@@ -1,0 +1,185 @@
+doctype 5
+html
+	head
+		title Gathering Our Voices 2013 - #{title}
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		
+		// Info for Engines
+		meta(name="description", content="Gathering Our Voices is an annual conference in BC for Aboriginal Youth. This years conference theme will focus on Health and will be held from March 19-22, 2013 in Penticton, BC.")
+		meta(name="author", content="Andrew Hobden")
+
+
+		// HTML5 shim, because IE's are horrible.
+		//if lt IE 9
+			script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+
+		// CSS Stuff
+		link(href="//netdna.bootstrapcdn.com/bootswatch/2.1.1/united/bootstrap.min.css", rel="stylesheet")
+
+		style(type="text/css")
+			.qr {
+				position: absolute;
+				right: 0%;
+				top: 0%;
+				width: 150px;
+				height: 150px;
+			}
+
+		// Google Analytics Tracker
+		script(type="text/javascript")
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', 'UA-35619549-1']);
+				_gaq.push(['_trackPageview']);
+
+				(function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				})();
+		
+		script(type="text/javascript")
+			window.print()
+
+	body
+		img.qr(style="", src="http://www.qrstuff.com/images/sample.png")
+		h1 Gathering Our Voices
+		h2 Group: #{group.groupInformation.affiliation}
+		h3 Primary Contact: #{group.primaryContact.name}
+		hr
+		// Print pages only have an 8 span.
+		.row-fluid
+			.span4
+				h3 Group Information
+				table.table.table-condensed
+					tbody
+							tr
+								td 
+									b Affiliation
+								td 
+									p= group.groupInformation.affiliation
+							tr
+								td 
+									b Address
+								td 
+									p= group.groupInformation.address
+							tr
+								td 
+									b City
+								td 
+									p= group.groupInformation.city
+							tr
+								td 
+									b Postal Code
+								td 
+									p= group.groupInformation.postalCode
+							tr
+								td
+								td
+
+			.span4
+				h3 Contact
+				table.table.table-condensed
+					tbody
+							tr
+								td 
+									b Name
+								td 
+									p= group.primaryContact.name
+							tr
+								td 
+									b Email
+								td 
+									p= group.primaryContact.email
+							tr
+								td 
+									b Phone
+								td 
+									p= group.primaryContact.phone
+							tr
+								td 
+									b Fax
+								td 
+									p= group.groupInformation.fax
+							tr
+								td
+								td
+
+		.row-fluid
+			h2 Member List
+			hr
+			for member in group.groupMembers
+					.row-fluid(style="position: relative; left: 50px;")
+						h3= member.name
+						.span5
+							h5 Basic Info
+							table.table.table-condensed
+								tbody
+									tr
+										td Type
+										td= member.type
+									tr
+										td Gender
+										td= member.gender
+									tr
+										td Phone
+										td= member.phone
+									tr
+										td Email
+										td= member.email
+									tr
+										td Ticket Price
+										td= member.ticketPrice
+									tr
+										td Reg. Date
+										td= member.regDate.toLocaleDateString()
+									tr
+										td
+										td
+						.span5
+							h5 Emergency Info
+							table.table.table-condensed
+								tbody
+									tr
+										td Name
+										td= member.emergencyInfo.name
+									tr
+										td Relation
+										td= member.emergencyInfo.relation
+									tr
+										td Phone
+										td= member.emergencyInfo.phone
+									tr
+										td Medical Number
+										td= member.emergencyInfo.medicalNum
+									tr
+										td Allergies
+										td= member.emergencyInfo.allergies
+									tr
+										td Conditions
+										td= member.emergencyInfo.conditions
+									tr
+										td
+										td
+						.span10
+							h5 Workshops
+							table.table.table-condensed
+								thead
+									tr
+										th Name
+										th Session
+										th Venue
+										th Room
+										th Starts
+										th Ends
+								tbody
+									for workshop in workshops
+										if member.workshops.indexOf(workshop._id) != -1
+											tr
+												td= workshop.name
+												td= workshop.session
+												td= workshop.venue
+												td= workshop.room
+												td= workshop.timeStart.toLocaleTimeString()
+												td= workshop.timeEnd.toLocaleTimeString()
