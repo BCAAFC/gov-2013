@@ -75,6 +75,7 @@ if appfog
 			console.log "Redis success: Keystore connected!"
 else
 	redisClient = redis.createClient()
+	console.log "Redis success: Keystore connected!"
 
 
 # ## App Resources
@@ -602,6 +603,7 @@ server.post '/api/editMember', requireAuthentication, (req, res) ->
 		else
 			member.name = req.body['member.name']
 			member.birthDate = req.body['member.birthDate']
+			member.type = req.body['member.type']
 			member.gender = req.body['member.gender']
 			member.phone = req.body['member.phone']
 			member.email = req.body['member.email']

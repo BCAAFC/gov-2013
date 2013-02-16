@@ -12,8 +12,11 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 		.control-group
 			label.control-label Type
 			.controls
-				p #{member.type}
-				small Remove and re-add the member to change this!
+				select(name='member.type', required)
+					option(value="", selected=member.type == "") Please Select...
+					option(value="Youth", selected=member.type == "Youth") Youth
+					option(value="Young Adult", selected=member.type == "Young Adult") Young Adult
+					option(value="Chaperone", selected=member.type == "Chaperone") Chaperone
 		.control-group
 			label.control-label Ticket Price
 			.controls
