@@ -43,7 +43,7 @@ html
 			window.print()
 
 	body
-		//img.qr(style="", src="http://www.qrstuff.com/images/sample.png")
+		img.qr( src="https://chart.googleapis.com/chart?cht=qr&chl=http://gatheringourvoices.bcaafc.com/admin/checkin/#{group._id}&choe=UTF-8&chs=200x200")
 		h1 Gathering Our Voices
 		h2 Group: #{group.groupInformation.affiliation}
 		h3 Primary Contact: #{group.primaryContact.name}
@@ -171,6 +171,7 @@ html
 										th Session
 										th Venue
 										th Room
+										th Day
 										th Starts
 										th Ends
 								tbody
@@ -181,5 +182,6 @@ html
 												td= workshop.session
 												td= workshop.venue
 												td= workshop.room
+												td= workshop.day
 												td= workshop.timeStart.toLocaleTimeString()
 												td= workshop.timeEnd.toLocaleTimeString()

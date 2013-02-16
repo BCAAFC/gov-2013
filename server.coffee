@@ -385,6 +385,32 @@ server.get '/admin/log', requireAuthentication, (req, res) ->
 					group: req.session.group || null
 					targetGroup: targetGroup
 
+# Can't use a query here because we use Google's API to get the URLs
+server.get '/admin/checkin/:id', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById(req.params.id).populate("groupMembers").exec (err, targetGroup) ->
+			if err || targetGroup == null
+				res.send "We couldn't get that group."
+			else
+				# Buckets
+				targetGroup.youth = 0
+				targetGroup.youngAdults = 0
+				targetGroup.chaperones = 0
+				for member in targetGroup.groupMembers
+					if member.type is "Youth"
+						targetGroup.youth++
+					else if member.type is "Young Adult"
+						targetGroup.youngAdults++
+					else if member.type is "Chaperone"
+						targetGroup.chaperones++
+				
+				res.render 'admin/checkin',
+					title: "Administration - Check in"
+					group: req.session.group || null
+					targetGroup: targetGroup
+
 server.get '/admin/login/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"

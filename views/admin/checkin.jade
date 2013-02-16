@@ -1,0 +1,95 @@
+doctype 5
+html
+	head
+		title Gathering Our Voices 2013 - #{title}
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		
+		// Info for Engines
+		meta(name="description", content="Gathering Our Voices is an annual conference in BC for Aboriginal Youth. This years conference theme will focus on Health and will be held from March 19-22, 2013 in Penticton, BC.")
+		meta(name="author", content="Andrew Hobden")
+
+
+		// HTML5 shim, because IE's are horrible.
+		//if lt IE 9
+			script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+
+		// CSS Stuff
+		link(href="//netdna.bootstrapcdn.com/bootswatch/2.1.1/united/bootstrap.min.css", rel="stylesheet")
+
+		style(type="text/css")
+			.qr {
+				position: absolute;
+				right: 0%;
+				top: 0%;
+				width: 150px;
+				height: 150px;
+			}
+
+		// Google Analytics Tracker
+		script(type="text/javascript")
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', 'UA-35619549-1']);
+				_gaq.push(['_trackPageview']);
+
+				(function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				})();
+
+	body
+		.container-fluid
+			.row-fluid
+			h1 Group Information
+			// Group Badge
+			if targetGroup.internal.status == "New group - Unchecked" || targetGroup.internal.status == "Edited - Unchecked" || targetGroup.internal.status == null
+				span.badge.badge-important= targetGroup.groupMembers.length
+			else if targetGroup.internal.status == "Group waiting for info"
+				span.badge.badge-warning= targetGroup.groupMembers.length
+			else if targetGroup.internal.status == "New group - Reviewed"
+				span.badge= targetGroup.groupMembers.length
+			else
+				span.badge.badge-success= targetGroup.groupMembers.length
+			// Group Affilation
+			b #{targetGroup.groupInformation.affiliation}
+			br
+			small #{targetGroup._id}
+			
+			hr
+			
+			p
+				b Youth:
+				span #{targetGroup.youth}
+			p
+				b Young Adults:
+				span #{targetGroup.youngAdults}
+			p
+				b Chaperones:
+				span #{targetGroup.chaperones}
+
+			h1 Group State
+
+			// Group Status
+			if targetGroup.internal.status == "New group - Unchecked" || targetGroup.internal.status == "Edited - Unchecked" || targetGroup.internal.status == null
+				span.label.label-important= targetGroup.internal.status
+			else if targetGroup.internal.status == "Group waiting for info"
+				span.label.label-warning= targetGroup.internal.status
+			else if targetGroup.internal.status == "New group - Reviewed"
+				span.label= targetGroup.internal.status
+			else
+				span.label.label-success= targetGroup.internal.status
+			//
+			br
+			// Workshop Reg
+			if targetGroup.internal.workshopReg == "Not sent"
+				span.label Workshop Reg #{targetGroup.internal.workshopReg}
+			else if targetGroup.internal.workshopReg == "Complete"
+				span.label.label-success Workshop Reg #{targetGroup.internal.workshopReg}
+			else if targetGroup.internal.workshopReg == "Sent"
+				span.label.label-info Workshop Reg #{targetGroup.internal.workshopReg}
+			.row-fluid
+				h1 Check In?
+				p This will check the group in without making any changes. Please use with discretion.
+				a.btn.btn-block.btn-primary(href="#") Check In
