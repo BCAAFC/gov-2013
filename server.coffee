@@ -351,10 +351,44 @@ server.get '/admin/payments', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Group.findById(req.query.group).populate('payments').exec (err, targetGroup) ->
+		Group.findById(req.query.group).populate('payments').populate('groupMembers').exec (err, targetGroup) ->
 			if err
 				res.send "We couldn't find that group."
 			else
+				
+				billing =
+					earlyTotal: 0
+					regTotal: 0
+					# Free tickets. For every 5 tickets they get a 6th free.
+					# We need to split them because we don't want to give them extra free money.
+					freeEarly: 0
+					freeReg: 0
+					freetickets: 0
+
+				for member in targetGroup.groupMembers
+					if member.ticketPrice is 125
+						billing.earlyTotal += 1
+					else if member.ticketPrice is 175
+						billing.regTotal += 1
+	
+				# Calculate number of free tickets allowed.
+				billing.freeTickets = Math.floor( (billing.earlyTotal / 5) + (billing.regTotal / 5) )
+	
+				# Calculate the number of free regular priced tickets
+				billing.freeReg = Math.floor( billing.regTotal / 6 )
+				billing.freeEarly = Math.floor ( billing.earlyTotal / 6 )
+	
+				# If we have extra free Regulars
+				if (billing.freeTickets - billing.freeReg - billing.freeEarly) > 1 and billing.regTotal > 0
+					billing.freeReg++
+	
+				# Accumulate the amounts paid.
+				earlyPaid = 0
+				regPaid = 0
+				for payment in targetGroup.payments
+					earlyPaid += payment.earlyTickets
+					regPaid += payment.regTickets
+					
 				# Sum the totals
 				totalEarly = 0
 				totalReg = 0
@@ -369,6 +403,7 @@ server.get '/admin/payments', requireAuthentication, (req, res) ->
 					totals:
 						early: totalEarly
 						reg: totalReg
+					billing: billing
 			
 
 # Requires a query: "/admin/log?group=foo"
