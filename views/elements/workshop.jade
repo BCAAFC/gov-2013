@@ -36,15 +36,17 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 			.control-group
 				label.control-label Start Time
 				.controls
-					.input-append.bootstrap-timepicker-component
-						input.span2.timepicker-default(type='text', name='timeStart', required, value="#{workshop.timeStart || ''}")
+					.input-append
+						if workshop.timeStart
+							input.span2(type='text', name='timeStart', required, value="#{workshop.timeStart.toLocaleTimeString() || ''}")
 						span.add-on
 							i.icon-time
 			.control-group
 				label.control-label End Time
 				.controls
-					.input-append.bootstrap-timepicker-component
-						input.span2.timepicker-default(type='text', name='timeEnd', required, value="#{workshop.timeEnd || ''}")
+					.input-append
+						if workshop.timeEnd
+							input.span2(type='text', name='timeEnd', required, value="#{workshop.timeEnd.toLocaleTimeString() || ''}")
 						span.add-on
 							i.icon-time
 			.control-group
