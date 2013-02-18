@@ -13,6 +13,7 @@ block content
 			table.table.table-hover
 				thead
 					tr
+						th(style="width: 70px") Check in
 						th Name
 						th Info
 						th Edit
@@ -22,6 +23,13 @@ block content
 					if groups
 						for group in groups
 							tr
+								td
+									if group.internal.checkedIn == true
+										a.btn.btn-mini.btn-success.checkOut(data-id="#{group._id}")
+											i.icon.icon-ok
+									else
+										a.btn.btn-mini.checkIn(data-id="#{group._id}")
+											i.icon.icon-remove
 								td
 									// Group Badge
 									if group.internal.status == "New group - Unchecked" || group.internal.status == "Edited - Unchecked" || group.internal.status == null
@@ -73,6 +81,21 @@ block content
 	.modal.hide.fade#groupNotes(tabindex='-1', role='dialog', aria-hidden='true')
 		include elements/groupNotes.jade
 
-	script
+	:coffeescript
 		$('.btn-danger').popover()
+		$('.btn-danger').click ->
+			event.preventDefault()
+		
+		$('.checkIn').click ->
+			event.preventDefault()
+			# Can't use a query here because of google's QR code API
+			$.post "/admin/checkIn/#{$(this).data('id')}", (data) ->
+				location.reload()
+				
+		$('.checkOut').click ->
+			event.preventDefault()
+			# Can't use a query here because of google's QR code API
+			$.post "/admin/checkOut/#{$(this).data('id')}", (data) ->
+				location.reload()
+
 	!= js('admin/main')

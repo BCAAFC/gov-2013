@@ -52,6 +52,9 @@ exports.groupSchema = new Schema
 		regDate:
 			type: Date
 			default: Date.now
+		checkedIn:
+			type: Boolean
+			default: false
 		status: 
 			type: String
 			default: "New group - Unchecked"
