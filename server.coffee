@@ -844,32 +844,32 @@ server.get '/api/workshop/attendees/add', requireAuthentication, populateGroup, 
 				switch req.workshop.session
 					# Block 1
 					when 1
-						block = [1, 3]
-					when 2
-						block = [2, 3]
-					when 3
 						block = [1, 2, 3]
+					when 2
+						block = [1, 2]
+					when 3
+						block = [1, 3]
 					# Block 2
 					when 4
-						block = [4, 6]
-					when 5
-						block = [5, 6]
-					when 6
 						block = [4, 5, 6]
+					when 5
+						block = [4, 5]
+					when 6
+						block = [4, 6]
 					# Block 3
 					when 7
-						block = [7, 9]
-					when 8
-						block = [8, 9]
-					when 9
 						block = [7, 8, 9]
+					when 8
+						block = [7, 8]
+					when 9
+						block = [7, 9]
 					# Block 4
 					when 10
-						block = [10, 12]
-					when 11
-						block = [11, 12]
-					when 12
 						block = [10, 11, 12]
+					when 11
+						block = [10, 11]
+					when 12
+						block = [10, 12]
 				
 				# Session based blocking, no more overlaps.
 				if (workshop for workshop in member.workshops when block.indexOf(workshop.session) isnt -1).length == 0
