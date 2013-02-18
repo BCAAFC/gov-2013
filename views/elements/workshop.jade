@@ -38,7 +38,9 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 				.controls
 					.input-append
 						if workshop.timeStart
-							input.span2(type='text', name='timeStart', required, value="#{workshop.timeStart.toLocaleTimeString() || ''}")
+							input(type='text', name='timeStart', required, value="#{workshop.timeStart.toLocaleTimeString() || ''}")
+						else
+							input(type='text', name='timeStart', required, value="#{''}")
 						span.add-on
 							i.icon-time
 			.control-group
@@ -46,7 +48,9 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 				.controls
 					.input-append
 						if workshop.timeEnd
-							input.span2(type='text', name='timeEnd', required, value="#{workshop.timeEnd.toLocaleTimeString() || ''}")
+							input(type='text', name='timeEnd', required, value="#{workshop.timeEnd.toLocaleTimeString() || ''}")
+						else
+							input(type='text', name='timeStart', required, value="#{''}")
 						span.add-on
 							i.icon-time
 			.control-group

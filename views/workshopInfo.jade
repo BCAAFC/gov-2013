@@ -3,6 +3,13 @@ extends layout
 block content
 	.row-fluid
 		.span12
+			if workshop.day == "Wednesday"
+				a.btn.btn-primary(href="/workshops/thursday") Back to Thursday, March 21, 2013
+			else
+				a.btn.btn-primary(href="/workshops/wednesday") Back to Wednesday, March 20, 2013
+			hr
+	.row-fluid
+		.span12
 			.well
 				h1= workshop.name
 				h3 Facilitator:

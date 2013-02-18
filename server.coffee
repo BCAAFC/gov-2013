@@ -835,12 +835,12 @@ server.get '/api/workshop/attendees/add', requireAuthentication, populateGroup, 
 		res.send "That member is not a part of your group... Perhaps you're lost?"
 	else
 		# Add workshop to the member
-		Member.findById req.query.member, (err, member)->
+		Member.findById(req.query.member).populate('workshops').exec (err, member)->
 			if err
 				res.send "We couldn't find your member."
 			else
 				# Is the member already in that workshop?
-				if member.workshops.indexOf(req.workshop._id) is -1
+				if (workshop for workshop in member.workshops when workshop.session is req.workshop.session).length == 0
 					# Is the workshop full already?
 					if req.workshop.signedUp.length < req.workshop.capacity
 						member.workshops.push req.workshop._id
@@ -865,7 +865,7 @@ server.get '/api/workshop/attendees/add', requireAuthentication, populateGroup, 
 					else
 						res.send "That workshop is full. Please find a different workshop."
 				else
-					res.send "That member is already a part of that workshop!"
+					res.send "That member is already a part of a workshop for that session block!!"
 
 # Requires a "?workshop=foo&member=bar" query.
 server.get '/api/workshop/attendees/remove', requireAuthentication, populateGroup, populateWorkshop, (req, res) ->
