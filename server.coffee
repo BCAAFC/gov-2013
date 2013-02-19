@@ -420,6 +420,15 @@ server.get '/admin/log', requireAuthentication, (req, res) ->
 					group: req.session.group || null
 					targetGroup: targetGroup
 
+server.get '/admin/primaryEmailList', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.find {}, (err, groups) ->
+			result = (group.primaryContact.email for group in groups).join ', '
+			res.send result
+			
+
 # Can't use a query here because we use Google's API to get the URLs
 server.get '/admin/checkIn/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
