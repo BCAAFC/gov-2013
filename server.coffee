@@ -551,6 +551,9 @@ server.post '/api/signup', (req, res) ->
 		if req.body[item] is "" or null
 			isOk = false
 			res.send "Please be aware all fields (except fax) are required and must be filled out."
+	if req.body['email'].indexOf '@' is -1
+		isOk = false
+		res.send "Emails generally look like ahobden@bcaafc.com, you probably forgot to include the '@' in your email address. Try again?"
 	if isOk
 		Login.findOne
 			email: req.body.email
@@ -612,6 +615,7 @@ server.post '/api/signup', (req, res) ->
 																res.send "We couldn't mail you a registration confirmation email... Call us at 250-388-5522"
 															else
 																res.redirect '/'
+
 
 server.post '/api/logout', (req, res) ->
 	if req.session.group
