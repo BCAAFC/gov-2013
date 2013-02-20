@@ -551,7 +551,7 @@ server.post '/api/signup', (req, res) ->
 		if req.body[item] is "" or null
 			isOk = false
 			res.send "Please be aware all fields (except fax) are required and must be filled out."
-	if req.body['email'].indexOf '@' is -1
+	if req.body['email'].indexOf('@') == -1
 		isOk = false
 		res.send "Emails generally look like ahobden@bcaafc.com, you probably forgot to include the '@' in your email address. Try again?"
 	if isOk
@@ -945,7 +945,7 @@ server.get '/api/workshop/attendees/add', requireAuthentication, populateGroup, 
 					else
 						res.send "That workshop is full. Please find a different workshop."
 				else
-					res.send "That member is already a part of a workshop for that session block!!"
+					res.send "That member is already a part of a workshop for that session time. Please refer to the workshop homepage at <a href='http://gatheringourvoices.bcaafc.com/workshopHome'>this link</a>!"
 
 # Requires a "?workshop=foo&member=bar" query.
 server.get '/api/workshop/attendees/remove', requireAuthentication, populateGroup, populateWorkshop, (req, res) ->
