@@ -346,6 +346,42 @@ server.get '/admin', requireAuthentication, (req, res) ->
 					workshops: workshops
 					totals: totals
 
+server.get '/admin/details', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Member.find({}).exec (err, members) ->
+			totals =
+				members:
+					youth: 0
+					youngAdults: 0
+					chaperones: 0
+				tickets:
+					early: 0
+					reg: 0
+				workshops:
+					avgPerMember: 0
+				
+			# Our accumulation for members
+			for member in members
+				switch member.type
+					when "Youth" then totals.members.youth++
+					when "Young Adult" then totals.members.youngAdults++
+					when "Chaperone" then totals.members.chaperones++
+				switch member.ticketPrice
+					when 125 then totals.tickets.early++
+					when 175 then totals.tickets.reg++
+				if member.workshops.length
+					totals.workshops.avgPerMember += member.workshops.length
+			# Finish off averages
+			totals.workshops.avgPerMember /= members.length
+			
+			res.render 'admin/details',
+				title: "Administration Details"
+				group: req.session.group || null
+				totals: totals
+				members: members
+
 # This route requires a '?group=foo' query where foo is the group id.
 server.get '/admin/payments', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
@@ -617,7 +653,7 @@ server.post '/api/signup', (req, res) ->
 																res.redirect '/'
 
 
-server.post '/api/logout', (req, res) ->
+server.get '/api/logout', (req, res) ->
 	if req.session.group
 		Group.findByIdAndUpdate req.session.group._id,
 			$push: log: event: "LOGOUT: From #{req.ip}"

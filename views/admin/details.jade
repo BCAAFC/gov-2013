@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+	.row-fluid
+		.span12
+			.well
+				h1 Detailed Conference Totals
+				h3 Membership
+				p Total Youth: #{totals.members.youth}
+				p Total Young Adults: #{totals.members.youngAdults}
+				p Total Chaperones: #{totals.members.chaperones}
+				p Youth / Chaperone: #{totals.members.youth / totals.members.chaperones} (Ideally more then 5)
+
+				h3 Tickets
+				p Total Earlybird Tickets: #{totals.tickets.early}
+				p Total Regular Tickets: #{totals.tickets.reg}
+				h3 Workshops
+				p Avg # workshops / Member:  #{totals.workshops.avgPerMember} (Ideally between 4 and 8)
