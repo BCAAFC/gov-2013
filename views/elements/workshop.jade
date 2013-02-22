@@ -49,7 +49,7 @@ form#workshops.form-horizontal(action="/api/editWorkshop", method='post', style=
 						if workshop.timeEnd
 							input(type='text', name='timeEnd', required, value="#{workshop.timeEnd.toLocaleTimeString() || ''}")
 						else
-							input(type='text', name='timeStart', required, value="#{''}")
+							input(type='text', name='timeEnd', required, value="#{''}")
 						span.add-on
 							i.icon-time
 			.control-group

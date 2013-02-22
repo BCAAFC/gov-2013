@@ -822,7 +822,7 @@ server.post '/api/editWorkshop', requireAuthentication, (req,res) ->
 		# Build Valid Times
 		timeStart = new Date "#{req.body.day} #{req.body.timeStart}"
 		timeEnd = new Date "#{req.body.day} #{req.body.timeEnd}"
-	
+		
 		if not req.session.group.internal.admin # If --not-- admin
 			res.send "You're not authorized, please don't try again!"
 		else if req.body.name is "" or req.body.day is ""
