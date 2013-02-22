@@ -4,10 +4,13 @@ block content
 	.row-fluid
 		.span12
 			.well
-				h3 Conference Totals
+				h3 Conference at a Glance
 				p Total Members: #{totals.members}
 				p Total Workshops: #{totals.workshops}
-				a.btn.btn-small.btn-block.btn-info(href="/admin/details") Give me the details! I want more information!
+			.well
+				h3 Actions
+				a.btn.btn-small.btn-block.btn-info(href="/admin/details") Detailed Conference Information
+				a.btn.btn-small.btn-block(href="/admin/primaryEmailList") Primary Contact Email List
 	.row-fluid
 		.span12
 			h1 Groups
