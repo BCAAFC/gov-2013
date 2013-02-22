@@ -49,7 +49,7 @@ html
 		h3 Primary Contact: #{group.primaryContact.name}
 		hr
 		// Print pages only have an 8 span.
-		.row-fluid
+		.row-fluid-fluid
 			.span5
 				h3 Group Information
 				table.table.table-condensed
@@ -106,11 +106,11 @@ html
 								td
 								td
 
-		.row-fluid
+		.row-fluid-fluid
 			h2 Member List
 			hr
 			for member in group.groupMembers
-					.row-fluid(style="position: relative; left: 50px;")
+					.row-fluid-fluid(style="position: relative; left: 50px;")
 						h3= member.name
 						.span5
 							h5 Basic Info

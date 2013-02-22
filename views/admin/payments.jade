@@ -1,10 +1,10 @@
 extends ../layout
 
 block content
-	.row-fluid
+	.row-fluid-fluid
 		.span12
 			h1 Payment Information for #{targetGroup.groupInformation.affiliation}
-	.row-fluid
+	.row-fluid-fluid
 		.span12
 			h3 Ticket Breakdown
 			b Number of Earlybird Tickets:
@@ -22,7 +22,7 @@ block content
 			.badge.badge-inverse #{billing.regTotal - billing.freeReg} @ $175
 			br
 
-	.row-fluid
+	.row-fluid-fluid
 		.span12
 			h3 Payments
 			table.table.table-hover
@@ -54,7 +54,7 @@ block content
 								| $ #{totals.early * 125 + totals.reg * 175}
 
 
-	.row-fluid
+	.row-fluid-fluid
 		.span12
 			h3 Add new payment
 			form.form-horizontal(action="/api/payment/add", method="POST")

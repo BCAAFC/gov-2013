@@ -18,6 +18,7 @@ html
 
 		// CSS Stuff
 		link(href="//netdna.bootstrapcdn.com/bootswatch/2.1.1/united/bootstrap.min.css", rel="stylesheet")
+		link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-responsive.min.css", rel="stylesheet")
 		style(type="text/css")
 			popover {
 				z-index: 99999;
@@ -48,58 +49,68 @@ html
 
 	body
 		// Navbar. This does not need a container.
-		.navbar.navbar.navbar-fixed-top
+		.navbar.navbar-fixed-top
 			.navbar-inner
-				a.brand(style="font-family: Rancho", href="/") Gathering Our Voices
-				ul.nav
-					li
-						a(href='/')
-							i.icon-home.icon-white
-							| Home
+				.container
+					a.btn.btn-navbar(data-toggle="collapse", data-target=".nav-collapse")
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
 
-					li.dropdown
-						a(href="/workshopHome")
-							i.icon-list-alt.icon-white
-							| Workshops
-					li
-						a(href="/privacy")
-							i.icon-eye-open.icon-white
-							| Privacy Policy
-				ul.nav.pull-right
-					if group
-						if group.internal.admin
+					a.brand(style="font-family: Rancho", href="/") Gathering Our Voices
+
+					.nav-collapse.collapse
+						ul.nav
 							li
-								a(href="/admin")
-									i.icon-hdd.icon-white
-									| Admin
-					if group
-						li.dropdown
-							a.dropdown-toggle#accountDrop(href='#', data-toggle="dropdown")
-								i.icon-edit.icon-white
-								| Account
-								b.caret
-							ul.dropdown-menu(aria-labelledby="accountDrop")
+								a(href='/')
+									i.icon-home.icon-white
+									| Home
+
+							li.dropdown
+								a(href="/workshopHome")
+									i.icon-list-alt.icon-white
+									| Workshops
+							li
+								a(href="/privacy")
+									i.icon-eye-open.icon-white
+									| Privacy Policy
+						ul.nav.pull-right
+							if group
+								if group.internal.admin
+									li
+										a(href="/admin")
+											i.icon-hdd.icon-white
+											| Admin
+							if group
+								li.dropdown
+									a.dropdown-toggle#accountDrop(href='#', data-toggle="dropdown")
+										i.icon-edit.icon-white
+										| Account
+										b.caret
+									ul.dropdown-menu(aria-labelledby="accountDrop")
+										li
+											a(href="/account") Management
+										li
+											a(href="#add", data-toggle="modal") Add a member
+										li
+											a(href="/account#billing") Payment Details
 								li
-									a(href="/account") Management
+									a(href="/api/logout") Logout
+							else
 								li
-									a(href="#add", data-toggle="modal") Add a member
-								li
-									a(href="/account#billing") Payment Details
-						li
-							a(href="/api/logout") Logout
-					else
-						li
-							form(action="/", style="text-align: center; margin: 0px 0px 0px 0px;")
-								input.btn.btn-success.btn-small(type="submit", value="Login")
-		.container
-			.row
+									form(action="/", style="text-align: center; margin: 0px 0px 0px 0px;")
+										input.btn.btn-success.btn-small(type="submit", value="Login")
+
+
+		.container-fluid
+			.row-fluid
 				div(style="text-align: center;")
 					img(src="/img/logos/gov.png")
 			block content
-			.row
+			.row-fluid
 				.span6.offset4
 					h4 Proudly supported by the following Organizations:
-			.row
+			.row-fluid
 				div(style="text-align: center;")
 					a(href="http://www.bcaafc.com")
 						img(src="/img/logos/bcaafc.png")

@@ -42,7 +42,7 @@ html
 
 	body
 		.container-fluid
-			.row-fluid
+			.row-fluid-fluid
 			h1 Group Information
 			// Group Badge
 			if targetGroup.internal.status == "New group - Unchecked" || targetGroup.internal.status == "Edited - Unchecked" || targetGroup.internal.status == null
@@ -99,7 +99,7 @@ html
 				span.label.label-success Workshop Reg #{targetGroup.internal.workshopReg}
 			else if targetGroup.internal.workshopReg == "Sent"
 				span.label.label-info Workshop Reg #{targetGroup.internal.workshopReg}
-			.row-fluid
+			.row-fluid-fluid
 				h1 Check In?
 				p This will check the group in without making any changes. Please use with discretion.
 				if targetGroup.internal.checkedIn == true
