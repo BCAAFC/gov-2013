@@ -356,6 +356,7 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 					youth: 0
 					youngAdults: 0
 					chaperones: 0
+					youthInCare: 0
 				tickets:
 					early: 0
 					reg: 0
@@ -371,6 +372,8 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 				switch member.ticketPrice
 					when 125 then totals.tickets.early++
 					when 175 then totals.tickets.reg++
+				if member.youthInCare != "Not Attending"
+					totals.members.youthInCare++
 				if member.workshops.length
 					totals.workshops.avgPerMember += member.workshops.length
 			# Finish off averages
@@ -461,7 +464,7 @@ server.get '/admin/primaryEmailList', requireAuthentication, (req, res) ->
 		res.send "You're not authorized, please don't try again!"
 	else
 		Group.find {}, (err, groups) ->
-			result = (group.primaryContact.email for group in groups).join ', '
+			result = (group.primaryContact.email for group in groups).join '; '
 			res.send result
 			
 
