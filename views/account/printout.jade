@@ -39,8 +39,6 @@ html
 					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 				})();
 		
-		script(type="text/javascript")
-			window.print()
 
 	body
 		img.qr( src="https://chart.googleapis.com/chart?cht=qr&chl=http://gatheringourvoices.bcaafc.com/admin/checkIn/#{group._id}&choe=UTF-8&chs=200x200")
@@ -49,68 +47,38 @@ html
 		h3 Primary Contact: #{group.primaryContact.name}
 		hr
 		// Print pages only have an 8 span.
-		.row-fluid-fluid
+		.row-fluid
 			.span5
 				h3 Group Information
-				table.table.table-condensed
-					tbody
-							tr
-								td 
-									b Affiliation
-								td 
-									p= group.groupInformation.affiliation
-							tr
-								td 
-									b Address
-								td 
-									p= group.groupInformation.address
-							tr
-								td 
-									b City
-								td 
-									p= group.groupInformation.city
-							tr
-								td 
-									b Postal Code
-								td 
-									p= group.groupInformation.postalCode
-							tr
-								td
-								td
+				address
+					strong #{group.groupInformation.affiliation}
+					br
+					| #{group.groupInformation.address}
+					br
+					| #{group.groupInformation.city}
+					br
+					| #{group.groupInformation.postalCode}
 
 			.span5
 				h3 Contact
-				table.table.table-condensed
-					tbody
-							tr
-								td 
-									b Name
-								td 
-									p= group.primaryContact.name
-							tr
-								td 
-									b Email
-								td 
-									p= group.primaryContact.email
-							tr
-								td 
-									b Phone
-								td 
-									p= group.primaryContact.phone
-							tr
-								td 
-									b Fax
-								td 
-									p= group.groupInformation.fax
-							tr
-								td
-								td
+				address
+					strong Name:  
+					| #{group.primaryContact.name}
+					br
+					b Email: 
+					| #{group.primaryContact.email}
+					br
+					b Phone: 
+					| #{group.primaryContact.phone}
+					br
+					b Fax: 
+					| #{group.groupInformation.fax}
 
-		.row-fluid-fluid
+		.row-fluid
 			h2 Member List
 			hr
 			for member in group.groupMembers
-					.row-fluid-fluid(style="position: relative; left: 50px;")
+					.row-fluid(style="position: relative; left: 50px;")
 						h3= member.name
 						.span5
 							h5 Basic Info
@@ -185,3 +153,7 @@ html
 												td= workshop.day
 												td= workshop.timeStart.toLocaleTimeString()
 												td= workshop.timeEnd.toLocaleTimeString()
+
+	:coffeescript
+		$ ->
+			window.print()
