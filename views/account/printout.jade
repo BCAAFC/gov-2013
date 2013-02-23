@@ -51,28 +51,22 @@ html
 			.span5
 				h3 Group Information
 				address
+					strong #{group.primaryContact.name}
+					br
 					strong #{group.groupInformation.affiliation}
 					br
 					| #{group.groupInformation.address}
 					br
-					| #{group.groupInformation.city}
+					| #{group.groupInformation.city}, #{group.groupInformation.province}
 					br
 					| #{group.groupInformation.postalCode}
-
-			.span5
-				h3 Contact
-				address
-					strong Name:  
-					| #{group.primaryContact.name}
 					br
-					b Email: 
-					| #{group.primaryContact.email}
 					br
-					b Phone: 
 					| #{group.primaryContact.phone}
 					br
-					b Fax: 
 					| #{group.groupInformation.fax}
+					br
+					| #{group.primaryContact.email}
 
 		.row-fluid
 			h2 Member List
