@@ -350,7 +350,7 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Member.find({}).exec (err, members) ->
+		Group.find({}).populate('groupMembers').exec (err, groups) ->
 			totals =
 				members:
 					youth: 0
@@ -364,26 +364,29 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 					avgPerMember: 0
 				
 			# Our accumulation for members
-			for member in members
-				switch member.type
-					when "Youth" then totals.members.youth++
-					when "Young Adult" then totals.members.youngAdults++
-					when "Chaperone" then totals.members.chaperones++
-				switch member.ticketPrice
-					when 125 then totals.tickets.early++
-					when 175 then totals.tickets.reg++
-				if member.youthInCare != "Not Attending"
-					totals.members.youthInCare++
-				if member.workshops.length
-					totals.workshops.avgPerMember += member.workshops.length
+			for group in groups
+				for member in group.groupMembers
+					switch member.type
+						when "Youth" then totals.members.youth++
+						when "Young Adult" then totals.members.youngAdults++
+						when "Chaperone" then totals.members.chaperones++
+					switch member.ticketPrice
+						when 125 then totals.tickets.early++
+						when 175 then totals.tickets.reg++
+					if member.youthInCare != "Not Attending"
+						totals.members.youthInCare++
+					if member.workshops.length
+						totals.workshops.avgPerMember += member.workshops.length
+						
 			# Finish off averages
-			totals.workshops.avgPerMember /= members.length
+			totals.workshops.avgPerMember /= ( totals.members.youth + totals.members.youngAdults + totals.members.chaperones )
+			totals.members.avgPerGroup = ( totals.members.youth + totals.members.youngAdults + totals.members.chaperones ) / groups.length
 			
 			res.render 'admin/details',
 				title: "Administration Details"
 				group: req.session.group || null
 				totals: totals
-				members: members
+				groups: groups
 
 # This route requires a '?group=foo' query where foo is the group id.
 server.get '/admin/payments', requireAuthentication, (req, res) ->
@@ -811,6 +814,21 @@ server.post '/api/getMember', requireAuthentication, (req, res) ->
 			res.render 'account/elements/memberInfo', 
 				group: req.session.group
 				member: member
+
+# Requires a query "/api/member/setTicket?price=125&id=foo"
+server.get "/api/member/setTicket", requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else if req.query.id == null or req.query.price == null
+		res.send "You forgot to add a query."
+	else
+		Member.findById req.query.id, (err, member) ->
+			if err or member == null
+				res.send "This was an error finding that member."
+			else
+				member.ticketPrice = req.query.price
+				member.save()
+				res.redirect "/admin/details"
 		
 ###
 Workshop API

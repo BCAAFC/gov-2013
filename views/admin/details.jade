@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-	.row-fluid-fluid
+	.row-fluid
 		.span12
 			.well
 				h1 Detailed Conference Totals
@@ -17,3 +17,39 @@ block content
 				p Total Regular Tickets: #{totals.tickets.reg}
 				h3 Workshops
 				p Avg # workshops / Member:  #{totals.workshops.avgPerMember} (Ideally between 4 and 8)
+	.row-fluid
+		.span12
+			h1 Members Attending
+
+			for group in groups
+				h4= group.groupInformation.affiliation
+				.pull-right
+					a.btn.btn-primary(href="/admin/login/#{group._id}") Login
+					a.btn.btn-info.notes(data-id="#{group._id}", href="#groupNotes", data-toggle="modal") Notes
+					a.btn.btn-inverse(href="/admin/payments?group=#{group._id}") Payments
+					a.btn(href="/admin/log?group=#{group._id}") Log
+				.well
+					table.table.table-hover
+						thead
+							td(style="width: 200px") Name
+							td(style="width: 100px") Type
+							td(style="width: 100px") YIC
+							td Earlybird
+							td
+						tbody
+							for member in group.groupMembers
+								tr
+									td= member.name
+									td= member.type
+									td
+										if member.youthInCare != "Not Attending"
+											.badge.badge-success Y
+										else
+											.badge N
+									td
+										if member.ticketPrice == 125
+											a.btn.btn-warning.btn-small(href="/api/member/setTicket?price=175&id=#{member._id}")
+												i.icon-white.icon-flag
+										else 
+											a.btn.btn-small(href="/api/member/setTicket?price=125&id=#{member._id}")
+												i.icon-flag
