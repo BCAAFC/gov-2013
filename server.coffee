@@ -228,7 +228,7 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 	freeEarly = Math.floor ( earlyTotal / 6 )
 	
 	# If we have extra free Regulars
-	if (freeTickets - freeReg - freeEarly) > 1 and regTotal > 0
+	if (freeTickets - freeReg - freeEarly) >= 1 and regTotal > 0
 		freeReg++
 	
 	# Accumulate the amounts paid.

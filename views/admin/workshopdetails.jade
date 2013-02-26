@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+	.row-fluid
+		.span12
+			.well
+				h1 Detailed Conference Totals
+				.alert.alert-success I don't know what you want here so tell me!
+
+			for workshop in workshops
+				h4
+					.badge= workshop.session
+					|   #{workshop.name}
+				.pull-right
+					a.btn.btn-info(href="/api/workshop/get?workshop=#{workshop._id}") View Workshop Info Page
+				.well
+					p Host: #{workshop.host}
+					h5 Members
+					table.table.table-hover
+						thead
+							tr
+								th Name
+								th Type
+								th Group
+								th Actions
+						tbody
+							for member in workshop.signedUp
+								tr
+									td= member.name
+									td= member.type
+									td= member.groupName
+									td
+										a.btn.btn-small.btn-danger(href="/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}") Remove
