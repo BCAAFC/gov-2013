@@ -31,11 +31,12 @@ block content
 				.well
 					table.table.table-hover
 						thead
-							td(style="width: 200px") Name
-							td(style="width: 100px") Type
-							td(style="width: 100px") YIC
-							td Earlybird
-							td
+							tr
+								td(style="width: 200px") Name
+								td(style="width: 100px") Type
+								td(style="width: 100px") YIC
+								td Earlybird
+								td
 						tbody
 							for member in group.groupMembers
 								tr
@@ -48,7 +49,7 @@ block content
 											.badge N
 									td
 										if member.ticketPrice == 125
-											a.btn.btn-warning.btn-small(href="/api/member/setTicket?price=175&id=#{member._id}")
+											a.btn.btn-success.btn-small(href="/api/member/setTicket?price=175&id=#{member._id}")
 												i.icon-white.icon-flag
 										else 
 											a.btn.btn-small(href="/api/member/setTicket?price=125&id=#{member._id}")

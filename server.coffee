@@ -387,6 +387,25 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 				group: req.session.group || null
 				totals: totals
 				groups: groups
+				
+server.get '/admin/workshopDetails', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Workshop.find({}).populate('signedUp').exec (err, workshops) ->
+			Group.find({}).exec (err, groups) ->
+				if err or workshops == null or groups == null
+					res.send "There was an error."
+					console.log err
+				else
+					for workshop in workshops
+						for member in workshop.signedUp
+							name = (group.groupInformation.affiliation for group in groups when group._id.equals member.group)
+							member.groupName = name[0]
+					res.render 'admin/workshopDetails'
+						title: "Admin Workshop Details"
+						group: req.session.group || null
+						workshops: workshops
 
 # This route requires a '?group=foo' query where foo is the group id.
 server.get '/admin/payments', requireAuthentication, (req, res) ->
@@ -1039,7 +1058,7 @@ server.get '/api/workshop/attendees/remove', requireAuthentication, populateGrou
 										(err) ->
 											if err
 												console.log err
-									res.redirect "/api/workshop/get?workshop=#{req.workshop._id}"
+									res.redirect "back"
 
 
 ###
