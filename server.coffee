@@ -392,7 +392,7 @@ server.get '/admin/workshopDetails', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Workshop.find({}).populate('signedUp').exec (err, workshops) ->
+		Workshop.find({}).populate('signedUp').sort('session').exec (err, workshops) ->
 			Group.find({}).exec (err, groups) ->
 				if err or workshops == null or groups == null
 					res.send "There was an error."
