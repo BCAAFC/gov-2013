@@ -421,7 +421,7 @@ server.get '/admin/payments', requireAuthentication, (req, res) ->
 				billing.freeEarly = Math.floor ( billing.earlyTotal / 6 )
 	
 				# If we have extra free Regulars
-				if (billing.freeTickets - billing.freeReg - billing.freeEarly) > 1 and billing.regTotal > 0
+				if (billing.freeTickets - billing.freeReg - billing.freeEarly) >= 1 and billing.regTotal > 0
 					billing.freeReg++
 	
 				# Accumulate the amounts paid.
