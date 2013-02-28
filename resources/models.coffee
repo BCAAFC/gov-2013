@@ -93,6 +93,9 @@ exports.memberSchema = new Schema
 		conditions: String
 	youthInCare: Boolean
 	ticketPrice: Number
+	regDate:
+		type: Date
+		default: new Date("February 2, 2013")
 	# These associate to `Workshop`s
 	workshops: [
 		type: Schema.Types.ObjectId

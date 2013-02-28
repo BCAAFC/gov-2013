@@ -74,11 +74,13 @@ Payment = db.model 'Payment', Models.paymentSchema
 ###
 getTicketPrice = () ->
 	today = new Date()
-	deadline = new Date("Febuary 9, 2012 00:00:00")
+	deadline = new Date("Febuary 9, 2013 00:00:00")
 	if (today <= deadline)
-		return 175
-	else
+		console.log "Got 125"
 		return 125
+	else
+		console.log "Got 175"
+		return 175
 
 # ## Configure Express
 
@@ -178,6 +180,10 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 	chaperones = []
 	earlyTotal = 0
 	regTotal = 0
+	# Free tickets. For every 5 tickets they get a 6th free.
+	# We need to split them because we don't want to give them extra free money.
+	freeEarly = 0
+	freeReg = 0
 			
 	for member in group.groupMembers
 		bill += member.ticketPrice
@@ -193,7 +199,17 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 			youngAdults.push member
 		else if member.type is "Chaperone"
 			chaperones.push member
+	
+	# Calculate free tickets
+	freeEarly = Math.floor( (earlyTotal + regTotal) / 6 )
+	# If we have extra free earlies
+	if (earlyTotal - freeEarly) < 0
+		freeReg += Math.abs(earlyTotal - freeEarly)
+		freeEarly -= Math.abs(earlyTotal - freeEarly)
 
+	console.log "Free Early: #{freeEarly} -- Free Reg: #{freeReg}"
+	
+	
 	earlyPaid = 0
 	regPaid = 0
 	for payment in group.payments
@@ -210,9 +226,11 @@ server.get '/account', requireAuthentication, populateGroupMembers, (req, res) -
 		title: "Account Management"
 		group: req.session.group || null
 		billing:
-			total: bill
+			total: bill - (freeEarly * 125) - (freeReg * 175)
 			earlyTotal: earlyTotal
 			regTotal: regTotal
+			freeEarly: freeEarly
+			freeReg: freeReg
 			earlyPaid: earlyPaid
 			regPaid: regPaid
 
@@ -479,9 +497,11 @@ server.post '/api/addMember', requireAuthentication, (req, res) ->
 		req.body.ticketPrice = getTicketPrice()
 		member = new Member req.body
 		member.group = req.session.group._id
+		member.regDate = new Date()
 		member.save (err) ->
 			if err
 				res.send "We could not save that member, could you try again?"
+				console.log err
 			else
 				Group.findByIdAndUpdate req.session.group._id,
 					$push:
@@ -513,8 +533,8 @@ server.get '/api/removeMember/:type/:name/:id', requireAuthentication, (req, res
 						else
 							for workshopId in member.workshops
 								Workshop.findById workshopId, (err, workshop) ->
-									if err
-										console.log "Couldn't remove #{req.params.id} from #{workshop._id}: \n #{err}"
+									if err or workshop is null
+										console.log "Couldn't remove #{req.params.id} from #{workshopId}: \n #{err}"
 									else
 										index = workshop.signedUp.indexOf req.params.id
 										workshop.signedUp.splice index, 1

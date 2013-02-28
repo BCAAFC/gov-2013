@@ -15,6 +15,11 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 				p #{member.type}
 				small Remove and re-add the member to change this!
 		.control-group
+			label.control-label Ticket Price
+			.controls
+				p #{member.ticketPrice}
+				small Registered on #{member.regDate.toDateString()}
+		.control-group
 			label.control-label Affiliation
 			.controls
 				p #{group.groupInformation.affiliation}
@@ -85,11 +90,14 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 
 	fieldset
 		legend Workshops
-		for workshop in member.workshops
-			.control-group
-				label.control-label= workshop.name
-				.controls
-					a.btn.btn-info.btn-small(href="/api/workshop/get?workshop=#{workshop._id}") Get Info
+		if member.workshops.length >= 1
+			for workshop in member.workshops
+				.control-group
+					label.control-label= workshop.name
+					.controls
+						a.btn.btn-info.btn-small(href="/api/workshop/get?workshop=#{workshop._id}") Get Info
+		else
+			small.alert This member isn't signed up for any workshops!
 
 	script
 			$('input').popover({
