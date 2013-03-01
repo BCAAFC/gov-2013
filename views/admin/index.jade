@@ -48,7 +48,7 @@ block content
 									// Group Affilation
 									b #{group.groupInformation.affiliation}
 									br
-									small #{group._id}
+									small #{group._id} | #{group.primaryContact.email}
 								td
 									// Group Status
 									if group.internal.status == "New group - Unchecked" || group.internal.status == "Edited - Unchecked" || group.internal.status == null
