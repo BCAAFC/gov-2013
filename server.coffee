@@ -190,6 +190,11 @@ server.get '/privacy', (req, res) ->
 	res.render 'privacy',
 		title: "Privacy Policy"
 		group: req.session.group || null
+		
+server.get '/help', (req, res) ->
+	res.render 'help',
+		title: "Help"
+		group: req.session.group || null
 
 server.get '/account', requireAuthentication, populateGroupMembers, (req, res) ->
 	# Accumulate Bill and toss members into buckets for easy JADE-ing.
