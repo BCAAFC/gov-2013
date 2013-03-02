@@ -1,0 +1,47 @@
+doctype 5
+html
+	head
+		title Gathering Our Voices 2013 - #{title}
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		
+		// Info for Engines
+		meta(name="description", content="Gathering Our Voices is an annual conference in BC for Aboriginal Youth. This years conference theme will focus on Health and will be held from March 19-22, 2013 in Penticton, BC.")
+		meta(name="author", content="Andrew Hobden")
+
+
+		// HTML5 shim, because IE's are horrible.
+		//if lt IE 9
+			script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+
+		// CSS Stuff
+		link(href="//netdna.bootstrapcdn.com/bootswatch/2.1.1/united/bootstrap.min.css", rel="stylesheet")
+
+		style(type="text/css")
+			.qr {
+				position: absolute;
+				right: 0%;
+				top: 0%;
+				width: 150px;
+				height: 150px;
+			}
+
+		// Google Analytics Tracker
+		script(type="text/javascript")
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', 'UA-35619549-1']);
+				_gaq.push(['_trackPageview']);
+
+				(function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				})();
+		
+
+	body
+		block content
+		:coffeescript
+			$ ->
+				window.print()
