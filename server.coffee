@@ -1167,6 +1167,20 @@ server.post '/api/payment/add', (req, res) ->
 									if err
 										console.log err
 							res.redirect "/admin/payments?group=#{group._id}"
+							
+# Requires a query: "/api/payment/receipt?payment=foo"
+server.get '/api/payment/receipt', (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Payment.findById(req.query.payment).populate('group').exec (err, payment) ->
+			if err || payment == null
+				res.send "There was an error finding that payment, maybe you forgot to specify one?"
+			else
+				res.render 'admin/receipt'
+					title: "Payment Receipt"
+					group: req.session.group || null
+					payment: payment
 
 # Requires a query: "/api/payment/delete?group=bar&payment=foo"
 server.get '/api/payment/delete', (req, res) ->

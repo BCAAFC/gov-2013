@@ -22,7 +22,6 @@ html
 			.qr {
 				position: absolute;
 				right: 0%;
-				top: 0%;
 				width: 150px;
 				height: 150px;
 			}
@@ -41,7 +40,26 @@ html
 		
 
 	body
-		block content
+		.container-fluid
+			.row-fluid
+				.span2
+					img(src="/img/logos/bcaafc.png")
+				.span8
+					hr
+					h1 BC Association of Aboriginal Friendship Centres
+					p= new Date().toLocaleDateString()
+			.row-fluid
+				.span6.offset4
+
+			block content
+			
+			.row-fluid
+				hr
+				div.muted(style="text-align: center")
+					p #200 – 506 Fort Street, Victoria, BC   V8W 1E6
+					p Phone 1-800-990-2432   Fax (250) 388-5502 
+					p Email gatheringourvoices@bcaafc.com
+
 		:coffeescript
 			$ ->
 				window.print()
