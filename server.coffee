@@ -1034,7 +1034,7 @@ server.get '/api/workshop/attendees/remove', requireAuthentication, populateGrou
 		res.send "We could not get the data for your workshop."
 	else if not req.query.member
 		res.send "You did not specify a member."
-	else if req.group.groupMembers.indexOf(req.query.member) is -1
+	else if req.group.groupMembers.indexOf(req.query.member) is -1 and not req.session.group.internal.admin # If --not-- admin
 		res.send "That member is not a part of your group... Perhaps you're lost?"
 	else
 		# Remove workshop from member
