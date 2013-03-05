@@ -11,14 +11,14 @@ block content
 			a(href="#groupinfo", data-toggle="tab") Group Info
 		li
 			a(href="#members", data-toggle="tab") Members
-		li
+		//li
 			a(href="#billing", data-toggle="tab") Billing
 	.tab-content(style="height: 1000px;")
 		.tab-pane.fade.active.in#groupinfo
 			include elements/groupInfo
 		.tab-pane.fade#members
 			include elements/members
-		.tab-pane.fade#billing
+		//.tab-pane.fade#billing
 			include elements/billing
 
 	!= js('account/main')
