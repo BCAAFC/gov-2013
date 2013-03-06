@@ -60,7 +60,10 @@ block content
 												p.label.label-important Not Attending
 											td
 												.btn-group
-													a.btn.btn-small.btn-success(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add to Workshop  
+													if member.type == "Chaperone"
+														a.btn.btn-small.btn-warning(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add Chaperone to Workshop 
+													else
+														a.btn.btn-small.btn-success(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add to Workshop  
 													.disabled.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}', style="width: 10px") -
 										else
 											td
@@ -75,4 +78,4 @@ block content
 			h1 Group Attendance
 			.alert.alert-error You can't sign up for workshops yet!
 				p In general, groups can only register for workshops once they have paid (at least in part) their registration fees. If you beleive this to be an error, please get in touch with our workshop coordinator, 
-					a(href="mailto:vsloanmorgan@bcaafc.com) Vanessa (Click here!), for assistance.
+					a(href="mailto:vsloanmorgan@bcaafc.com") Vanessa (Click here!), for assistance.
