@@ -416,8 +416,10 @@ server.get '/admin/workshopDetails', requireAuthentication, (req, res) ->
 				else
 					for workshop in workshops
 						for member in workshop.signedUp
-							name = (group.groupInformation.affiliation for group in groups when group._id.equals member.group)
-							member.groupName = name[0]
+							for group in groups
+								if group._id.equals member.group
+									member.groupName = group.groupInformation.affiliation
+									member.groupEmail = group.primaryContact.email
 					res.render 'admin/workshopDetails'
 						title: "Admin Workshop Details"
 						group: req.session.group || null

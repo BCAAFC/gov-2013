@@ -28,6 +28,8 @@ block content
 								tr
 									td= member.name
 									td= member.type
-									td= member.groupName
+									td #{member.groupName}
+										br
+										small #{member.groupEmail}
 									td
 										a.btn.btn-small.btn-danger(href="/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}") Remove
