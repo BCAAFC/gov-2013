@@ -1,0 +1,22 @@
+extends ../layout-letter
+
+block content
+	.row-fluid
+		.span12
+			p Attempting to filter out members with the only the following listed: "", "n/a", "none", "no", "na", "no allergies", "0", "nill", "none known of", "-", "nothing"... However it's not perfect.
+			table.table
+				thead
+					tr
+						th Group
+						th Name
+						th Allergies
+						th Med. Conditions
+				tbody
+					for group in data
+						for member in group.groupMembers
+							if ["","n/a","none","no","na","no allergies", "0","nill","none known of","-","nothing"].indexOf(member.emergencyInfo.allergies.toLowerCase()) == -1 || ["","n/a","none","no","na", "0","nill","none known of","-","nothing"].indexOf(member.emergencyInfo.conditions.toLowerCase()) == -1
+								tr
+									td= group.groupInformation.affiliation
+									td= member.name
+									td= member.emergencyInfo.allergies
+									td= member.emergencyInfo.conditions

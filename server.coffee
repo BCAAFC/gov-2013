@@ -495,7 +495,19 @@ server.get '/admin/primaryEmailList', requireAuthentication, (req, res) ->
 			result = (group.primaryContact.email for group in groups).join '; '
 			res.send result
 			
-
+server.get '/admin/allergies', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.find({}).populate('groupMembers').sort('groupInformation.affiliation').exec (err, data) ->
+			if err
+				res.send "There was an error. \n" + err
+			else
+				res.render 'admin/allergies'
+					title: "Administration - Allergies"
+					group: req.session.group || null
+					data: data
+			
 # Can't use a query here because we use Google's API to get the URLs
 server.get '/admin/checkIn/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
