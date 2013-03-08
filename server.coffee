@@ -530,7 +530,6 @@ server.get '/admin/yic', requireAuthentication, (req, res) ->
 				for group in data
 					group.yicTotal = 0
 					(group.yicTotal++ for member in group.groupMembers when member.youthInCare != "Not Attending")
-					console.log group.yicTotal
 				res.render 'admin/yic'
 					title: "Administration - Youth In Care Details"
 					group: req.session.group || null
