@@ -702,20 +702,23 @@ server.post '/api/signup', (req, res) ->
 														to: group.primaryContact.email
 														bcc: "gatheringourvoices@bcaafc.com, dpreston@bcaafc.com"
 														subject: "Gathering Our Voices 2013 -- Registration Successful!"
-														html: "<h1>Hello #{group.primaryContact.name} of the #{group.groupInformation.affiliation}</h1>
-															<h3>Thank you for submitting your online registration!</h3>
-															<p>The Gathering Our Voices team will review your registration and send you an email response which can include the following:</p>
-															<ol>
-																<li>Request for missing information</li>
-																<li>Payment arrangements</li>
-																<li>Confirmation of official registration</li>
-															</ol>
-															<h3>Workshop Registration</h3>
-															<p>Workshop Registration will be available mid-February. You will receive and e-mail when workshop registration is open.</p>
-															<p>If you have any questions or concerns please contact:</p>
-															<p>Siku Allooloo, Conference Registration Coordinator</p>
-															<p>Email: <a href='mailto:gatheringourvoices@bcaafc.com'>gatheringourvoices@bcaafc.com</a></p>
-															<p>Phone: (250) 388-5522 or toll-free: 1-800-990-2432</p>"
+														html: "<h1>Thank you for submitting your online registration!</h1>
+<p>Please ensure that all of your group members are added to your registration as soon as possible, either by addingeach of their names, or by creating placeholders for them. Even if you are not entirely sure of your final number of members, a rough estimate will help us out a lot. If you need any help with this, please refer to our FAQ page on the website: <a href='http://gatheringourvoices.bcaafc.com/help'>http://gatheringourvoices.bcaafc.com/help</a> (“Help & FAQ’s” tab on the top of the page).</p>
+ 
+<p>The Gathering Our Voices team will review your registration as soon as possible and send you an email response regarding any of the following:</p>
+<ul>
+	<li>Request for missing information</li>
+	<li>Payment arrangements</li>
+	<li>Confirmation of official registration</li>
+</ul>
+ 
+<h3>Workshop Pre-Registration</h3>
+<p>Workshop Pre-Registration is now available for groups whose registrations and payments are fully complete. So in order to take advantage of the pre-registration for workshops, you will need to submit all of your group information as well as your payment as soon as possible.</p>
+<p>If you have any questions or concerns please refer to our website: <a href='http://gatheringourvoices.bcaafc.com/help'>http://gatheringourvoices.bcaafc.com/help</a></p>
+<p>Or contact:</p>
+<p>Siku Allooloo, Conference Registration Coordinator</p>
+<p>Email: gatheringourvoices@bcaafc.com</p>
+<p>Phone: (250) 388-5522 or toll-free: 1-800-990-2432</p>"
 														(err)->
 															if err
 																res.send "We couldn't mail you a registration confirmation email... Call us at 250-388-5522"
