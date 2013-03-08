@@ -518,6 +518,23 @@ server.get '/admin/allergies', requireAuthentication, (req, res) ->
 					title: "Administration - Allergies"
 					group: req.session.group || null
 					data: data
+					
+server.get '/admin/yic', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.find({}).populate('groupMembers').sort('groupInformation.affiliation').exec (err, data) ->
+			if err
+				res.send "There was an error. \n" + err
+			else
+				for group in data
+					group.yicTotal = 0
+					(group.yicTotal++ for member in group.groupMembers when member.youthInCare != "Not Attending")
+					console.log group.yicTotal
+				res.render 'admin/yic'
+					title: "Administration - Youth In Care Details"
+					group: req.session.group || null
+					data: data
 			
 # Can't use a query here because we use Google's API to get the URLs
 server.get '/admin/checkIn/:id', requireAuthentication, (req, res) ->
