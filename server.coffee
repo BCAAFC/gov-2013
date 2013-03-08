@@ -586,6 +586,30 @@ server.post '/admin/checkOut/:id', requireAuthentication, (req, res) ->
 				targetGroup.internal.checkedIn = false
 				targetGroup.save()
 				res.send success: true
+				
+server.post '/admin/workshopCheckIn/:id', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.params.id, (err, targetGroup) ->
+			if err || targetGroup == null
+				res.send "We can't checkout a group who doesn't exist!"
+			else
+				targetGroup.internal.workshopCheckedIn = true
+				targetGroup.save()
+				res.send success: true
+		
+server.post '/admin/workshopCheckOut/:id', requireAuthentication, (req, res) ->
+	if not req.session.group.internal.admin # If --not-- admin
+		res.send "You're not authorized, please don't try again!"
+	else
+		Group.findById req.params.id, (err, targetGroup) ->
+			if err || targetGroup == null
+				res.send "We can't checkout a group who doesn't exist!"
+			else
+				targetGroup.internal.workshopCheckedIn = false
+				targetGroup.save()
+				res.send success: true
 
 server.get '/admin/login/:id', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin

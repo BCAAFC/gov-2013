@@ -55,6 +55,9 @@ exports.groupSchema = new Schema
 		checkedIn:
 			type: Boolean
 			default: false
+		workshopCheckedIn:
+			type: Boolean
+			default: false
 		status: 
 			type: String
 			default: "New group - Unchecked"

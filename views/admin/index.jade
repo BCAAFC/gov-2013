@@ -23,6 +23,7 @@ block content
 				thead
 					tr
 						th(style="width: 70px") Check in
+						th(style="width: 70px") Wkshp in
 						th Name
 						th Info
 						th Edit
@@ -38,6 +39,13 @@ block content
 											i.icon.icon-ok
 									else
 										a.btn.btn-mini.checkIn(data-id="#{group._id}")
+											i.icon.icon-remove
+								td
+									if group.internal.workshopCheckedIn == true
+										a.btn.btn-mini.btn-success.workshopCheckOut(data-id="#{group._id}")
+											i.icon.icon-ok
+									else
+										a.btn.btn-mini.workshopCheckIn(data-id="#{group._id}")
 											i.icon.icon-remove
 								td
 									// Group Badge
@@ -105,6 +113,18 @@ block content
 			event.preventDefault()
 			# Can't use a query here because of google's QR code API
 			$.post "/admin/checkOut/#{$(this).data('id')}", (data) ->
+				location.reload()
+
+		$('.workshopCheckIn').click ->
+			event.preventDefault()
+			# Can't use a query here because of google's QR code API
+			$.post "/admin/workshopCheckIn/#{$(this).data('id')}", (data) ->
+				location.reload()
+				
+		$('.workshopCheckOut').click ->
+			event.preventDefault()
+			# Can't use a query here because of google's QR code API
+			$.post "/admin/workshopCheckOut/#{$(this).data('id')}", (data) ->
 				location.reload()
 
 	!= js('admin/main')
