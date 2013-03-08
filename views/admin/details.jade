@@ -10,7 +10,13 @@ block content
 				p Total Young Adults: #{totals.members.youngAdults}
 				p Total Chaperones: #{totals.members.chaperones}
 				p Youth / Chaperone: #{totals.members.youth / totals.members.chaperones} (Must be less then 5)
-				p Youth In Care: #{totals.members.youthInCare}
+
+				h3 Youth In Care
+				p Not Attending: #{totals.members.youthInCare.notAttending}
+				p Attending on Own: #{totals.members.youthInCare.attendingOnOwn}
+				p Attending with Support: #{totals.members.youthInCare.attendingWithSupport}
+				p Attending as Support: #{totals.members.youthInCare.attendingAsSupport}
+				p Projected Attendance: #{totals.members.youthInCare.attendingOnOwn + totals.members.youthInCare.attendingWithSupport + totals.members.youthInCare.attendingAsSupport}
 
 				h3 Tickets
 				p Total Earlybird Tickets: #{totals.tickets.early}

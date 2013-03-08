@@ -361,7 +361,11 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 					youth: 0
 					youngAdults: 0
 					chaperones: 0
-					youthInCare: 0
+					youthInCare: 
+						notAttending: 0
+						attendingOnOwn: 0
+						attendingWithSupport: 0
+						attendingAsSupport: 0
 				tickets:
 					early: 0
 					reg: 0
@@ -378,8 +382,15 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 					switch member.ticketPrice
 						when 125 then totals.tickets.early++
 						when 175 then totals.tickets.reg++
-					if member.youthInCare != "Not Attending"
-						totals.members.youthInCare++
+					if member.youthInCare is "Not Attending"
+						totals.members.youthInCare.notAttending++
+					else if member.youthInCare is "Attending - On Own"
+						totals.members.youthInCare.attendingOnOwn++
+					else if member.youthInCare is "Attending - With Support Person"
+						totals.members.youthInCare.attendingWithSupport++
+					else if member.youthInCare is "Attending - As Support Person"
+						totals.members.youthInCare.attendingAsSupport++
+						
 					if member.workshops.length
 						totals.workshops.avgPerMember += member.workshops.length
 						
