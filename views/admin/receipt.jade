@@ -3,29 +3,28 @@ extends ../layout-letter
 block content
 	.row-fluid
 		address
-			strong #{group.primaryContact.name}
+			strong #{payment.group.primaryContact.name}
 			br
-			strong #{group.groupInformation.affiliation}
+			strong #{payment.group.groupInformation.affiliation}
 			br
-			| #{group.groupInformation.address}
+			| #{payment.group.groupInformation.address}
 			br
-			| #{group.groupInformation.city}, #{group.groupInformation.province}
+			| #{payment.group.groupInformation.city}, #{payment.group.groupInformation.province}
 			br
-			| #{group.groupInformation.postalCode}
+			| #{payment.group.groupInformation.postalCode}
 			br
 			br
-			| #{group.primaryContact.phone}
+			| #{payment.group.primaryContact.phone}
 			br
-			| #{group.groupInformation.fax}
+			| #{payment.group.groupInformation.fax}
 			br
-			| #{group.primaryContact.email}
+			| #{payment.group.primaryContact.email}
 		br
 		h4 RE: Receipt for Credit Card Payment of Delegate Registration Fees – GOV 2013
 		br
 		p Dear #{payment.group.primaryContact.name},
 		p Please find enclosed a receipt for your Credit Card payment of $#{payment.earlyTickets * 125 + payment.regTickets * 175} for #{payment.earlyTickets + payment.regTickets} Delegate Registration Fees for Gathering Our Voices in Penticton, BC.  If you have any questions or concerns, please do not hesitate to contact me.
 		p In Friendship,
-		br
 		br
 		br
 		p Siku Allooloo
