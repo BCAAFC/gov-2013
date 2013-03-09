@@ -1,113 +1,73 @@
 extends ../layout-letter
 
 block content
+	img.qr( src="https://chart.googleapis.com/chart?cht=qr&chl=http://gatheringourvoices.bcaafc.com/admin/checkIn/#{group._id}&choe=UTF-8&chs=200x200", style="top: 20px; position: absolute; right: 0px")
+	// Print pages only have an 8 span.
 	.row-fluid
-		img.qr( src="https://chart.googleapis.com/chart?cht=qr&chl=http://gatheringourvoices.bcaafc.com/admin/checkIn/#{group._id}&choe=UTF-8&chs=200x200")
-		h1 Gathering Our Voices
-		h2 Group: #{group.groupInformation.affiliation}
-		h3 Primary Contact: #{group.primaryContact.name}
-		hr
-		// Print pages only have an 8 span.
-		.row-fluid
-			.span5
-				h3 Group Information
-				address
-					strong #{group.primaryContact.name}
-					br
-					strong #{group.groupInformation.affiliation}
-					br
-					| #{group.groupInformation.address}
-					br
-					| #{group.groupInformation.city}, #{group.groupInformation.province}
-					br
-					| #{group.groupInformation.postalCode}
-					br
-					br
-					| #{group.primaryContact.phone}
-					br
-					| #{group.groupInformation.fax}
-					br
-					| #{group.primaryContact.email}
+		.span4
+			h3 #{group.groupInformation.affiliation}
+			address
+				strong #{group.primaryContact.name}
+				br
+				strong #{group.groupInformation.affiliation}
+				br
+				| #{group.groupInformation.address}
+				br
+				| #{group.groupInformation.city}, #{group.groupInformation.province}
+				br
+				| #{group.groupInformation.postalCode}
+				br
+				| #{group.primaryContact.phone}
+				br
+				| #{group.groupInformation.fax}
+				br
+				| #{group.primaryContact.email}
+				br
+				br
+				| Total: $#{group.total()}
+				br
+				| Paid: $#{group.paid}
+				br
+				| Method: #{group.groupInformation.paymentType}
+				br
+				br
+				| Youth: #{group.numbers.youth}
+				br
+				| Young Adults: #{group.numbers.youngAdults}
+				br
+				| Chaperones: #{group.numbers.chaperones}
+		.span8
+			table.table.table-striped
+				thead 
+					tr
+						th(style="width: 30%") Name
+						th(style="width: 20%") BirthDate
+						th(style="width: 20%") Med Num
+						th(style="width: 30%") Emergency
+						th(style="width: 40%")
+				tbody
+					for member in group.groupMembers
+						tr
+							td #{member.name}
+							td #{member.birthDate}
+							td #{member.emergencyInfo.medicalNum}
+							td(rowspan=2)
+								| Name: #{member.emergencyInfo.name}
+								br
+								| Relation: #{member.emergencyInfo.relation}
+								br
+								| Phone: #{member.emergencyInfo.phone}
+						tr
+							td
+								| Phone: #{member.phone}
+								br
+								| Type: #{member.type}
+								br
+								| Ticket Price: #{member.ticketPrice}
+							td(colspan=2) Here we can add some workshop stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff stuff 
 
-		.row-fluid
-			h2 Member List
-			hr
-			for member in group.groupMembers
-					.row-fluid(style="position: relative; left: 50px;")
-						h3= member.name
-						.span5
-							h5 Basic Info
-							table.table.table-condensed
-								tbody
-									tr
-										td Type
-										td= member.type
-									tr
-										td Gender
-										td= member.gender
-									tr
-										td Phone
-										td= member.phone
-									tr
-										td Email
-										td= member.email
-									tr
-										td Ticket Price
-										td= member.ticketPrice
-									tr
-										td Reg. Date
-										td= member.regDate.toLocaleDateString()
-									tr
-										td
-										td
-						.span5
-							h5 Emergency Info
-							table.table.table-condensed
-								tbody
-									tr
-										td Name
-										td= member.emergencyInfo.name
-									tr
-										td Relation
-										td= member.emergencyInfo.relation
-									tr
-										td Phone
-										td= member.emergencyInfo.phone
-									tr
-										td Medical Number
-										td= member.emergencyInfo.medicalNum
-									tr
-										td Allergies
-										td= member.emergencyInfo.allergies
-									tr
-										td Conditions
-										td= member.emergencyInfo.conditions
-									tr
-										td
-										td
-						.span10
-							h5 Workshops
-							table.table.table-condensed
-								thead
-									tr
-										th Name
-										th Session
-										th Venue
-										th Room
-										th Day
-										th Starts
-										th Ends
-								tbody
-									for workshop in workshops
-										if member.workshops.indexOf(workshop._id) != -1
-											tr
-												td= workshop.name
-												td= workshop.session
-												td= workshop.venue
-												td= workshop.room
-												td= workshop.day
-												td= workshop.timeStart.toLocaleTimeString()
-												td= workshop.timeEnd.toLocaleTimeString()
+
+		
 	:coffeescript
 		$ ->
 			window.print()

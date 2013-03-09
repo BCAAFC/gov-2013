@@ -327,6 +327,50 @@ server.get '/account/printout', requireAuthentication, (req, res) ->
 				return -1
 			else
 				return 0
+		# How much have they paid?
+		group.paid = 0
+		(group.paid += payment.earlyTickets * 125 + payment.regTickets * 175 for payment in group.payments)
+		
+		# How much do they need to pay?
+		group.total = () ->
+			regTotal = 0
+			# Free tickets. For every 5 tickets they get a 6th free.
+			# We need to split them because we don't want to give them extra free money.
+			freeEarly = 0
+			freeReg = 0
+			earlyTotal = 0
+			regTotal = 0
+			
+			for member in group.groupMembers
+				if member.ticketPrice is 125
+					earlyTotal += 1
+				else if member.ticketPrice is 175
+					regTotal += 1
+			# Calculate number of free tickets allowed.
+			freeTickets = Math.floor( (earlyTotal / 5) + (regTotal / 5) )
+	
+			# Calculate the number of free regular priced tickets
+			freeReg = Math.floor( regTotal / 6 )
+			freeEarly = Math.floor ( earlyTotal / 6 )
+	
+			# If we have extra free Regulars
+			if (regTotal % 6) + (earlyTotal % 6) > 5
+				freeReg++
+				
+			return (regTotal - freeReg) * 175 + (earlyTotal - freeEarly) * 125 
+			
+		group.numbers =
+			youth: 0
+			youngAdults: 0
+			chaperones: 0
+		for member in group.groupMembers
+			if member.type is "Youth"
+				group.numbers.youth++
+			if member.type is "Young Adult"
+				group.numbers.youngAdults++
+			if member.type is "Chaperone"
+				group.numbers.chaperones++
+			
 		Workshop.find {}, (req, workshops) ->
 			res.render 'account/printout',
 				title: "Printout"
