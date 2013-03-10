@@ -4,12 +4,11 @@ block content
 	img.qr( src="https://chart.googleapis.com/chart?cht=qr&chl=http://gatheringourvoices.bcaafc.com/admin/checkIn/#{group._id}&choe=UTF-8&chs=200x200", style="top: 20px; position: absolute; right: 0px")
 	// Print pages only have an 8 span.
 	.row-fluid
-		.span4
-			h3 #{group.groupInformation.affiliation}
+		h3 #{group.groupInformation.affiliation}
+	.row-fluid
+		.span6
 			address
 				strong #{group.primaryContact.name}
-				br
-				strong #{group.groupInformation.affiliation}
 				br
 				| #{group.groupInformation.address}
 				br
@@ -23,6 +22,7 @@ block content
 				br
 				| #{group.primaryContact.email}
 				br
+		.span6
 				br
 				| Total: $#{group.total()}
 				br
@@ -36,7 +36,8 @@ block content
 				| Young Adults: #{group.numbers.youngAdults}
 				br
 				| Chaperones: #{group.numbers.chaperones}
-		.span8
+	.row-fluid
+		.span12
 			table.table.table-striped
 				thead 
 					tr
@@ -51,7 +52,7 @@ block content
 							td #{member.name}
 							td #{member.birthDate}
 							td #{member.emergencyInfo.medicalNum}
-							td(rowspan=2)
+							td(rowspan=1)
 								| Name: #{member.emergencyInfo.name}
 								br
 								| Relation: #{member.emergencyInfo.relation}
@@ -64,11 +65,26 @@ block content
 								| Type: #{member.type}
 								br
 								| Ticket Price: #{member.ticketPrice}
-							td(colspan=2)
-								.badge(style="width: 20px; text-align: center") 1
-								br
-								.label(style="width: 7px") 2
-								.label(style="width: 7px") 3
+							td(colspan=3)
+								if member.workshops.length >= 1
+									table
+										thead
+											tr
+												th Workshop Name
+												th Session
+												th Room
+												th Venue
+										tbody
+											for workshop in workshops
+												if member.workshops.indexOf(workshop._id) != -1
+													tr
+														td= workshop.name
+														td= workshop.session
+														td= workshop.room
+														td= workshop.venue
+								else
+									p No workshops signed up!
+
 
 
 		
