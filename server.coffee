@@ -270,6 +270,14 @@ server.get '/account/startRecovery', (req, res) ->
 	res.render 'account/startRecovery',
 		title: "Password Recovery"
 		group: null
+		
+server.get '/deck', (req, res) ->
+	Workshop.find().populate('signedUp').sort('session').exec (err, data) ->
+		if err
+			res.send "There was an err. \n #{err}"
+		else
+			res.render 'deck',
+				workshops: data
 
 server.post '/account/startRecovery', (req, res) ->
 	if req.body.skill is '10'

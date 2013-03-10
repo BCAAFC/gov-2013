@@ -1,0 +1,99 @@
+!!! 5
+html
+	head
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+		meta(name='viewport', content='width=1024, user-scalable=no')
+		title Your deck.js Presentation
+		// Required stylesheet 
+		link(rel='stylesheet', href='core/deck.core.css')
+		// Extension CSS files go here. Remove or add as needed. 
+		link(rel='stylesheet', href='extensions/goto/deck.goto.css')
+		link(rel='stylesheet', href='extensions/menu/deck.menu.css')
+		link(rel='stylesheet', href='extensions/navigation/deck.navigation.css')
+		link(rel='stylesheet', href='extensions/status/deck.status.css')
+		link(rel='stylesheet', href='extensions/automatic/deck.automatic.css')
+		link(rel='stylesheet', href='extensions/hash/deck.hash.css')
+		link(rel='stylesheet', href='extensions/scale/deck.scale.css')
+		// Style theme. More available in /themes/style/ or create your own. 
+		link(rel='stylesheet', href='themes/style/sandstone.firefox.css')
+		// Transition theme. More available in /themes/transition/ or create your own. 
+		link(rel='stylesheet', href='themes/transition/horizontal-slide.css')
+
+		// Required Modernizr file 
+		script(src='modernizr.custom.js')
+
+		// CSS Stuff
+		link(href="//netdna.bootstrapcdn.com/bootswatch/2.1.1/united/bootstrap.min.css", rel="stylesheet")
+		link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-responsive.min.css", rel="stylesheet")
+
+		style
+			.deck-container .slide h2 {
+				text-overflow: ellipsis;
+				-webkit-box-orient: vertical;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				overflow: hidden;
+			}
+
+			.deck-container .slide p {
+				text-overflow: ellipsis;
+				-webkit-box-orient: vertical;
+				display: -webkit-box;
+				-webkit-line-clamp: 8;
+				overflow: hidden;
+			}
+
+	body.deck-container
+		// Begin slides. Just make elements with a class of slide.
+		for workshop in workshops
+			section.slide.container-fluid(data-duration="5000")
+				.row-fluid
+					h2= workshop.name
+					p Host: #{workshop.host}
+					p Session: #{workshop.session}
+					p Capacity: #{workshop.signedUp.length} / #{workshop.capacity}
+					.progress.progress-striped
+						.bar(style="width: #{(workshop.signedUp.length / workshop.capacity) * 100 + '%'} ")
+					h2 Description
+					p #{workshop.description}
+
+		// End slides. 
+		// Begin extension snippets. Add or remove as needed. 
+		// deck.navigation snippet 
+		a.deck-prev-link(href='#', title='Previous') ←
+		a.deck-next-link(href='#', title='Next') →
+		// deck.status snippet 
+		p.deck-status
+			span.deck-status-current
+			| /
+			span.deck-status-total
+		// deck.goto snippet 
+		form.goto-form(action='.', method='get')
+			label(for='goto-slide') Go to slide:
+			input#goto-slide(type='text', name='slidenum', list='goto-datalist')
+			datalist#goto-datalist
+			input(type='submit', value='Go')
+		// deck.hash snippet 
+		a.deck-permalink(href='.', title='Permalink to this slide') #
+	
+		.deck-automatic-link(title="Play/Pause") Play/Pause
+	
+		// End extension snippets. 
+		// Required JS files. 
+		script(src='jquery-1.7.2.min.js')
+		script(src='core/deck.core.js')
+		// Extension JS files. Add or remove as needed. 
+		script(src='core/deck.core.js')
+		script(src='extensions/hash/deck.hash.js')
+		script(src='extensions/menu/deck.menu.js')
+		script(src='extensions/goto/deck.goto.js')
+		script(src='extensions/automatic/deck.automatic.js')
+		script(src='extensions/status/deck.status.js')
+		script(src='extensions/navigation/deck.navigation.js')
+		script(src='extensions/scale/deck.scale.js')
+		// Initialize the deck. You can put this in an external file if desired. 
+		script
+			$(function() {
+				$.deck('.slide');
+			});
