@@ -37,6 +37,7 @@ mailer = nodemailer.createTransport("SMTP",
 
 # We need to figure out where we are hosted, and set up some information regarding that. You should replace the **bottom** case if you need changes to your local deveopment property.
 if process.env.MONGOLAB_URI
+	console.log process.env.MONGOLAB_URI
 	mongo = process.env.MONGOLAB_URI
 else
 	mongo =
