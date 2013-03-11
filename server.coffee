@@ -52,7 +52,7 @@ db = mongoose.createConnection mongo
 # We'll announce the state of the database connection to the console.
 db.on 'error', console.error.bind(console, 'Connection error:')
 db.once 'open', () ->
-	console.log "Mongoose success: Database at #{mongo.hostname}:#{mongo.port}"
+	console.log "Mongoose success: Database at #{mongo}"
 
 # ## Set up memstore (Redis)
 if process.env.REDISCLOUD_URL
