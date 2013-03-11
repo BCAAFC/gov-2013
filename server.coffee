@@ -31,7 +31,8 @@ mailer = nodemailer.createTransport("SMTP",
 		user: process.env.mail_user,
 		pass: process.env.mail_pass
 )
-
+console.log process.env.mail_user
+console.log process.env.mail_pass
 
 # ## Set up the Database
 
@@ -47,6 +48,7 @@ else
 		password: ""
 		name: ""
 		db: "gov"
+	mongo = "mongodb://localhost:27017/gov"
 # Now we can connect to our MongoDB server simply, regardless of where we're hosted.
 db = mongoose.createConnection mongo
 # We'll announce the state of the database connection to the console.
@@ -68,9 +70,9 @@ else
 	console.log "Redis success: Keystore connected!"
 	
 	
-redisURL = url.parse process.env.REDISCLOUD_URL
-redisClient = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true})
-redisClient.auth(redisURL.auth.split(":")[1])
+#redisURL = url.parse process.env.REDISCLOUD_URL
+#redisClient = redis.createClient(redisURL.port, #redisURL.hostname, {no_ready_check: true})
+#redisClient.auth(redisURL.auth.split(":")[1])
 
 
 # ## App Resources
@@ -795,6 +797,7 @@ server.post '/api/signup', (req, res) ->
 														(err)->
 															if err
 																res.send "We couldn't mail you a registration confirmation email... Call us at 250-388-5522"
+																console.log err
 															else
 																res.redirect '/'
 
