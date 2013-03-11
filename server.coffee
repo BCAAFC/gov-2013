@@ -32,14 +32,12 @@ mailer = nodemailer.createTransport("SMTP",
 		pass: process.env.mail_pass
 )
 
-# Setup the AppFog Enviroment. AppFog basically hands us a bunch of data in an enviroment variable called `VCAP_SERVICES`. [Appfog's Documentation](https://docs.appfog.com/services)
-appfog = JSON.parse process.env.VCAP_SERVICES if process.env.VCAP_SERVICES?
 
 # ## Set up the Database
 
 # We need to figure out where we are hosted, and set up some information regarding that. You should replace the **bottom** case if you need changes to your local deveopment property.
-if appfog
-	mongo = appfog['mongodb-1.8'][0]['credentials']
+if process.env.MONGOLAB_URI
+	mongo = process.env.MONGOLAB_URI
 else
 	mongo =
 		hostname: "localhost"
@@ -48,27 +46,18 @@ else
 		password: ""
 		name: ""
 		db: "gov"
-# A function to create a connection URL. This was found in [Appfog's Mongodb Documentation](https://docs.appfog.com/services/mongodb).
-generate_mongo_url = (obj) ->
-	obj.hostname = (obj.hostname or "localhost")
-	obj.port = (obj.port or 27017)
-	obj.db = (obj.db or "govNext")
-	if obj.groupname and obj.password
-		"mongodb://" + obj.groupname + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db
-	else
-		"mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db
 # Now we can connect to our MongoDB server simply, regardless of where we're hosted.
-db = mongoose.createConnection generate_mongo_url mongo
+db = mongoose.createConnection mongo
 # We'll announce the state of the database connection to the console.
 db.on 'error', console.error.bind(console, 'Connection error:')
 db.once 'open', () ->
 	console.log "Mongoose success: Database at #{mongo.hostname}:#{mongo.port}"
 
 # ## Set up memstore (Redis)
-if appfog
-	credentials = appfog['redis-2.2'][0]['credentials']
-	redisClient = redis.createClient credentials['port'], credentials['hostname']
-	redisClient.auth credentials['password'], (err) ->
+if process.env.REDISCLOUD_URL
+	redisURL = url.parse process.env.REDISCLOUD_URL
+	redisClient = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true})
+	redisClient.auth redisURL.auth.split(":")[1], (err) ->
 		if err
 			console.log err
 		else
@@ -76,6 +65,11 @@ if appfog
 else
 	redisClient = redis.createClient()
 	console.log "Redis success: Keystore connected!"
+	
+	
+redisURL = url.parse process.env.REDISCLOUD_URL
+redisClient = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true})
+redisClient.auth(redisURL.auth.split(":")[1])
 
 
 # ## App Resources
@@ -1331,5 +1325,7 @@ server.get '/api/payment/delete', (req, res) ->
 ###
 Start listening.
 ###
-server.listen process.env.VCAP_APP_PORT or 8080
+port = process.env.PORT or 8080
+console.log port
+server.listen port
 console.log "Now listening..."
