@@ -47,16 +47,17 @@ html
 	body.deck-container
 		// Begin slides. Just make elements with a class of slide.
 		for workshop in workshops
-			section.slide.container-fluid(data-duration="5000")
-				.row-fluid
-					h2= workshop.name
-					p Host: #{workshop.host}
-					p Session: #{workshop.session}
-					p Capacity: #{workshop.signedUp.length} / #{workshop.capacity}
-					.progress.progress-striped
-						.bar(style="width: #{(workshop.signedUp.length / workshop.capacity) * 100 + '%'} ")
-					h2 Description
-					p #{workshop.description}
+			if !(workshop.signedUp.length >= workshop.capacity)
+				section.slide.container-fluid(data-duration="5000")
+					.row-fluid
+						h2= workshop.name
+						p Host: #{workshop.host}
+						p Session: #{workshop.session}
+						p Capacity: #{workshop.signedUp.length} / #{workshop.capacity}
+						.progress.progress-striped
+							.bar(style="width: #{(workshop.signedUp.length / workshop.capacity) * 100 + '%'} ")
+						h2 Description
+						p #{workshop.description}
 
 		// End slides. 
 		// Begin extension snippets. Add or remove as needed. 
