@@ -778,7 +778,7 @@ server.post '/api/signup', (req, res) ->
 														bcc: "gatheringourvoices@bcaafc.com, dpreston@bcaafc.com"
 														subject: "Gathering Our Voices 2013 -- Registration Successful!"
 														html: "<h1>Thank you for submitting your online registration!</h1>
-<p>Please ensure that all of your group members are added to your registration as soon as possible, either by addingeach of their names, or by creating placeholders for them. Even if you are not entirely sure of your final number of members, a rough estimate will help us out a lot. If you need any help with this, please refer to our FAQ page on the website: <a href='http://gatheringourvoices.bcaafc.com/help'>http://gatheringourvoices.bcaafc.com/help</a> (“Help & FAQ’s” tab on the top of the page).</p>
+<p>Please ensure that all of your group members are added to your registration as soon as possible, either by adding each of their names or by creating placeholders for them. Even if you are not entirely sure of your final number of members, a rough estimate will help us out a lot. If you need any help with this, please refer to our FAQ page on the website: <a href='http://gatheringourvoices.bcaafc.com/help'>http://gatheringourvoices.bcaafc.com/help</a> (“Help & FAQ’s” tab on the top of the page).</p>
  
 <p>The Gathering Our Voices team will review your registration as soon as possible and send you an email response regarding any of the following:</p>
 <ul>
@@ -789,6 +789,7 @@ server.post '/api/signup', (req, res) ->
  
 <h3>Workshop Pre-Registration</h3>
 <p>Workshop Pre-Registration is now available for groups whose registrations and payments are fully complete. So in order to take advantage of the pre-registration for workshops, you will need to submit all of your group information as well as your payment as soon as possible.</p>
+<p>Otherwise, if you are bringing your payment (cheque, money order or credit card) to the conference please e-mail Siku as soon as possible so that you can Pre-Register for Workshops.</p>
 <p>If you have any questions or concerns please refer to our website: <a href='http://gatheringourvoices.bcaafc.com/help'>http://gatheringourvoices.bcaafc.com/help</a></p>
 <p>Or contact:</p>
 <p>Siku Allooloo, Conference Registration Coordinator</p>
