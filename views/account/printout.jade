@@ -37,6 +37,24 @@ block content
 				br
 				| Chaperones: #{group.numbers.chaperones}
 	.row-fluid
+		h4 Payments
+		table.table.table-striped
+			thead
+				tr
+					th Date
+					th Earlybird ($125)
+					th Regular ($175)
+					th Notes
+			tbody
+				if group.payments
+					for payment in group.payments
+						tr
+							td= payment.date.toDateString()
+							td= payment.earlyTickets
+							td= payment.regTickets
+							td= payment.paypal
+			
+	.row-fluid
 		.span12
 			table.table.table-striped
 				thead 

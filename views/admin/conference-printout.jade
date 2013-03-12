@@ -1,0 +1,184 @@
+doctype 5
+html
+	head
+		title Gathering Our Voices 2013 - #{title}
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		
+		// Info for Engines
+		meta(name="description", content="Gathering Our Voices is an annual conference in BC for Aboriginal Youth. This years conference theme will focus on Health and will be held from March 19-22, 2013 in Penticton, BC.")
+		meta(name="author", content="Andrew Hobden")
+
+
+		// HTML5 shim, because IE's are horrible.
+		//if lt IE 9
+			script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+
+		// CSS Stuff
+		link(href="//netdna.bootstrapcdn.com/bootswatch/2.1.1/united/bootstrap.min.css", rel="stylesheet")
+
+
+		style(type="text/css")
+			.qr {
+				//position: absolute;
+				//right: 0%;
+				width: 150px;
+				height: 150px;
+			}
+			@media all {
+				.page-break	{ display: none; }
+			}
+
+			@media print {
+				.page-break	{ display: block; page-break-before: always; }
+			}
+
+		// Google Analytics Tracker
+		script(type="text/javascript")
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', 'UA-35619549-1']);
+				_gaq.push(['_trackPageview']);
+
+				(function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				})();
+		
+
+	body
+		for group in groups
+			.container-fluid
+				.row-fluid
+					.span2
+						img(src="/img/logos/bcaafc.png")
+					.span8
+						hr
+						h1.pull-right BC Association of Aboriginal Friendship Centres
+						p.pull-right= new Date().toLocaleDateString()
+				.row-fluid
+					.pull-right
+						img.qr( src="https://chart.googleapis.com/chart?cht=qr&chl=http://gatheringourvoices.bcaafc.com/admin/checkIn/#{group._id}&choe=UTF-8&chs=200x200", style="position: absolute; right: 0px")
+				// Print pages only have an 8 span.
+				.row-fluid
+					h3 #{group.groupInformation.affiliation}
+				.row-fluid
+					.span6
+						address
+							strong #{group.primaryContact.name}
+							br
+							| #{group.groupInformation.address}
+							br
+							| #{group.groupInformation.city}, #{group.groupInformation.province}
+							br
+							| #{group.groupInformation.postalCode}
+							br
+							| #{group.primaryContact.phone}
+							br
+							| #{group.groupInformation.fax}
+							br
+							| #{group.primaryContact.email}
+							br
+					.span6
+							br
+							| Total: $#{group.totalAmount}
+							br
+							| Paid: $#{group.paid}
+							br
+							| Method: #{group.groupInformation.paymentType}
+							br
+							br
+							| Youth: #{group.numbers.youth}
+							br
+							| Young Adults: #{group.numbers.youngAdults}
+							br
+							| Chaperones: #{group.numbers.chaperones}
+				.row-fluid
+					h4 Payments
+					if group.payments.length > 0
+						table.table.table-striped
+							thead
+								tr
+									th Date
+									th Earlybird ($125)
+									th Regular ($175)
+									th Notes
+							tbody
+								if group.payments
+									for payment in group.payments
+										tr
+											td= payment.date.toDateString()
+											td= payment.earlyTickets
+											td= payment.regTickets
+											td= payment.paypal
+					else
+						h4 No payments yet!
+			
+				.row-fluid
+					.span12
+						table.table.table-striped
+							thead 
+								tr
+									th(style="width: 30%") Name
+									th(style="width: 20%") BirthDate
+									th(style="width: 20%") Med Num
+									th(style="width: 30%") Emergency
+									th(style="width: 40%")
+							tbody
+								for member in group.groupMembers
+									tr
+										td #{member.name}
+										td #{member.birthDate}
+										td #{member.emergencyInfo.medicalNum}
+										td(rowspan=1)
+											| Name: #{member.emergencyInfo.name}
+											br
+											| Relation: #{member.emergencyInfo.relation}
+											br
+											| Phone: #{member.emergencyInfo.phone}
+									tr
+										td
+											| Phone: #{member.phone}
+											br
+											| Type: #{member.type}
+											br
+											| Ticket Price: #{member.ticketPrice}
+										td(colspan=3)
+											if member.workshops.length >= 1
+												table
+													thead
+														tr
+															th Workshop Name
+															th Session
+															th Room
+															th Venue
+													tbody
+														for workshop in workshops
+															if member.workshops.indexOf(workshop._id) != -1
+																tr
+																	td= workshop.name
+																	td= workshop.session
+																	td= workshop.room
+																	td= workshop.venue
+											else
+												p No workshops signed up!
+			.row-fluid
+				h4 Notes
+				p #{group.internal.notes}
+
+			
+			
+			.row-fluid
+				hr
+				div.muted(style="text-align: center")
+					p #200 – 506 Fort Street, Victoria, BC   V8W 1E6
+					p Phone 1-800-990-2432   Fax (250) 388-5502 
+					p Email gatheringourvoices@bcaafc.com
+			.page-break
+
+		script(src="http://code.jquery.com/jquery-1.9.1.min.js")
+		:coffeescript
+			$ ->
+				window.print()
+
