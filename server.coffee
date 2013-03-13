@@ -376,6 +376,12 @@ server.get '/account/printout', requireAuthentication, (req, res) ->
 			if member.type is "Chaperone"
 				group.numbers.chaperones++
 				
+		Workshop.find {}, (req, workshops) ->
+			res.render 'account/printout',
+				title: "Printout"
+				group: group
+				workshops: workshops
+				
 server.get '/admin/conference-printout', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
