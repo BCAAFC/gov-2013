@@ -450,19 +450,11 @@ server.get '/admin', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Group.find({}).sort('groupInformation.affiliation').exec (err, groups) -> # Find all groups
-			Workshop.find {}, (err, workshops) -> # Find all workshops
-				totals =
-					members: 0
-					workshops: workshops.length
-				for group in groups
-					totals.members += group.groupMembers.length
-				res.render 'admin/index',
-					title: "Administration"
-					group: req.session.group || null
-					groups: groups
-					workshops: workshops
-					totals: totals
+		Group.find({},'groupInformation.affiliation primaryContact.email _id groupMembers internal').sort('groupInformation.affiliation').exec (err, groups) -> # Find all groups
+			res.render 'admin/index',
+				title: "Administration"
+				group: req.session.group || null
+				groups: groups
 
 server.get '/admin/details', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
