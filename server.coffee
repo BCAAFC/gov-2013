@@ -460,7 +460,7 @@ server.get '/admin/details', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Group.find({}).populate('groupMembers').sort('groupInformation.affiliation').exec (err, groups) ->
+		Group.find({},"groupMembers groupInformation.affiliation").populate('groupMembers',"type name ticketPrice youthInCare workshops").sort('groupInformation.affiliation').exec (err, groups) ->
 			totals =
 				members:
 					youth: 0
