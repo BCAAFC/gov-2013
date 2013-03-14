@@ -193,70 +193,71 @@ server.get '/help', (req, res) ->
 		title: "Help"
 		group: req.session.group || null
 
-server.get '/account', requireAuthentication, populateGroupMembers, (req, res) ->
+server.get '/account', requireAuthentication, (req, res) ->
 	# Accumulate Bill and toss members into buckets for easy JADE-ing.
-	group = req.group
-	bill = 0
-	youth = []
-	youngAdults = []
-	chaperones = []
-	earlyTotal = 0
-	regTotal = 0
-	# Free tickets. For every 5 tickets they get a 6th free.
-	# We need to split them because we don't want to give them extra free money.
-	freeEarly = 0
-	freeReg = 0
+	Group.findById(req.session.group._id).populate('groupMembers',"ticketPrice type name").populate('payments').exec (err, group) ->
+		req.session.group = group
+		bill = 0
+		youth = []
+		youngAdults = []
+		chaperones = []
+		earlyTotal = 0
+		regTotal = 0
+		# Free tickets. For every 5 tickets they get a 6th free.
+		# We need to split them because we don't want to give them extra free money.
+		freeEarly = 0
+		freeReg = 0
 			
-	for member in group.groupMembers
-		bill += member.ticketPrice
+		for member in group.groupMembers
+			bill += member.ticketPrice
 				
-		if member.ticketPrice is 125
-			earlyTotal += 1
-		else if member.ticketPrice is 175
-			regTotal += 1
+			if member.ticketPrice is 125
+				earlyTotal += 1
+			else if member.ticketPrice is 175
+				regTotal += 1
 				
-		if member.type is "Youth"
-			youth.push member
-		else if member.type is "Young Adult"
-			youngAdults.push member
-		else if member.type is "Chaperone"
-			chaperones.push member
+			if member.type is "Youth"
+				youth.push member
+			else if member.type is "Young Adult"
+				youngAdults.push member
+			else if member.type is "Chaperone"
+				chaperones.push member
 	
-	# Calculate number of free tickets allowed.
-	freeTickets = Math.floor( (earlyTotal / 5) + (regTotal / 5) )
+		# Calculate number of free tickets allowed.
+		freeTickets = Math.floor( (earlyTotal / 5) + (regTotal / 5) )
 	
-	# Calculate the number of free regular priced tickets
-	freeReg = Math.floor( regTotal / 6 )
-	freeEarly = Math.floor ( earlyTotal / 6 )
+		# Calculate the number of free regular priced tickets
+		freeReg = Math.floor( regTotal / 6 )
+		freeEarly = Math.floor ( earlyTotal / 6 )
 	
-	# If we have extra free Regulars
-	if (regTotal % 6) + (earlyTotal % 6) > 5
-		freeReg++ 
+		# If we have extra free Regulars
+		if (regTotal % 6) + (earlyTotal % 6) > 5
+			freeReg++ 
 	
-	# Accumulate the amounts paid.
-	earlyPaid = 0
-	regPaid = 0
-	for payment in group.payments
-		earlyPaid += payment.earlyTickets
-		regPaid += payment.regTickets
+		# Accumulate the amounts paid.
+		earlyPaid = 0
+		regPaid = 0
+		for payment in group.payments
+			earlyPaid += payment.earlyTickets
+			regPaid += payment.regTickets
 					
-	# Temp workaround while we migrate to a better UI
-	group.youth = youth
-	group.youngAdults = youngAdults
-	group.chaperones = chaperones
-	req.session.group = group
+		# Temp workaround while we migrate to a better UI
+		group.youth = youth
+		group.youngAdults = youngAdults
+		group.chaperones = chaperones
+		req.session.group = group
 			
-	res.render 'account/index',
-		title: "Account Management"
-		group: req.session.group || null
-		billing:
-			total: bill - (freeEarly * 125) - (freeReg * 175)
-			earlyTotal: earlyTotal
-			regTotal: regTotal
-			freeEarly: freeEarly
-			freeReg: freeReg
-			earlyPaid: earlyPaid
-			regPaid: regPaid
+		res.render 'account/index',
+			title: "Account Management"
+			group: req.session.group || null
+			billing:
+				total: bill - (freeEarly * 125) - (freeReg * 175)
+				earlyTotal: earlyTotal
+				regTotal: regTotal
+				freeEarly: freeEarly
+				freeReg: freeReg
+				earlyPaid: earlyPaid
+				regPaid: regPaid
 
 server.get '/account/signup', (req, res) ->
 	res.render 'account/signup',
