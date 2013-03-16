@@ -103,7 +103,7 @@ html
 				h1 Check In?
 				p This will check the group in without making any changes. Please use with discretion.
 				if targetGroup.internal.checkedIn == true
-					a.btn.btn-block.btn-warning.checkOut(data-id="#{targetGroup._id}") Check Out
+					a.btn.btn-block.btn-warning.checkOut(data-id="#{targetGroup._id}") Registration Check Out
 					:coffeescript
 						$('.checkOut').click ->
 							event.preventDefault()
@@ -111,10 +111,33 @@ html
 							$.post "/admin/checkOut/#{$(this).data('id')}", (data) ->
 								location.reload()
 				else
-					a.btn.btn-block.btn-primary.checkIn(data-id="#{targetGroup._id}") Check In
+					a.btn.btn-block.btn-primary.checkIn(data-id="#{targetGroup._id}") Registration Check In
 					:coffeescript
 						$('.checkIn').click ->
 							event.preventDefault()
 							# Can't use a query here because of google's QR code API
 							$.post "/admin/checkIn/#{$(this).data('id')}", (data) ->
 								location.reload()
+				br
+				br
+				if targetGroup.internal.workshopCheckedIn == true
+					a.btn.btn-block.btn-warning.workshopCheckOut(data-id="#{targetGroup._id}") Workshop Check Out
+					:coffeescript
+						$('.workshopCheckOut').click ->
+							event.preventDefault()
+							# Can't use a query here because of google's QR code API
+							$.post "/admin/workshopCheckOut/#{$(this).data('id')}", (data) ->
+								location.reload()
+				else
+					a.btn.btn-block.btn-primary.workshopCheckIn(data-id="#{targetGroup._id}") Workshop Check In
+					:coffeescript
+						$('.workshopCheckIn').click ->
+							event.preventDefault()
+							# Can't use a query here because of google's QR code API
+							$.post "/admin/workshopCheckIn/#{$(this).data('id')}", (data) ->
+								location.reload()
+	br
+	br
+	br
+	br
+	br
