@@ -47,8 +47,8 @@ else
 		groupname: ""
 		password: ""
 		name: ""
-		db: "gov"
-	mongo = "mongodb://localhost:27017/gov"
+		db: "heroku_app13188783"
+	mongo = "mongodb://localhost:27017/heroku_app13188783"
 # Now we can connect to our MongoDB server simply, regardless of where we're hosted.
 db = mongoose.createConnection mongo
 # We'll announce the state of the database connection to the console.
@@ -387,7 +387,7 @@ server.get '/admin/conference-printout', (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Group.find().populate('groupMembers').populate('payments').exec (err, groups) ->
+		Group.find().populate('groupMembers').populate('payments').sort('groupInformation.affiliation').exec (err, groups) ->
 			for group in groups
 				group.groupMembers.sort (a, b) ->
 					if a.name > b.name

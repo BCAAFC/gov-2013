@@ -51,20 +51,13 @@ html
 		for group in groups
 			.container-fluid
 				.row-fluid
-					.span2
-						img(src="/img/logos/bcaafc.png")
-					.span8
-						hr
-						h1.pull-right BC Association of Aboriginal Friendship Centres
-						p.pull-right= new Date().toLocaleDateString()
-				.row-fluid
 					.pull-right
 						img.qr( src="https://chart.googleapis.com/chart?cht=qr&chl=http://gatheringourvoices.bcaafc.com/admin/checkIn/#{group._id}&choe=UTF-8&chs=200x200", style="position: absolute; right: 0px")
 				// Print pages only have an 8 span.
 				.row-fluid
 					h3 #{group.groupInformation.affiliation}
 				.row-fluid
-					.span6
+					.span3
 						address
 							strong #{group.primaryContact.name}
 							br
@@ -80,20 +73,24 @@ html
 							br
 							| #{group.primaryContact.email}
 							br
-					.span6
-							br
-							| Total: $#{group.totalAmount}
-							br
-							| Paid: $#{group.paid}
-							br
-							| Method: #{group.groupInformation.paymentType}
-							br
-							br
-							| Youth: #{group.numbers.youth}
-							br
-							| Young Adults: #{group.numbers.youngAdults}
-							br
-							| Chaperones: #{group.numbers.chaperones}
+					.span3
+						br
+						| Youth: #{group.numbers.youth}
+						br
+						| Young Adults: #{group.numbers.youngAdults}
+						br
+						| Chaperones: #{group.numbers.chaperones}
+						br
+						br
+						| Total: $#{group.totalAmount}
+						br
+						| Paid: $#{group.paid}
+						br
+						| Method: #{group.groupInformation.paymentType}
+					.span4
+						h4 Notes
+						p #{group.internal.notes}
+
 				.row-fluid
 					h4 Payments
 					if group.payments.length > 0
@@ -117,34 +114,42 @@ html
 			
 				.row-fluid
 					.span12
+						h4 Members
 						table.table.table-striped
 							thead 
 								tr
-									th(style="width: 30%") Name
-									th(style="width: 20%") BirthDate
-									th(style="width: 20%") Med Num
+									th(style="width: 15%") Name
+									th(style="width: 20%") 
+									th(style="width: 20%") 
 									th(style="width: 30%") Emergency
 									th(style="width: 40%")
 							tbody
 								for member in group.groupMembers
 									tr
 										td #{member.name}
-										td #{member.birthDate}
-										td #{member.emergencyInfo.medicalNum}
+										td 
+											| Birthday: #{member.birthDate}
+											br
+											| Phone: #{member.phone}
+										td 
+											| Med Num: #{member.emergencyInfo.medicalNum}
+											br
+											| Aller: #{member.emergencyInfo.allergies}
+											br
+											| Conds: #{member.emergencyInfo.conditions}
 										td(rowspan=1)
 											| Name: #{member.emergencyInfo.name}
 											br
 											| Relation: #{member.emergencyInfo.relation}
 											br
 											| Phone: #{member.emergencyInfo.phone}
-									tr
 										td
-											| Phone: #{member.phone}
-											br
 											| Type: #{member.type}
 											br
 											| Ticket Price: #{member.ticketPrice}
-										td(colspan=3)
+									tr
+										td
+										td(colspan=4)
 											if member.workshops.length >= 1
 												table
 													thead
@@ -163,18 +168,6 @@ html
 																	td= workshop.venue
 											else
 												p No workshops signed up!
-			.row-fluid
-				h4 Notes
-				p #{group.internal.notes}
-
-			
-			
-			.row-fluid
-				hr
-				div.muted(style="text-align: center")
-					p #200 – 506 Fort Street, Victoria, BC   V8W 1E6
-					p Phone 1-800-990-2432   Fax (250) 388-5502 
-					p Email gatheringourvoices@bcaafc.com
 			.page-break
 
 		script(src="http://code.jquery.com/jquery-1.9.1.min.js")
