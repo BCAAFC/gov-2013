@@ -96,11 +96,23 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 	fieldset
 		legend Workshops
 		if member.workshops.length >= 1
-			for workshop in member.workshops
-				.control-group
-					label.control-label= workshop.name
-					.controls
-						a.btn.btn-info.btn-small(href="/api/workshop/get?workshop=#{workshop._id}") Get Info
+			table.table.table-striped
+				thead
+					tr
+						th Name
+						th Session
+						th Venue
+						th Room
+						th Info
+				tbody
+					for workshop in member.workshops
+						tr
+							td #{workshop.name}
+							td #{workshop.session}
+							td #{workshop.venue}
+							td #{workshop.room}
+							td 
+								a.btn.btn-info.btn-small(href="/api/workshop/get?workshop=#{workshop._id}") Get Info
 		else
 			small.alert This member isn't signed up for any workshops!
 
