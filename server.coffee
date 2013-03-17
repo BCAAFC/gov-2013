@@ -269,13 +269,25 @@ server.get '/account/startRecovery', (req, res) ->
 		title: "Password Recovery"
 		group: null
 		
+		
+# Requires a query. "/deck?day=wednesday"
 server.get '/deck', (req, res) ->
-	Workshop.find().populate('signedUp').sort('session').exec (err, data) ->
+	if req.query.day is "wednesday"
+		start = 0
+		end = 6
+	else
+		start = 7
+		end = 12
+	Workshop.find({'session': {'$lte':end, '$gte':start}},"-description").sort('session').exec (err, workshops) ->
 		if err
 			res.send "There was an err. \n #{err}"
 		else
+			workshopsNotFull = (workshop for workshop in workshops when workshop.signedUp.length < workshop.capacity)
+			workshopSets = []
+			while workshopsNotFull.length
+				workshopSets.push workshopsNotFull.splice 0,6
 			res.render 'deck',
-				workshops: data
+				workshopSets: workshopSets
 
 server.post '/account/startRecovery', (req, res) ->
 	if req.body.skill is '10'

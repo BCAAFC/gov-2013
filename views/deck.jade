@@ -4,7 +4,7 @@ html
 		meta(charset='utf-8')
 		meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 		meta(name='viewport', content='width=1024, user-scalable=no')
-		title Your deck.js Presentation
+		title Deck
 		// Required stylesheet 
 		link(rel='stylesheet', href='deck/core/deck.core.css')
 		// Extension CSS files go here. Remove or add as needed. 
@@ -16,9 +16,9 @@ html
 		link(rel='stylesheet', href='deck/extensions/hash/deck.hash.css')
 		link(rel='stylesheet', href='deck/extensions/scale/deck.scale.css')
 		// Style theme. More available in /themes/style/ or create your own. 
-		link(rel='stylesheet', href='deck/themes/style/sandstone.firefox.css')
+		//link(rel='stylesheet', href='deck/themes/style/sandstone.firefox.css')
 		// Transition theme. More available in /themes/transition/ or create your own. 
-		link(rel='stylesheet', href='deck/themes/transition/horizontal-slide.css')
+		link(rel='stylesheet', href='deck/themes/transition/vertical-slide.css')
 
 		// Required Modernizr file 
 		script(src='deck/modernizr.custom.js')
@@ -46,18 +46,40 @@ html
 
 	body.deck-container
 		// Begin slides. Just make elements with a class of slide.
-		for workshop in workshops
-			if !(workshop.signedUp.length >= workshop.capacity)
-				section.slide.container-fluid(data-duration="5000")
+		for workshopSet in workshopSets
+			section.slide.container-fluid(data-duration="10000")
+				for workshop in workshopSet
 					.row-fluid
-						h2= workshop.name
-						p Host: #{workshop.host}
-						p Session: #{workshop.session}
-						p Capacity: #{workshop.signedUp.length} / #{workshop.capacity}
-						.progress.progress-striped
-							.bar(style="width: #{(workshop.signedUp.length / workshop.capacity) * 100 + '%'} ")
-						h2 Description
-						p #{workshop.description}
+						.span12
+							h3= workshop.name
+					.row-fluid
+						.span4
+							small Host: #{workshop.host}
+						.span2
+							small Session:
+							h4(style="text-align:center") #{workshop.session}
+						.span3
+							small Venue: #{workshop.venue}
+						.span3
+							small Room: #{workshop.room}
+					.row-fluid
+						.span2.offset4
+							small Day: #{workshop.day}
+						.span4
+							small Time: #{workshop.timeStart.toLocaleTimeString()} - #{workshop.timeEnd.toLocaleTimeString()}
+					.row-fluid
+						.span2.offset4
+							small Capacity: #{workshop.signedUp.length} / #{workshop.capacity}
+						.span6
+							.progress
+								if workshop.signedUp.length >= workshop.capacity
+									.bar.bar-danger(style="width: #{(workshop.signedUp.length / workshop.capacity) * 100 + '%'} ")
+								else if workshop.signedUp.length >= workshop.capacity / 2
+									.bar.bar-success(style="width: #{(workshop.signedUp.length / workshop.capacity) * 100 + '%'} ")
+								else
+									.bar(style="width: #{(workshop.signedUp.length / workshop.capacity) * 100 + '%'} ")
+						br
+						hr
 
 		// End slides. 
 		// Begin extension snippets. Add or remove as needed. 
@@ -98,3 +120,7 @@ html
 			$(function() {
 				$.deck('.slide');
 			});
+		:coffeescript
+			$(document).bind 'deck.change', (event, from, to) ->
+				if from is $('.deck-status-total').text() - 1
+					location.reload()
