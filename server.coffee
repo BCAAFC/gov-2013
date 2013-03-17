@@ -514,7 +514,7 @@ server.get '/admin/workshopDetails', requireAuthentication, (req, res) ->
 	if not req.session.group.internal.admin # If --not-- admin
 		res.send "You're not authorized, please don't try again!"
 	else
-		Workshop.find({},"name host signedUp session").populate('signedUp',"name type group workshops").sort('session').exec (err, workshops) ->
+		Workshop.find({},"name host signedUp session").populate('signedUp',"name type group workshops birthDate").sort('session').exec (err, workshops) ->
 			Group.find({},"primaryContact.email groupInformation.affiliation").exec (err, groups) ->
 				if err or workshops == null or groups == null
 					res.send "There was an error."
