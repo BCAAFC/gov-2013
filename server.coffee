@@ -538,10 +538,20 @@ server.get '/admin/workshopDetails', requireAuthentication, (req, res) ->
 								if group._id.equals member.group
 									member.groupName = group.groupInformation.affiliation
 									member.groupEmail = group.primaryContact.email
-					res.render 'admin/workshopDetails'
-						title: "Admin Workshop Details"
-						group: req.session.group || null
-						workshops: workshops
+					Member.find {}, "workshops", (err, data) ->
+						if err
+							res.send "I screwed something up, sorry. Try again?"
+						else
+							peopleInWorkshops = 0
+							for member in data
+								if member.workshops.length > 0
+									peopleInWorkshops++
+							res.render 'admin/workshopDetails'
+								title: "Admin Workshop Details"
+								group: req.session.group || null
+								workshops: workshops
+								stats: 
+									peopleInWorkshops: peopleInWorkshops
 
 # This route requires a '?group=foo' query where foo is the group id.
 server.get '/admin/payments', requireAuthentication, (req, res) ->
