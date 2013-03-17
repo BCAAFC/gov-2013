@@ -99,10 +99,11 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 			table.table.table-striped
 				thead
 					tr
-						th Name
+						th(style="width: 30%") Name
 						th Session
 						th Venue
 						th Room
+						th Space
 						th Info
 				tbody
 					for workshop in member.workshops
@@ -111,6 +112,7 @@ form.form-horizontal.row-fluid(action="/api/editMember", method='post')
 							td #{workshop.session}
 							td #{workshop.venue}
 							td #{workshop.room}
+							td #{workshop.signedUp.length} / #{workshop.capacity}
 							td 
 								a.btn.btn-info.btn-small(href="/api/workshop/get?workshop=#{workshop._id}") Get Info
 		else
