@@ -1128,12 +1128,18 @@ server.get '/api/workshop/delete', requireAuthentication, (req, res) ->
 			if err
 				res.send "Couldn't remove that workshop! Try again?"
 			else
-				Member.find workshops: workshop._id, (err, members) ->
+				Member.find(workshops: workshop._id).populate("group").exec (err, members) ->
+					emails = []
+					count = 0
+					log = []
 					for member in members
+						log.push "FORCE REMOVING #{member.name} from Session #{workshop.session}, #{workshop.name}"
+						emails.push member.group.primaryContact.email
+						count++
 						index = member.workshops.indexOf workshop._id
 						member.workshops.splice index, 1
 					workshop.remove()
-					res.redirect "/workshops/#{workshop.day}"
+					res.send "Primary Contact Emails for removed groups:<br>" + emails.join("; ") + "<br> Total Removed: #{count} <br> Log: <br>" + log.join("<br>")
 
 # Requires a "?workshop=foo" query.
 server.get '/api/workshop/get', populateGroupMembers, populateWorkshop, (req, res) ->
