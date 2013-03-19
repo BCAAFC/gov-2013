@@ -38,7 +38,7 @@ block content
 									td
 										.btn-group
 											a.btn.btn-small.btn-info.edit(data-id="#{workshop._id}", href="#workshop", data-toggle="modal") Edit
-											a.btn.btn-small.btn-danger(href="/api/workshop/delete?workshop=#{workshop._id}") Del
+											.btn.btn-small.btn-danger.disabled(href="/api/workshop/delete?workshop=#{workshop._id}") Del
 							td
 								a.btn.btn-small.btn-primary.info(href="/api/workshop/get?workshop=#{workshop._id}") More info...
 
