@@ -3,7 +3,7 @@ extends layout
 block content
 	.row-fluid
 		.span12
-			if workshop.session >= 6
+			if workshop.session > 6
 				a.btn.btn-primary(href="/workshops/thursday") Back to Thursday, March 21, 2013
 			else
 				a.btn.btn-primary(href="/workshops/wednesday") Back to Wednesday, March 20, 2013
