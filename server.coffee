@@ -278,7 +278,8 @@ server.get '/deck', (req, res) ->
 	else
 		start = 7
 		end = 12
-	Workshop.find({'session': {'$lte':end, '$gte':start}},"-description").sort('session').exec (err, workshops) ->
+	#Workshop.find({'session': {'$lte':end, '$gte':start}},"-description").sort('session').exec (err, workshops) ->
+	Workshop.find({},"-description").sort('session').exec (err, workshops) ->
 		if err
 			res.send "There was an err. \n #{err}"
 		else
