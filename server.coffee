@@ -285,7 +285,7 @@ server.get '/deck', (req, res) ->
 			workshopsNotFull = (workshop for workshop in workshops when workshop.signedUp.length < workshop.capacity)
 			workshopSets = []
 			while workshopsNotFull.length
-				workshopSets.push workshopsNotFull.splice 0,6
+				workshopSets.push workshopsNotFull.splice 0,4
 			res.render 'deck',
 				workshopSets: workshopSets
 

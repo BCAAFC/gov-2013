@@ -54,22 +54,22 @@ html
 							h3= workshop.name
 					.row-fluid
 						.span4
-							small Host: #{workshop.host}
+							p Host: #{workshop.host}
 						.span2
-							small Session:
+							p Session:
 							h4(style="text-align:center") #{workshop.session}
 						.span3
-							small Venue: #{workshop.venue}
+							p Venue: #{workshop.venue}
 						.span3
-							small Room: #{workshop.room}
+							p Room: #{workshop.room}
 					.row-fluid
 						.span2.offset4
-							small Day: #{workshop.day}
+							p Day: #{workshop.day}
 						.span4
-							small Time: #{workshop.timeStart.toLocaleTimeString()} - #{workshop.timeEnd.toLocaleTimeString()}
+							p Time: #{workshop.timeStart.toLocaleTimeString()} - #{workshop.timeEnd.toLocaleTimeString()}
 					.row-fluid
 						.span2.offset4
-							small Capacity: #{workshop.signedUp.length} / #{workshop.capacity}
+							p Capacity: #{workshop.signedUp.length} / #{workshop.capacity}
 						.span6
 							.progress
 								if workshop.signedUp.length >= workshop.capacity
