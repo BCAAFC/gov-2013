@@ -37,45 +37,39 @@ block content
 				p Used: #{workshop.signedUp.length}
 				p Max: #{workshop.capacity}
 	if group
-		if group.internal.workshopReg == "Sent" || group.internal.workshopReg == "Complete"
-			.row-fluid
-				.span12
-					.well
-						h1 Group Attendance
-						.alert.alert-warning
-							p Please do not register Chaperones in workshops unless it is explicitly stated in the workshop description or you have verified that you may with one of the Gathering Our Voices staff.
-						table.table-hover
-							thead(style="text-align: left")
-								th(style="width: 150px") Name
-								th(style="width: 150px") Type
-								th(style="width: 150px") Attending
-								th Actions
-							tbody
-								for member in group.groupMembers
-									tr
-										td= member.name
-										td= member.type
-										if member.workshops.indexOf(workshop._id) == -1
-											td
-												p.label.label-important Not Attending
-											td
-												.btn-group
-													if member.type == "Chaperone"
-														a.btn.btn-small.btn-warning(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add Chaperone to Workshop 
-													else
-														a.btn.btn-small.btn-success(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add to Workshop  
-													.disabled.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}', style="width: 10px") -
-										else
-											td
-												p.label.label-success Attending
-											td
-												.btn-group
-													.disabled.btn.btn-small.btn-success(href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}', style="width: 10px") +
-													a.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}', style="width: 150px") Remove from Workshop
-											
+		.row-fluid
+			.span12
+				.well
+					h1 Group Attendance
+					.alert.alert-warning
+						p Please do not register Chaperones in workshops unless it is explicitly stated in the workshop description or you have verified that you may with one of the Gathering Our Voices staff.
+					table.table-hover
+						thead(style="text-align: left")
+							th(style="width: 150px") Name
+							th(style="width: 150px") Type
+							th(style="width: 150px") Attending
+							th Actions
+						tbody
+							for member in group.groupMembers
+								tr
+									td= member.name
+									td= member.type
+									if member.workshops.indexOf(workshop._id) == -1
 										td
-		else
-			h1 Group Attendance
-			.alert.alert-error You can't sign up for workshops yet!
-				p In general, groups can only register for workshops once they have paid (at least in part) their registration fees. If you beleive this to be an error, please get in touch with our workshop coordinator, 
-					a(href="mailto:vsloanmorgan@bcaafc.com") Vanessa (Click here!), for assistance.
+											p.label.label-important Not Attending
+										td
+											.btn-group
+												if member.type == "Chaperone"
+													a.btn.btn-small.btn-warning(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add Chaperone to Workshop 
+												else
+													a.btn.btn-small.btn-success(style="width: 150px",href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}') Add to Workshop  
+												.disabled.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}', style="width: 10px") -
+									else
+										td
+											p.label.label-success Attending
+										td
+											.btn-group
+												.disabled.btn.btn-small.btn-success(href='/api/workshop/attendees/add?member=#{member._id}&workshop=#{workshop._id}', style="width: 10px") +
+												a.btn.btn-small.btn-danger(href='/api/workshop/attendees/remove?member=#{member._id}&workshop=#{workshop._id}', style="width: 150px") Remove from Workshop
+										
+									td
