@@ -4,17 +4,9 @@ block content
 	.row-fluid
 		.span12
 			for group in data
-				if group.yicTotal != 0
+				if group.yicYouthOnOwn != 0 || group.yicWithSupport != 0 || group.yicAsSupport != 0
 					h3 Affiliation: #{group.groupInformation.affiliation}
-					h4 Total: #{group.yicTotal}
-					table.table
-						thead
-							tr
-								th(style="width: 50%") Name
-								th(style="width: 50%") State
-						tbody
-								for member in group.groupMembers
-									if member.youthInCare != "Not Attending"
-										tr
-											td= member.name
-											td= member.youthInCare
+					p Youth On Own Total: #{group.yicYouthOnOwn}
+					p Youth With Support Total: #{group.yicWithSupport }
+					p Support People Total: #{group.yicAsSupport}
+

@@ -659,8 +659,12 @@ server.get '/admin/yic', requireAuthentication, (req, res) ->
 				res.send "There was an error. \n" + err
 			else
 				for group in data
-					group.yicTotal = 0
-					(group.yicTotal++ for member in group.groupMembers when member.youthInCare != "Not Attending")
+					group.yicYouthOnOwn = 0
+					(group.yicYouthOnOwn++ for member in group.groupMembers when member.youthInCare == "Attending - On Own")
+					group.yicWithSupport = 0
+					(group.yicWithSupport++ for member in group.groupMembers when member.youthInCare == "Attending - With Support Person")
+					group.yicAsSupport = 0
+					(group.yicAsSupport++ for member in group.groupMembers when member.youthInCare == "Attending - As Support Person")
 				res.render 'admin/yic'
 					title: "Administration - Youth In Care Details"
 					group: req.session.group || null
